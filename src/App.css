@@ -1,0 +1,242 @@
+/* Reset styles */
+html, body, body * {
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    background-color: inherit;
+}
+
+body {
+    /*background-image: url('resources/background.png');*/
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+}
+
+#root {
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+.page {
+    height: 100vh;
+    display: flex;
+    flex-direction: row; /* row */
+    justify-content: flex-start;
+}
+
+.no-sidebar-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.page-content {
+    width: 100%;
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: center;
+    height: 500px;
+    margin: 3% 25% 0 25%;
+}
+
+.centered-container .half {
+    height: 50%;
+}
+
+.shadow-box {
+    height: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.25);
+}
+
+.full-page-container {
+    text-align: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.login-wrapper {
+    text-align: center;
+    height: 50%;
+    width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2em 2em;
+    overflow-x: hidden;
+    overflow-y: paged-y-controls;
+    color: black;
+}
+
+.register-wrapper {
+    text-align: center;
+    height: 90%;
+    width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2em 2em;
+    overflow-x: hidden;
+    color: black;
+}
+
+.full-page-wrapper {
+    text-align: center;
+    width: 100%;
+    height: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: hidden;
+    overflow-y: paged-y-controls;
+    color: black;
+}
+
+.modal-wrapper {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+button {
+    font-size: 1.5em;
+    margin-right: 1em;
+    border: 0px;
+    cursor: pointer;
+}
+
+button:focus {
+    outline: 0px;
+}
+
+.sb-btn {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1em;
+    text-align: center;
+    color: #f1faee;
+    padding: 8px 0px;
+    width: 200px;
+    height: 35px;
+    border: none;
+    border-radius: 20px;
+    margin-top: 10%;
+    cursor: pointer;
+    background-color: #457b9d;
+}
+
+.sb-btn:hover {
+    background-color: #9dcccd
+}
+
+/* form styling */
+.form-group input {
+    width: 90%;
+    height: 35px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin: 0 0 20px 0;
+    border: none;
+    background: #9dcccd;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #9dcccd inset;
+}
+
+.form-group .align-right {
+    text-align: right;
+    font-size: 0.7em;
+    width: 95%;
+}
+
+.forgot-password {
+    color: #167bff;
+    text-decoration: underline;
+}
+
+.form-group label {
+    width: 95%;
+    text-align: right;
+    font-weight: bold;
+}
+
+.buttons-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.hidden-btn {
+    font-size: 1em;
+    margin: 0;
+}
+
+.login-wrapper .sb-btn {
+    margin-top: 5%;
+}
+
+.center-page {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#plusIcon {
+    height: 150px;
+    width: 150px;
+    position: fixed;
+    top: 30%;
+    right: 55%;
+}
+
+#chooseOptionTitle {
+    color: #457b9d;
+    font-size: 2em;
+    font-family: Tahoma;
+    font-weight: bold;
+}
+
+.opening-screen-title {
+    color: #457b9d;
+    font-size: 2em;
+    font-family: Tahoma;
+    font-weight: bold;
+}
+
+.table-wrapper {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.multiline-span {
+    white-space: pre-wrap;
+    text-align: center;
+}

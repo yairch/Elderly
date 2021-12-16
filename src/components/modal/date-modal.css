@@ -1,0 +1,30 @@
+.modal-content {
+    height: 25%;
+    width: 30%;
+}
+
+.modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 0 3% 0 3%;
+}
+
+.date-modal-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+
+/*.calender button{*/
+/*    margin: 0;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
+

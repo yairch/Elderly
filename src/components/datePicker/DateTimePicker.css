@@ -1,0 +1,21 @@
+.react-datepicker__input-time-container {
+  width: inherit;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  float: none;
+}
+
+.react-datepicker__input-container {
+  width: fit-content;
+}
+
+.react-datepicker__input-container input {
+  text-align: center;
+  font-size: 1em;
+}
+
+.react-datepicker-wrapper {
+  display: flex;
+  justify-content: center;
+}
