@@ -1,13 +1,13 @@
 var mongodb=require('mongodb');  
 var MongoClient=mongodb.MongoClient;  
-var url="mongodb://localhost:27017/"  
+var url="mongodb://127.0.0.1:27017/"  
 MongoClient.connect(url,function(error,databases){  
     if(error){  
         throw error;  
   
     }  
     var dbase=databases.db("Elderly");  
-    dbase.createCollection("Questionnaires",function(error,response){  
+    dbase.createCollection("temp",function(error,response){  
         if(error){  
             throw error;
         }  
