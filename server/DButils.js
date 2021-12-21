@@ -4,7 +4,7 @@ const config = {
 	user: 'root',
 	password: 'Minmax2Uybu!',
 	host: 'localhost',
-	database: 'elderly',
+	database: 'elderlyDB',
 	options: {
 		encrypt: true,
 		enableArithAbort: true
