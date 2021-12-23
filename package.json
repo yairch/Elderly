@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
     "generate-password": "^1.6.0",
+    "mongodb": "^4.2.2",
     "mysql": "^2.18.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
