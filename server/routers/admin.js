@@ -77,7 +77,7 @@ router.get('/organizationNames', async (req, res, next) => {
 
 router.get('/users', async (req, res, next) => {
 	try {
-		let users = await DButils.execQuery(`SELECT userName,userRole,organizationName FROM users`);
+		let users = await DButils.getUsers()
 		res.send(JSON.parse(JSON.stringify(users)));
 	} catch (error) {
 		next(error);

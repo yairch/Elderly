@@ -1,3 +1,5 @@
+import { collectionIds } from './constants/collections';
+
 const {MongoClient} = require('mongodb');
 
 const config = {
@@ -50,8 +52,28 @@ exports.createCollection = async (collectionName) => {
 	}
 }
 
+exports.getUsers = async () => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
 
-// exports.
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		const cursor = await users.find();
+		const allUsers = await cursor.toArray();
+		cursor.hasNext()
+		cursor.next()
+		
+		return allUsers;
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
 
 /*
 
