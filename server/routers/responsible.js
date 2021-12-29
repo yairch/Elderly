@@ -200,11 +200,9 @@ router.post('/addMeeting', async (req, res, next) => {
 		console.log(channelName);
 		console.log(meetingSubject);
 
-		await DButils.execQuery('Insert into meetings (volunteeruserName, elderlyuserName, meeting, meetingSubject, channelName) '
-			+ `VALUES ('${volunteerUsername}', '${elderlyUsername}', '${meetingDayAndHour}', '${meetingSubject}' ,'${channelName}');`);
+		await DButils.insertToMeetings(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
 
-		let volunteer = await DButils.execQuery(`Select firstName, lastName, email FROM volunteerUsers WHERE userName='${volunteerUsername}';`);
-		volunteer = JSON.parse(JSON.stringify(volunteer))[0];
+		let volunteer = await DButils.getVolDetails(volunteerUsername);
 
 		await sendMeetingEmail({
 			email: volunteer.email,
