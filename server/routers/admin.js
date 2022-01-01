@@ -8,20 +8,22 @@ const router = express.Router();
 // register organization
 router.post('/registerOrganization', async (req, res, next) => {
 	try {
-		const {organizationName, organizationEnglishName, phoneNumber} = req.body;
-		const organizationType = req.body.organizationType.value;
+		const {name, englishName, phoneNumber} = req.body;
+		const type = req.body.organizationType.value;
 
 		console.log('organization');
 		console.log(req.body);
-		// organizations exist
-		let organizations = [];
-		organizations = await DButils.execQuery('SELECT organizationName, organizationEnglishName FROM organizations');
-		if (organizations.find((x) => x.organizationName === organizationName || x.organizationEnglishName === organizationEnglishName))
-			throw {status: 409, message: 'Organization name taken'};
+
+		// organization exist
+		const organizationByName = await DButils.getOrganizationByName(name);
+		const organizationByEnglishName = await DButils.getOrganizationByEnglishName(englishName);
+		if ( organizationByName || organizationByEnglishName){
+			res.status(409).send('Organization name taken');
+			return;
+		}
 
 		//insert into DB Organization
-		await DButils.execQuery('Insert into organizations (organizationName, organizationEnglishName, organizationType, phoneNumber) '
-			+ `VALUES ('${organizationName}', '${organizationEnglishName}', '${organizationType}', '${phoneNumber}');`);
+		await DButils.insertOrganization(name, englishName, type, phoneNumber);
 
 	} catch (error) {
 		next(error);
@@ -37,26 +39,25 @@ router.post('/registerResponsible', async (req, res, next) => {
 
 		console.log("organizationName");
 		console.log(organizationName);
+		
 		// username exists
-		let users = [];
-		users = await DButils.execQuery('SELECT username FROM users');
-		if (users.find((x) => x.username === username))
-			throw {status: 409, message: 'Username taken'};
+		const user = await DButils.getUserByUsername();
+		if (user){
+			res.status(409).send('Username taken');
+			return;
+		}
 
 		// make hash to password
-		let hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
+		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.execQuery('Insert into users (userName, password, userRole, organizationName) '
-			+ `VALUES ('${username}', '${hash_password}', 'responsible', '${organizationName}');`);
+		await DButils.insertUser(username, hash_password, 'responsible', organizationName);
 
 		// insert into DB responsibleUsers
-		await DButils.execQuery('Insert into responsibleUsers (userName, firstName, lastName, email, gender,' +
-			'organizationName, responsibleType) '
-			+ `VALUES ('${username}', '${firstName}', '${lastName}', '${email}', '${gender}',
-            '${organizationName}','${responsibleType}');`);
+		await DButils.insertResponsible(username, firstName, lastName, email, gender, organizationName, responsibleType);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
+		
 		//send result
 		res.setHeader('Content-Type', 'application/json');
 		res.status(200).send({message: 'registration succeeded', success: true});
@@ -67,8 +68,12 @@ router.post('/registerResponsible', async (req, res, next) => {
 
 router.get('/organizationNames', async (req, res, next) => {
 	try {
-		let organizations = await DButils.execQuery(`SELECT organizationName,organizationEnglishName FROM organizations`);
-		res.send(JSON.parse(JSON.stringify(organizations)));
+		const organizations = (await DButils.getAllOrganizations())
+			.map(org => ({
+				name: org.name,
+				englishName: org.englishName,
+			}))
+		res.send(organizations);
 	} catch (error) {
 		next(error);
 	}

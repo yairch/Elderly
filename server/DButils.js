@@ -1,5 +1,4 @@
-import { collectionIds } from './constants/collections';
-
+const { collectionIds, organizationsFields, usersFields, responsiblesFields, meetingsCollectionFields } = require('./constants/collections');
 const {MongoClient} = require('mongodb');
 
 const config = {
@@ -13,7 +12,7 @@ const config = {
 exports.createDatabase = async () => {
 	console.log('Tries to create database...')
 	const client = new MongoClient(config.url);
-	try{
+	try {
 		await client.connect()
 
 		// creates DB with given name if not already exists
@@ -22,7 +21,7 @@ exports.createDatabase = async () => {
 
 		return dbObject;
 	}
-	catch(error){
+	catch(error) {
 		console.error('Database creation failed');
 		console.error(error);
 	}
@@ -35,7 +34,7 @@ exports.createDatabase = async () => {
 exports.createCollection = async (collectionName) => {
 	
 	const client = new MongoClient(config.url);
-	try{
+	try {
 		await client.connect()
 
 		const db = client.db(config.database.name);
@@ -43,7 +42,7 @@ exports.createCollection = async (collectionName) => {
 		await db.createCollection(collectionName);
 		console.log(`Successfully created collection ${collectionName}`);  
 	}
-	catch(error){
+	catch(error) {
 		console.error(`Failed creating collection ${collectionName}`);
 		console.error(error);
 	}
@@ -52,22 +51,21 @@ exports.createCollection = async (collectionName) => {
 	}
 }
 
-exports.getUsers = async () => {
+// Organization
+
+exports.getOrganizationByName = async (name) => {
+
 	const client = new MongoClient(config.url);
-	try{
+	try {
 		await client.connect()
 
 		const db = client.db(config.database.name);
 
-		const users = db.collection(collectionIds.users);
-		const cursor = await users.find();
-		const allUsers = await cursor.toArray();
-		cursor.hasNext()
-		cursor.next()
-		
-		return allUsers;
+		const organizations = db.collection(collectionIds.organizations);
+		const organization = await organizations.findOne({[organizationsFields.name]: name});
+		return organization;
 	}
-	catch(error){
+	catch(error) {
 		console.error(error);
 	}
 	finally {
@@ -75,75 +73,167 @@ exports.getUsers = async () => {
 	}
 }
 
-/*
+exports.getOrganizationByEnglishName = async (englishName) => {
 
-const con = new sql.createPool(config);
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
 
-exports.bcrypt_saltRounds = 13;
+		const db = client.db(config.database.name);
 
-exports.execQuery = async function (query) {
-	return new Promise(function (resolve, reject) {
-		con.query(query, function (err, rows) {
-				if (err) {
-					console.log(config);
-					reject(err);
-				}
-				if (rows === undefined) {
-					reject(new Error('Error rows is undefined'));
-				}
-				else {
-					resolve(rows);
-				}
-			}
-		);
-	});
-};
+		const organizations = db.collection(collectionIds.organizations);
+		const organization = await organizations.findOne({[organizationsFields.englishName]: englishName});
+		return organization;
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
 
-exports.convertElderlyDetailsFromDB = function (records) {
-	records = records.map((dic) => {
-		return {
-			userName: dic.userName,
-			firstName: dic.firstName,
-			lastName: dic.lastName,
-			birthYear: dic.birthYear,
-			city: dic.city,
-			email: dic.email,
-			gender: dic.gender,
-			phoneNumber: dic.phoneNumber,
-			areasOfInterest: JSON.parse(dic.areasOfInterest),
-			languages: JSON.parse(dic.languages),
-			organizationName: dic.organizationName,
-			genderToMeetWith: dic.genderToMeetWith,
-			wantedServices: JSON.parse(dic.wantedServices),
-			preferredDays: JSON.parse(dic.preferredDays),
-			digitalDevices: JSON.parse(dic.digitalDevices),
-			additionalInformation: dic.additionalInformation
-		};
-	});
-	return records;
-};
+exports.insertOrganization = async (name, englishName, type, phoneNumber) => {
 
-exports.convertVolunteerDetailsFromDB = function (records) {
-	records = records.map((dic) => {
-		return {
-			userName: dic.userName,
-			firstName: dic.firstName,
-			lastName: dic.lastName,
-			birthYear: dic.birthYear,
-			city: dic.city,
-			email: dic.email,
-			gender: dic.gender,
-			phoneNumber: dic.phoneNumber,
-			areasOfInterest: JSON.parse(dic.areasOfInterest),
-			languages: JSON.parse(dic.languages),
-			organizationName: dic.organizationName,
-			services: JSON.parse(dic.services),
-			preferredDays: JSON.parse(dic.preferredDays),
-			digitalDevices: JSON.parse(dic.digitalDevices),
-			additionalInformation: dic.additionalInformation
-		};
-	});
-	return records;
-};
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
 
-*/
+		const db = client.db(config.database.name);
+
+		const organizations = db.collection(collectionIds.organizations);
+		await organizations.insertOne({
+			[organizationsFields.name]: name,
+			[organizationsFields.englishName]: englishName,
+			[organizationsFields.type]: type,
+			[organizationsFields.phoneNumber]: phoneNumber,
+		});		
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+exports.getAllOrganizations = async () => {
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const organizations = db.collection(collectionIds.organizations);
+		const cursor = await organizations.find();
+		const allOrganizations = await cursor.toArray();
+		
+		return allOrganizations;
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+// User
+
+exports.getUserByUsername = async (username) => {
+
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		const user = await users.findOne({[usersFields.username]: username});;
+		
+		return user;
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+exports.getUsers = async () => {
+
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		const cursor = await users.find();
+		const allUsers = await cursor.toArray();
+		
+		return allUsers;
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+exports.insertUser = async (username, password, role, organization) => {
+
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		
+		await users.insertOne({
+			[usersFields.username]: username,
+			[usersFields.password]: password,
+			[usersFields.role]: role,
+			[usersFields.organization]: organization,
+		})
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+// Responsible
+
+exports.insertResponsible = async (username, firstName, lastName, email, gender, organization, responsibleType) => {
+
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const responsibles = db.collection(collectionIds.responsibleUsers);
+		
+		await responsibles.insertOne({
+			[responsiblesFields.username]: username,
+			[responsiblesFields.firstName]: firstName,
+			[responsiblesFields.lastName]: lastName,
+			[responsiblesFields.email]: email,
+			[responsiblesFields.gender]: gender,
+			[responsiblesFields.organization]: organization,
+			[responsiblesFields.responsibleType]: responsibleType
+		})
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
