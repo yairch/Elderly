@@ -149,7 +149,7 @@ exports.getUserByUsername = async (username) => {
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		const user = await users.findOne({[usersFields.username]: username});;
+		const user = await users.findOne({[usersFields.username]: username});
 		
 		return user;
 	}
@@ -199,6 +199,31 @@ exports.insertUser = async (username, password, role, organization) => {
 			[usersFields.role]: role,
 			[usersFields.organization]: organization,
 		})
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+exports.updateUserPassword = async (username, password) => {
+
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		await users.updateOne({[usersFields.username]: username},
+			{
+				'$set': {
+					[usersFields.password]: password
+				}
+			})
+		
 	}
 	catch(error) {
 		console.error(error);

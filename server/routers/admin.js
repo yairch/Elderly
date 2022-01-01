@@ -41,7 +41,7 @@ router.post('/registerResponsible', async (req, res, next) => {
 		console.log(organizationName);
 		
 		// username exists
-		const user = await DButils.getUserByUsername();
+		const user = await DButils.getUserByUsername(username);
 		if (user){
 			res.status(409).send('Username taken');
 			return;
@@ -82,8 +82,8 @@ router.get('/organizationNames', async (req, res, next) => {
 
 router.get('/users', async (req, res, next) => {
 	try {
-		let users = await DButils.getUsers()
-		res.send(JSON.parse(JSON.stringify(users)));
+		const users = await DButils.getUsers()
+		res.send(users);
 	} catch (error) {
 		next(error);
 	}
