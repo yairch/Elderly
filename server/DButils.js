@@ -1,4 +1,4 @@
-import { collectionIds, meetingsCollectionFields } from './constants/collections';
+import { collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersCollectionFields } from './constants/collections';
 
 const {MongoClient} = require('mongodb');
 
@@ -204,6 +204,56 @@ exports.getUserChannels = async (userName)=> {
 	}
 }
 
+exports.insertToUser = async (username, hash_password, userRole, organizationName) => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		const cursor = await users.find({[usersCollectionFields.username]:username});
+		if (cursor.hasNext()){
+			res.status(409).send('Username taken');
+			return;
+		}
+		else{
+			users.insertOne({
+				[usersCollectionFields.userName]: username,
+				[usersCollectionFields.hashes_pass]: hash_password,
+				[usersCollectionFields.userRole]: userRole,
+				[usersCollectionFields.organizationName]: organizationName
+			})
+		}
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+
+//Meetings
+exports.deleteFromMeetings = async(channelName) => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const meetings = db.collection(collectionIds.meetings);
+		meetings.deleteMany({[meetingsCollectionFields.channelName]: channelName});
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
 exports.getFullMeetingDetails = async (userName)=> {
 	const client = new MongoClient(config.url);
 	try{
@@ -216,13 +266,13 @@ exports.getFullMeetingDetails = async (userName)=> {
 			{ $lookup:
 				{
 				  from: collectionIds.volunteerUsers,
-				  localField: 'volunteerUserName',
-				  foreignField: 'userName',
+				  localField: collectionIds.meetingsCollectionFields.volunteerUsername,
+				  foreignField: volunteersCollectionFields.volunteerUsername,
 				  as: 'res'
 				}
 			}
 		]);
-		return res.toArray();
+		return meetings.toArray();
 	}
 	catch(error){
 		console.error(error);
@@ -264,12 +314,12 @@ exports.getFullVoluMeetings = async (userName)=> {
 				{
 				  from: collectionIds.elderlyusers,
 				  localField: meetingsCollectionFields.volunteerUsername,
-				  foreignField: 'userName',
+				  foreignField: volunteersCollectionFields.volunteerUsername,
 				  as: 'res'
 				}
 			}
 		]);
-		return res.toArray();
+		return meetings.toArray();
 	}
 	catch(error){
 		console.error(error);
@@ -279,6 +329,68 @@ exports.getFullVoluMeetings = async (userName)=> {
 	}
 }
 
+exports.getOrganizationMeetings = async (organizationName)=> {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+		const meetings = db.collection(collectionIds.meetings);
+		const cursor = meetings.aggregate([
+			{ $lookup:
+				{
+				  from: collectionIds.elderlyUsers,
+				  localField: meetingsCollectionFields.elderlyUsername,
+				  foreignField: elderlyCollectionFields.elderlyUsername,
+				  as: 'res'
+				}
+			},
+			{ $lookup:
+				{
+				  from: collectionIds.volunteerUsers,
+				  localField: meetingsCollectionFields.volunteerUsername,
+				  foreignField: volunteersCollectionFields.volunteerUsername,
+				  as: 'result'
+				}
+			},
+		]).find({[elderlyCollectionFields.organizationName]:organizationName});
+		return cursor.toArray();
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+
+exports.insertToMeetings = async (volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject, channelName) =>{
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const meetings = db.collection(collectionIds.meetings);
+		let meet = {
+			[meetingsCollectionFields.volunteerUsername]: volunteerUsername,
+			[meetingsCollectionFields.elderlyUsername]: elderlyUsername,
+			[meetingsCollectionFields.meetingDayAndHour]: meetingDayAndHour,
+			[meetingsCollectionFields.meetingSubject]: meetingSubject,
+			[meetingsCollectionFields.channelName]: channelName,
+		}
+		meetings.insertOne(meet);
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+// volunteer
 exports.getVoluName = async (volunteerId) => {
 	const client = new MongoClient(config.url);
 	try{
@@ -287,7 +399,7 @@ exports.getVoluName = async (volunteerId) => {
 		const db = client.db(config.database.name);
 
 		const volunteerUsers = db.collection(collectionIds.volunteerUsers);
-		const cursor = await volunteerUsers.find({"userName":volunteerId});
+		const cursor = await volunteerUsers.find({[volunteersCollectionFields.volunteerUsername]:volunteerId});
 		res = cursor.next();
 		return{
 
@@ -303,22 +415,50 @@ exports.getVoluName = async (volunteerId) => {
 	}
 }
 
-exports.insertToMeetings = async (volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject, channelName) =>{
+exports.getVolDetails = async (volunteerUsername) =>{
+	const client = new MongoClient(config.url);
+	try{
+		const db = client.db(config.database.name);
+		const volUsers = db.collection(collectionIds.volunteerUsers);
+		const cursor = await volUsers.find({[collectionIds.volunteerUsers.volunteerUsername]: volunteerUsername});
+		let res = cursor.next();
+		return{
+			firstName: res.firstName,
+			lastName: res.lastName,
+			email: res.email
+		}
+	}catch (error){
+		console.error(error);
+	}finally{
+		client.close();
+	}
+}
+
+exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, phoneNumber) => {
 	const client = new MongoClient(config.url);
 	try{
 		await client.connect()
 
 		const db = client.db(config.database.name);
 
-		const meetings = db.collection(collectionIds.meetings);
-		let meet = {
-			"volunteeruserName": volunteerUsername,
-			"elderlyuserName": elderlyUsername,
-			"meeting": meetingDayAndHour,
-			"meetingSubject": meetingSubject,
-			"channelName": channelName,
+		const volunteers = db.collection(collectionIds.volunteerUsers);
+		const cursor = await volunteers.find({[volunteersCollectionFields.userName]:username});
+		if (cursor.hasNext()){
+			res.status(409).send('Username taken');
+			return;
 		}
-		meetings.insertOne(meet);
+		else{
+			volUsers.insertOne({
+				[volunteersCollectionFields.volunteerUsername]: username,
+				[volunteersCollectionFields.firstName]: firstName,
+				[volunteersCollectionFields.lastName]: lastName,
+				[volunteersCollectionFields.birthYear]: birthYear,
+				[volunteersCollectionFields.city]: city,
+				[volunteersCollectionFields.email]: email,
+				[volunteersCollectionFields.gender]: gender,
+				[volunteersCollectionFields.phoneNumber]: phoneNumber
+			})
+		}
 	}
 	catch(error){
 		console.error(error);
@@ -328,19 +468,110 @@ exports.insertToMeetings = async (volunteerUsername, elderlyUsername, meetingDay
 	}
 }
 
-exports.getVolDetails = async (volunteerUsername) =>{
+exports.getVols = async() => {
 	const client = new MongoClient(config.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
-		const cursor = await volUsers.find({'volunteerUsername': volunteerUsername});
-		let res = cursor.next();
-		return{
-			firstName: res.firstName,
-			lastName: res.lastName,
-			email: res.email
-		}
+		const cursor = await volUsers.find();
+		return cursor.toArray();
 	}catch (error){
+		console.error(error);
+	}finally{
+		client.close();
+	}
+}
+
+exports.getVolsByOrganization = async(organizationName) => {
+	const client = new MongoClient(config.url);
+	try{
+		const db = client.db(config.database.name);
+		const volUsers = db.collection(collectionIds.volunteerUsers);
+		const cursor = await volUsers.find({[volunteersCollectionFields.organizationName]: organizationName});
+		return cursor.toArray();
+	}catch (error){
+		console.error(error);
+	}finally{
+		client.close();
+	}
+}
+
+//elderly
+exports.insertToEld = async (userName, firstName, lastName, birthYear, city, email, gender,
+phoneNumber, areasOfInterest, languages, organizationName, wantedServices, genderToMeetWith, preferredDays,
+digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber, contactEmail) => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const elderlies = db.collection(collectionIds.elderlyUsers);
+		const cursor = await elderlies.find({[elderlyCollectionFields.elderlyUsername]:username});
+		if (cursor.hasNext()){
+			res.status(409).send('Username taken');
+			return;
+		}
+		else{
+			elderlies.insertOne({
+				[elderlyCollectionFields.elderlyUsername]: userName,
+				[elderlyCollectionFields.firstName]: firstName,
+				[elderlyCollectionFields.lastName]: lastName,
+				[elderlyCollectionFields.birthYear]: birthYear,
+				[elderlyCollectionFields.city]: city,
+				[elderlyCollectionFields.email]: email,
+				[elderlyCollectionFields.gender]: gender,
+				[elderlyCollectionFields.phoneNumber]: phoneNumber,				
+				[elderlyCollectionFields.areasOfInterest]: areasOfInterest,
+				[elderlyCollectionFields.languages]: languages,
+				[elderlyCollectionFields.organizationName]: organizationName,
+				[elderlyCollectionFields.wantedServices]: wantedServices,
+				[elderlyCollectionFields.genderToMeetWith]: genderToMeetWith,
+				[elderlyCollectionFields.preferredDaysAndHours]: preferredDays,
+				[elderlyCollectionFields.digitalDevices]: digitalDevices,
+				[elderlyCollectionFields.additionalInformation]: additionalInformation,
+				[elderlyCollectionFields.contactName]: contactName,
+				[elderlyCollectionFields.kinship]: kinship,
+				[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
+				[elderlyCollectionFields.contactEmail]: contactEmail
+			})
+		}
+	}
+	catch(error){
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
+exports.getElderlyUsers = async() => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const elderlies = db.collection(collectionIds.elderlyUsers);
+		const cursor = await elderlies.find();
+		return cursor.toArray();
+	}catch(error){
+		console.error(error);
+	}finally{
+		client.close();
+	}
+}
+exports.getElderlyDetails = async() => {
+	const client = new MongoClient(config.url);
+	try{
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const elderlies = db.collection(collectionIds.elderlyUsers);
+		const cursor = await elderlies.find({[elderlyCollectionFields.organizationName]: organizationName});
+		return cursor.toArray();
+	}catch(error){
 		console.error(error);
 	}finally{
 		client.close();
