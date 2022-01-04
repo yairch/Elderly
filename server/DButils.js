@@ -1,4 +1,4 @@
-import { collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersCollectionFields } from './constants/collections';
+const { collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersCollectionFields } = require("./constants/collections");
 
 const {MongoClient} = require('mongodb');
 
@@ -12,7 +12,7 @@ const config = {
 
 exports.createDatabase = async () => {
 	console.log('Tries to create database...')
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -34,7 +34,7 @@ exports.createDatabase = async () => {
 
 exports.createCollection = async (collectionName) => {
 	
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -56,7 +56,7 @@ exports.createCollection = async (collectionName) => {
 
 exports.getOrganizationByName = async (name) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -76,7 +76,7 @@ exports.getOrganizationByName = async (name) => {
 
 exports.getOrganizationByEnglishName = async (englishName) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -96,7 +96,7 @@ exports.getOrganizationByEnglishName = async (englishName) => {
 
 exports.insertOrganization = async (name, englishName, type, phoneNumber) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -119,7 +119,7 @@ exports.insertOrganization = async (name, englishName, type, phoneNumber) => {
 }
 
 exports.getAllOrganizations = async () => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -143,7 +143,7 @@ exports.getAllOrganizations = async () => {
 
 exports.getUserByUsername = async (username) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -164,7 +164,7 @@ exports.getUserByUsername = async (username) => {
 
 exports.getUsers = async () => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 
@@ -185,7 +185,7 @@ exports.getUsers = async () => {
 }
 
 exports.getUserChannels = async (userName)=> {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -205,7 +205,7 @@ exports.getUserChannels = async (userName)=> {
 }
 
 exports.insertToUser = async (username, hash_password, userRole, organizationName) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -237,7 +237,7 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 
 //Meetings
 exports.deleteFromMeetings = async(channelName) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -255,7 +255,7 @@ exports.deleteFromMeetings = async(channelName) => {
 }
 
 exports.getFullMeetingDetails = async (userName)=> {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -283,7 +283,7 @@ exports.getFullMeetingDetails = async (userName)=> {
 }
 
 exports.getVoluMeetings = async (userName)=> {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -302,7 +302,7 @@ exports.getVoluMeetings = async (userName)=> {
 }
 
 exports.getFullVoluMeetings = async (userName)=> {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -330,7 +330,7 @@ exports.getFullVoluMeetings = async (userName)=> {
 }
 
 exports.getOrganizationMeetings = async (organizationName)=> {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -366,7 +366,7 @@ exports.getOrganizationMeetings = async (organizationName)=> {
 
 
 exports.insertToMeetings = async (volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject, channelName) =>{
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -392,7 +392,7 @@ exports.insertToMeetings = async (volunteerUsername, elderlyUsername, meetingDay
 
 // volunteer
 exports.getVoluName = async (volunteerId) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -416,7 +416,7 @@ exports.getVoluName = async (volunteerId) => {
 }
 
 exports.getVolDetails = async (volunteerUsername) =>{
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
@@ -435,7 +435,7 @@ exports.getVolDetails = async (volunteerUsername) =>{
 }
 
 exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, phoneNumber) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -469,7 +469,7 @@ exports.insertToVol = async (username, firstName, lastName, birthYear, city, ema
 }
 
 exports.getVols = async() => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
@@ -483,7 +483,7 @@ exports.getVols = async() => {
 }
 
 exports.getVolsByOrganization = async(organizationName) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
@@ -500,7 +500,7 @@ exports.getVolsByOrganization = async(organizationName) => {
 exports.insertToEld = async (userName, firstName, lastName, birthYear, city, email, gender,
 phoneNumber, areasOfInterest, languages, organizationName, wantedServices, genderToMeetWith, preferredDays,
 digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber, contactEmail) => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
@@ -546,7 +546,7 @@ digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber,
 }
 
 exports.getElderlyUsers = async() => {
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 
