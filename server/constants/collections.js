@@ -1,22 +1,31 @@
 exports.collectionIds = {
-    users: 'users',
-    meetings: 'meetings',
-    volunteerUsers: 'volunteerUsers',
-    elderlyUsers: 'elderlyUsers'
+    users: 'Users',
+    meetings: 'Meetings',
+    volunteerUsers: 'Volunteers',
+    elderlyUsers: 'Elderlies',
+    responsibleUsers: 'ResponsibleUsers',
 }
 
 exports.meetingsCollectionFields = {
-    volunteerUsername: 'volunteerUsername',
-    elderlyUsername: 'elderlyUsername',
-    meetingDayAndHour: 'meetingDayAndHour',
-    meetingSubject: 'meetingSubject',
-    channelName: 'channelName'
+    volunteerUsername: 'Volunteer Username',
+    elderlyUsername: 'Elderly Username',
+    meetingDayAndHour: 'Date',
+    meetingSubject: 'Meeting Subject',
+    channelName: 'Channel Name'
 }
-exports.usersCollectionFields = {
-    username: 'username',
-    hashes_pass: 'password',
-    userRole: 'userRole',
-    organizationName: 'organizationName'
+
+exports.organizationsFields = {
+    name: 'Name',
+    englishName: 'English Name',
+    type: 'Type',
+    phoneNumber: 'Phone Number',
+}
+
+exports.usersFields = {
+    username: 'Username',
+    password: 'Password',
+    role: 'Role',
+    organization: 'Organization',
 }
 exports.volunteersCollectionFields = {
     volunteerUsername: 'username',
@@ -52,3 +61,15 @@ exports.elderlyCollectionFields = {
     contactPhoneNumber: 'contactPhoneNumber',
     contactEmail: 'contactEmail'
 }
+
+exports.responsiblesFields = {
+    username: 'Username',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    email: 'Email',
+    gender: 'Gender',
+    organization: 'Organization',
+    responsibleType: 'Responsible Type',
+}
+
+

@@ -1,4 +1,4 @@
-const { collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersCollectionFields } = require("./constants/collections");
+const { responsiblesFields, collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
 
 const {MongoClient} = require('mongodb');
 
@@ -212,17 +212,17 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		const cursor = await users.find({[usersCollectionFields.username]:username});
+		const cursor = await users.find({[usersFields.username]:username});
 		if (cursor.hasNext()){
 			res.status(409).send('Username taken');
 			return;
 		}
 		else{
 			users.insertOne({
-				[usersCollectionFields.userName]: username,
-				[usersCollectionFields.hashes_pass]: hash_password,
-				[usersCollectionFields.userRole]: userRole,
-				[usersCollectionFields.organizationName]: organizationName
+				[usersFields.username]: username,
+				[usersFields.password]: hash_password,
+				[usersFields.role]: userRole,
+				[usersFields.organization]: organizationName
 			})
 		}
 	}
