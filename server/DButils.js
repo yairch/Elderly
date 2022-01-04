@@ -161,7 +161,30 @@ exports.getUserByUsername = async (username) => {
 		client.close();  
 	}
 }
+exports.updateUserPassword = async (username, password) => {
 
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		await users.updateOne({[usersFields.username]: username},
+			{
+				'$set': {
+					[usersFields.password]: password
+				}
+			})
+		
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
 exports.getUsers = async () => {
 
 	const client = new MongoClient(config.database.url);
@@ -212,19 +235,12 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		const cursor = await users.find({[usersFields.username]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			users.insertOne({
-				[usersFields.username]: username,
-				[usersFields.password]: hash_password,
-				[usersFields.role]: userRole,
-				[usersFields.organization]: organizationName
-			})
-		}
+		users.insertOne({
+			[usersFields.username]: username,
+			[usersFields.password]: hash_password,
+			[usersFields.role]: userRole,
+			[usersFields.organization]: organizationName
+		})
 	}
 	catch(error){
 		console.error(error);
@@ -233,6 +249,7 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		client.close();  
 	}
 }
+
 
 
 //Meetings
@@ -400,7 +417,7 @@ exports.getVoluName = async (volunteerId) => {
 
 		const volunteerUsers = db.collection(collectionIds.volunteerUsers);
 		const cursor = await volunteerUsers.find({[volunteersCollectionFields.volunteerUsername]:volunteerId});
-		res = cursor.next();
+		const res = cursor.next();
 		return{
 
 			firstName: res.firstName,
@@ -434,7 +451,7 @@ exports.getVolDetails = async (volunteerUsername) =>{
 	}
 }
 
-exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, phoneNumber) => {
+exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber, organizationName, additionalInformation) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -442,23 +459,23 @@ exports.insertToVol = async (username, firstName, lastName, birthYear, city, ema
 		const db = client.db(config.database.name);
 
 		const volunteers = db.collection(collectionIds.volunteerUsers);
-		const cursor = await volunteers.find({[volunteersCollectionFields.userName]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			volUsers.insertOne({
-				[volunteersCollectionFields.volunteerUsername]: username,
-				[volunteersCollectionFields.firstName]: firstName,
-				[volunteersCollectionFields.lastName]: lastName,
-				[volunteersCollectionFields.birthYear]: birthYear,
-				[volunteersCollectionFields.city]: city,
-				[volunteersCollectionFields.email]: email,
-				[volunteersCollectionFields.gender]: gender,
-				[volunteersCollectionFields.phoneNumber]: phoneNumber
-			})
-		}
+		volunteers.insertOne({
+			[volunteersCollectionFields.volunteerUsername]: username,
+			[volunteersCollectionFields.firstName]: firstName,
+			[volunteersCollectionFields.lastName]: lastName,
+			[volunteersCollectionFields.birthYear]: birthYear,
+			[volunteersCollectionFields.city]: city,
+			[volunteersCollectionFields.email]: email,
+			[volunteersCollectionFields.gender]: gender,
+			[volunteersCollectionFields.areasOfInterest]: areasOfInterest,
+			[volunteersCollectionFields.languages]: languages,
+			[volunteersCollectionFields.services]: services,
+			[volunteersCollectionFields.preferredDaysAndHours]: preferredDaysAndHours,
+			[volunteersCollectionFields.digitalDevices]: digitalDevices,
+			[volunteersCollectionFields.phoneNumber]: phoneNumber,
+			[volunteersCollectionFields.organizationName]: organizationName,
+			[volunteersCollectionFields.additionalInformation]: additionalInformation			
+		});
 	}
 	catch(error){
 		console.error(error);
@@ -507,35 +524,28 @@ digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber,
 		const db = client.db(config.database.name);
 
 		const elderlies = db.collection(collectionIds.elderlyUsers);
-		const cursor = await elderlies.find({[elderlyCollectionFields.elderlyUsername]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			elderlies.insertOne({
-				[elderlyCollectionFields.elderlyUsername]: userName,
-				[elderlyCollectionFields.firstName]: firstName,
-				[elderlyCollectionFields.lastName]: lastName,
-				[elderlyCollectionFields.birthYear]: birthYear,
-				[elderlyCollectionFields.city]: city,
-				[elderlyCollectionFields.email]: email,
-				[elderlyCollectionFields.gender]: gender,
-				[elderlyCollectionFields.phoneNumber]: phoneNumber,				
-				[elderlyCollectionFields.areasOfInterest]: areasOfInterest,
-				[elderlyCollectionFields.languages]: languages,
-				[elderlyCollectionFields.organizationName]: organizationName,
-				[elderlyCollectionFields.wantedServices]: wantedServices,
-				[elderlyCollectionFields.genderToMeetWith]: genderToMeetWith,
-				[elderlyCollectionFields.preferredDaysAndHours]: preferredDays,
-				[elderlyCollectionFields.digitalDevices]: digitalDevices,
-				[elderlyCollectionFields.additionalInformation]: additionalInformation,
-				[elderlyCollectionFields.contactName]: contactName,
-				[elderlyCollectionFields.kinship]: kinship,
-				[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
-				[elderlyCollectionFields.contactEmail]: contactEmail
-			})
-		}
+		elderlies.insertOne({
+			[elderlyCollectionFields.elderlyUsername]: userName,
+			[elderlyCollectionFields.firstName]: firstName,
+			[elderlyCollectionFields.lastName]: lastName,
+			[elderlyCollectionFields.birthYear]: birthYear,
+			[elderlyCollectionFields.city]: city,
+			[elderlyCollectionFields.email]: email,
+			[elderlyCollectionFields.gender]: gender,
+			[elderlyCollectionFields.phoneNumber]: phoneNumber,				
+			[elderlyCollectionFields.areasOfInterest]: areasOfInterest,
+			[elderlyCollectionFields.languages]: languages,
+			[elderlyCollectionFields.organizationName]: organizationName,
+			[elderlyCollectionFields.wantedServices]: wantedServices,
+			[elderlyCollectionFields.genderToMeetWith]: genderToMeetWith,
+			[elderlyCollectionFields.preferredDaysAndHours]: preferredDays,
+			[elderlyCollectionFields.digitalDevices]: digitalDevices,
+			[elderlyCollectionFields.additionalInformation]: additionalInformation,
+			[elderlyCollectionFields.contactName]: contactName,
+			[elderlyCollectionFields.kinship]: kinship,
+			[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
+			[elderlyCollectionFields.contactEmail]: contactEmail
+		})
 	}
 	catch(error){
 		console.error(error);
@@ -561,7 +571,7 @@ exports.getElderlyUsers = async() => {
 		client.close();
 	}
 }
-exports.getElderlyDetails = async() => {
+exports.getElderlyDetails = async(organizationName) => {
 	const client = new MongoClient(config.url);
 	try{
 		await client.connect()
@@ -578,55 +588,7 @@ exports.getElderlyDetails = async() => {
 	}
 }
 
-/*
 
-	const client = new MongoClient(config.url);
-	try {
-		await client.connect()
-
-		const db = client.db(config.database.name);
-
-		const users = db.collection(collectionIds.users);
-		
-		await users.insertOne({
-			[usersFields.username]: username,
-			[usersFields.password]: password,
-			[usersFields.role]: role,
-			[usersFields.organization]: organization,
-		})
-	}
-	catch(error) {
-		console.error(error);
-	}
-	finally {
-		client.close();  
-	}
-}
-
-exports.updateUserPassword = async (username, password) => {
-
-	const client = new MongoClient(config.url);
-	try {
-		await client.connect()
-
-		const db = client.db(config.database.name);
-
-		const users = db.collection(collectionIds.users);
-		await users.updateOne({[usersFields.username]: username},
-			{
-				'$set': {
-					[usersFields.password]: password
-				}
-			})
-		
-	}
-	catch(error) {
-		console.error(error);
-	}
-	finally {
-		client.close();  
-	}
-}
 
 // Responsible
 
@@ -656,4 +618,4 @@ exports.insertResponsible = async (username, firstName, lastName, email, gender,
 	finally {
 		client.close();  
 	}
-}*/
+}

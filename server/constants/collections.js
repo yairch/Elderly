@@ -27,6 +27,8 @@ exports.usersFields = {
     role: 'Role',
     organization: 'Organization',
 }
+
+
 exports.volunteersCollectionFields = {
     volunteerUsername: 'username',
     firstName: 'firstName',
@@ -35,8 +37,14 @@ exports.volunteersCollectionFields = {
     email: 'email',
     city: 'city',
     gender: 'gender',
+    areasOfInterest: 'areasOfInterest',
+    languages: 'languages',
+    services: 'services',
+    preferredDaysAndHours: 'preferredDaysAndHours',
+    digitalDevices: 'digitalDevices',
     phoneNumber: 'phoneNumber',
-    organizationName: 'organizationName'
+    organizationName: 'organizationName',
+    additionalInformation: 'additionalInformation'
 }
 
 exports.elderlyCollectionFields = {

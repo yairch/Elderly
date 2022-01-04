@@ -2,8 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const DButils = require('../DButils.js');
 const {bcrypt_saltRounds} = require('../DButils');
-const {initWebSocketServer} = require('../notifications');
-const server = require('../server');
+// const {initWebSocketServer} = require('../notifications');
+// const server = require('../server');
 const {sendForgotPasswordEmail} = require('../emailSender');
 const {userFields} = require('../constants/collections')
 

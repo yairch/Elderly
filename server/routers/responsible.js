@@ -19,19 +19,19 @@ router.post('/registerVolunteer', async (req, res, next) => {
 		const digitalDevices = req.body.digitalDevices.map((dict) => dict.value);
 
 		// username exists
-		let users = [];
-		users = await DButils.getUsers();
-		if (users.find((x) => x.username === username))
-			throw {status: 409, message: 'Username taken'};
-
+		const user = await DButils.getUserByUsername(username);
+		if (!user) {
+			res.status(401).send('Username or Password incorrect');
+			return;
+		}
 		// make hash to password
 		let hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.insertToUser(username, hash_password, volunteer, organizationName);
+		await DButils.insertToUser(username, hash_password, 'volunteer', organizationName);
 
 		// insert into DB volunteerUsers
-		await DButils.insertToVol(username, firstName, lastName, birthYear, city, email, gender, phoneNumber);
+		await DButils.insertToVol(username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber,additionalInformation);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
 		//send result
@@ -59,11 +59,11 @@ router.post('/registerElderly', async (req, res, next) => {
 		const genderToMeetWith = req.body.genderToMeetWith.value;
 
 		// username exists
-		let users = [];
-		users = await DButils.getUsers();
-		console.log(users);
-		if (users.find((x) => x.username === username))
-			throw {status: 409, message: 'Username taken'};
+		const user = await DButils.getUserByUsername(username);
+		if (!user) {
+			res.status(401).send('Username or Password incorrect');
+			return;
+		}
 
 		// make hash to password
 		let hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
@@ -72,8 +72,8 @@ router.post('/registerElderly', async (req, res, next) => {
 		await DButils.insertToUser(username, hash_password, 'elderly', organizationName);
 
 		// insert into DB Elderly
-		await DButils.insertToEld( userName, firstName, lastName, birthYear, city, email, gender,
-			phoneNumber, areasOfInterest, languages, organizationName, wantedServices, genderToMeetWith, preferredDays,
+		await DButils.insertToEld( username, firstName, lastName, birthYear, city, email, gender,
+			phoneNumber, areasOfInterest, languages, organizationName, wantedServices, genderToMeetWith, preferredDaysAndHours,
 			digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber, contactEmail);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
@@ -114,11 +114,7 @@ router.post('/assign', async (req, res, next) => {
 				let rankForGender = 0;
 				let rankForInterest = 0;
 				let rankForPreferredDays = 0;
-				const commonServices = elderly.wantedServices.map(service => {
-					if (volunteerServices.includes(service)) {
-						return service;
-					}
-				});
+				const commonServices = elderly.wantedServices.filter(service => volunteerServices.includes(service));
 				//handle preferred days
 				const commonPreferredDays = elderly.preferredDays.filter(day => volunteerDetails.preferredDays.includes(day));
 				if (commonPreferredDays.length > 0) {
@@ -212,11 +208,7 @@ router.get('/meetings-volunteers/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
 		organizationName = organizationName.substring(0, organizationName.length - 1);
-		let volunteerMeetingsInOrganizations = await DButils.execQuery(`SELECT volunteerusers.firstName as volunteerFirstName,
-		 volunteerusers.lastName as volunteerLastName, elderlyusers.firstName as elderlyFirstName,elderlyusers.lastName as elderlyLastName,
-		  meeting, meetingSubject, channelName FROM elderly.meetings JOIN elderly.volunteerusers ON
-		   meetings.volunteeruserName = volunteerusers.userName JOIN elderly.elderlyusers ON
-		    meetings.elderlyuserName = elderlyusers.userName WHERE volunteerusers.organizationName= '${organizationName}'`);
+		let volunteerMeetingsInOrganizations = await DButils.getOrganizationMeetings(organizationName);
 		console.log(volunteerMeetingsInOrganizations);
 		res.send(JSON.parse(JSON.stringify(volunteerMeetingsInOrganizations)));
 	}
