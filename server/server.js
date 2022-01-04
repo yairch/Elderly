@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 // const fs = require('fs');
-const http = require('http');
+// const http = require('http');
 const cors = require('cors');
 const notifications = require('./notifications');
 const app = express();
