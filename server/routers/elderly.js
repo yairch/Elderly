@@ -6,7 +6,7 @@ router.get('/channels/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
 		userName = userName.substring(0, userName.length - 1);
-		let channels = await DButils.execQuery(`SELECT channelName, meeting FROM meetings WHERE elderlyuserName= '${userName}'`);
+		let channels = await DButils.getUserChannels(userName);
 		console.log(channels);
 		res.send(JSON.parse(JSON.stringify(channels)));
 
@@ -19,11 +19,9 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
 		userName = userName.substring(0, userName.length - 1);
-		let meetings = await DButils.execQuery(`SELECT elderlyuserName, meeting, meetingSubject, firstName, lastName
-		 FROM elderly.meetings JOIN elderly.volunteerusers ON meetings.volunteeruserName = volunteerusers.userName
-		  WHERE elderlyuserName= '${userName}'`);
+		let meetings = await DButils.getFullMeetingDetails(userName);
 		console.log(meetings);
-		res.send(JSON.parse(JSON.stringify(meetings)));
+		res.send((meetings));
 
 	} catch (error) {
 		next(error);
