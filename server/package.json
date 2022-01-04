@@ -1,21 +1,27 @@
 {
-  "name": "sever",
+  "name": "server",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/user-event": "^12.6.0",
     "bcrypt": "^5.0.0",
     "bootstrap": "^4.5.3",
     "cors": "^2.8.5",
     "http": "^0.0.1-security",
+    "jquery": "^3.6.0",
+    "mongodb": "^4.2.2",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7",
+    "popper.js": "^1.16.1",
     "tedious": "^9.2.3",
     "web-vitals": "^0.2.4",
     "websocket": "^1.0.34"
   },
-  "scripts": {},
+  "scripts": {
+    "start-server": "npx nodemon server.js"
+  },
   "eslintConfig": {
     "extends": []
   },

@@ -1,4 +1,4 @@
-export const collectionIds = {
+exports.collectionIds = {
     users: 'Users',
     meetings: 'Meetings',
     volunteerUsers: 'Volunteers',
@@ -6,7 +6,7 @@ export const collectionIds = {
     responsibleUsers: 'ResponsibleUsers',
 }
 
-export const meetingsCollectionFields = {
+exports.meetingsCollectionFields = {
     volunteerUsername: 'Volunteer Username',
     elderlyUsername: 'Elderly Username',
     meetingDayAndHour: 'Date',
@@ -14,21 +14,21 @@ export const meetingsCollectionFields = {
     channelName: 'Channel Name'
 }
 
-export const organizationsFields = {
+exports.organizationsFields = {
     name: 'Name',
     englishName: 'English Name',
     type: 'Type',
     phoneNumber: 'Phone Number',
 }
 
-export const usersFields = {
+exports.usersFields = {
     username: 'Username',
     password: 'Password',
     role: 'Role',
     organization: 'Organization',
 }
 
-export const responsiblesFields = {
+exports.responsiblesFields = {
     username: 'Username',
     firstName: 'First Name',
     lastName: 'Last Name',

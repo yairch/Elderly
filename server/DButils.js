@@ -11,6 +11,7 @@ const config = {
 
 exports.createDatabase = async () => {
 	console.log('Tries to create database...')
+	
 	const client = new MongoClient(config.url);
 	try {
 		await client.connect()
