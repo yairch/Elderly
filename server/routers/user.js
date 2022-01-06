@@ -13,13 +13,12 @@ router.post('/login', async (req, res, next) => {
 		const {username, password} = req.body;
 		// check that username exists
 		const user = await DButils.getUserByUsername(username);
-		console.log(usersFields.username);	
 		if (!user || !bcrypt.compareSync(password, user[usersFields.password])) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
 
-		res.status(200).send({user: user, message: 'login succeeded', success: true});
+		res.status(200).send(user);
 	}
 	catch (error) {
 		// next(error);

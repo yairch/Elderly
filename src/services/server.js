@@ -10,9 +10,9 @@ const loginCheck = async (username, password) => {
 			password
 		})
 	});
-	console.log(response);
 	handleError(response);
-	return response;
+
+	return response.json();
 };
 
 const registerNotifications = async (username) => {

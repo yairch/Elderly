@@ -36,24 +36,23 @@ class LoginForm extends React.Component {
 
 	async checkOnSubmit() {
 		try {
-			const result = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
-			const user = await result.json();
+			const user = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
 
-			if (user.Role === 'volunteer') {
-				this.props.history.push('/volunteer', user.Username);
+			if (user[usersFields.role] === 'volunteer') {
+				this.props.history.push('/volunteer', user[usersFields.username]);
 			}
-			else if (user.Role === 'elderly') {
-				Cookies.set(user.Username, user.Role);
+			else if (user[usersFields.role] === 'elderly') {
+				Cookies.set(user.Username, user[usersFields.role]);
 				getCurrentWebSocket();
 				const nearestMeeting = await this.getElderlyNearestMeeting(user.Username);
-				this.props.history.push('/' + user.Role, nearestMeeting);
+				this.props.history.push('/elderly', nearestMeeting);
 			}
 			else {
-				this.props.history.push('/' + user.Role, user.Organization);
+				this.props.history.push('/' + user[usersFields.role], user[usersFields.organization]);
 			}
 
 			Cookies.set(usersFields.username, user[usersFields.username]);
-			Cookies.set("Organization", user.Organization);
+			Cookies.set(usersFields.organization, user[usersFields.organization]);
 		}
 		catch (error) {
 			this.setState({message: error.message});
