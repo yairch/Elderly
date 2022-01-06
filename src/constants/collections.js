@@ -11,7 +11,8 @@ exports.meetingsCollectionFields = {
     elderlyUsername: 'Elderly Username',
     meetingDayAndHour: 'Date',
     meetingSubject: 'Meeting Subject',
-    channelName: 'Channel Name'
+    channelName: 'Channel Name',
+    volunteer: 'volunteer', // after aggregation
 }
 
 exports.organizationsFields = {

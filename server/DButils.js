@@ -207,7 +207,7 @@ exports.getUsers = async () => {
 	}
 }
 
-exports.getUserChannels = async (userName)=> {
+exports.getUserChannels = async (username)=> {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -215,7 +215,7 @@ exports.getUserChannels = async (userName)=> {
 		const db = client.db(config.database.name);
 
 		const meetings = db.collection(collectionIds.meetings);
-		const cursor = await meetings.find({vo:userName});
+		const cursor = await meetings.find({[meetingsCollectionFields.elderlyUsername]: username});
 		const allColl = await cursor.toArray();
 		return allColl;
 	}
@@ -271,7 +271,7 @@ exports.deleteFromMeetings = async(channelName) => {
 	}
 }
 
-exports.getFullMeetingDetails = async (userName)=> {
+exports.getFullMeetingDetails = async (username)=> {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -280,12 +280,13 @@ exports.getFullMeetingDetails = async (userName)=> {
 
 		const meetings = db.collection(collectionIds.meetings);
 		meetings.aggregate([
+			{ $match: { [meetingsCollectionFields.elderlyUsername]: username}},
 			{ $lookup:
 				{
 				  from: collectionIds.volunteerUsers,
 				  localField: collectionIds.meetingsCollectionFields.volunteerUsername,
 				  foreignField: volunteersCollectionFields.volunteerUsername,
-				  as: 'res'
+				  as: 'volunteer'
 				}
 			}
 		]);
