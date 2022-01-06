@@ -5,7 +5,6 @@ import OpeningScreen from '../openingScreen';
 import { filterMeetings } from '../../ClientUtils';
 import { fetchElderlyDetails, getMeetings } from '../../services/server';
 import {usersFields} from '../../constants/collections'
-import {userTypes} from '../../constants/userTypes'
 
 function VolunteerPage(props) {
 	const [volunteerState, setVolunteerState] = useState({meetings: [], isMeetingsClicked: false});
