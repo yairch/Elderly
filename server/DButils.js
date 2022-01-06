@@ -1,4 +1,4 @@
-const {collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
+const {responsiblesFields, collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
 
 const {MongoClient} = require('mongodb');
 
@@ -161,7 +161,30 @@ exports.getUserByUsername = async (username) => {
 		client.close();  
 	}
 }
+exports.updateUserPassword = async (username, password) => {
 
+	const client = new MongoClient(config.url);
+	try {
+		await client.connect()
+
+		const db = client.db(config.database.name);
+
+		const users = db.collection(collectionIds.users);
+		await users.updateOne({[usersFields.username]: username},
+			{
+				'$set': {
+					[usersFields.password]: password
+				}
+			})
+		
+	}
+	catch(error) {
+		console.error(error);
+	}
+	finally {
+		client.close();  
+	}
+}
 exports.getUsers = async () => {
 
 	const client = new MongoClient(config.database.url);
@@ -226,6 +249,7 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		client.close();  
 	}
 }
+
 
 
 //Meetings
@@ -393,7 +417,7 @@ exports.getVoluName = async (volunteerId) => {
 
 		const volunteerUsers = db.collection(collectionIds.volunteerUsers);
 		const cursor = await volunteerUsers.find({[volunteersCollectionFields.volunteerUsername]:volunteerId});
-		let res = cursor.next();
+		const res = cursor.next();
 		return{
 
 			firstName: res.firstName,
@@ -427,7 +451,7 @@ exports.getVolDetails = async (volunteerUsername) =>{
 	}
 }
 
-exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, phoneNumber) => {
+exports.insertToVol = async (username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber, organizationName, additionalInformation) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -443,7 +467,14 @@ exports.insertToVol = async (username, firstName, lastName, birthYear, city, ema
 			[volunteersCollectionFields.city]: city,
 			[volunteersCollectionFields.email]: email,
 			[volunteersCollectionFields.gender]: gender,
-			[volunteersCollectionFields.phoneNumber]: phoneNumber
+			[volunteersCollectionFields.areasOfInterest]: areasOfInterest,
+			[volunteersCollectionFields.languages]: languages,
+			[volunteersCollectionFields.services]: services,
+			[volunteersCollectionFields.preferredDaysAndHours]: preferredDaysAndHours,
+			[volunteersCollectionFields.digitalDevices]: digitalDevices,
+			[volunteersCollectionFields.phoneNumber]: phoneNumber,
+			[volunteersCollectionFields.organizationName]: organizationName,
+			[volunteersCollectionFields.additionalInformation]: additionalInformation			
 		});
 	}
 	catch(error){
@@ -557,55 +588,7 @@ exports.getElderlyDetails = async(organizationName) => {
 	}
 }
 
-/*
 
-	const client = new MongoClient(config.url);
-	try {
-		await client.connect()
-
-		const db = client.db(config.database.name);
-
-		const users = db.collection(collectionIds.users);
-		
-		await users.insertOne({
-			[usersFields.username]: username,
-			[usersFields.password]: password,
-			[usersFields.role]: role,
-			[usersFields.organization]: organization,
-		})
-	}
-	catch(error) {
-		console.error(error);
-	}
-	finally {
-		client.close();  
-	}
-}
-
-exports.updateUserPassword = async (username, password) => {
-
-	const client = new MongoClient(config.url);
-	try {
-		await client.connect()
-
-		const db = client.db(config.database.name);
-
-		const users = db.collection(collectionIds.users);
-		await users.updateOne({[usersFields.username]: username},
-			{
-				'$set': {
-					[usersFields.password]: password
-				}
-			})
-		
-	}
-	catch(error) {
-		console.error(error);
-	}
-	finally {
-		client.close();  
-	}
-}
 
 // Responsible
 
@@ -635,4 +618,4 @@ exports.insertResponsible = async (username, firstName, lastName, email, gender,
 	finally {
 		client.close();  
 	}
-}*/
+}
