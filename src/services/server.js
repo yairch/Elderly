@@ -10,7 +10,7 @@ const loginCheck = async (username, password) => {
 			password
 		})
 	});
-
+	console.log(response);
 	handleError(response);
 	return response;
 };

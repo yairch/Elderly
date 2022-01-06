@@ -36,7 +36,7 @@ const ForgotPasswordPage = () => {
 						<div className="form">
 							<div className="field">
 								<label>
-									תעודת זהות
+									שם משתמש
 									<input
 										ref={userName}
 										minLength={8}

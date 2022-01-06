@@ -3,8 +3,8 @@ import * as Cookies from 'js-cookie';
 import Modal from './modal/Modal';
 import { fetchMeetingsFullDetails, loginCheck } from '../services/server';
 import { getCurrentWebSocket } from '../services/notifacationService';
-import { filterMeetings } from '../ClientUtils';
-
+// import { filterMeetings } from '../server.js';
+import {usersFields} from "../constants/collections"
 class LoginForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -30,7 +30,7 @@ class LoginForm extends React.Component {
 				...dic
 			})
 		);
-		meetings = filterMeetings(meetings);
+		// meetings = filterMeetings(meetings);
 		return meetings.reduce((prev, curr) => (prev.date < curr.date ? prev : curr));
 	}
 
@@ -39,21 +39,21 @@ class LoginForm extends React.Component {
 			const result = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
 			const user = await result.json();
 
-			if (user.user.userRole === 'volunteer') {
-				this.props.history.push('/' + user.user.userRole, user.user.userName);
+			if (user.Role === 'volunteer') {
+				this.props.history.push('/volunteer', user.Username);
 			}
-			else if (user.user.userRole === 'elderly') {
-				Cookies.set('userName', user.user.userName);
+			else if (user.Role === 'elderly') {
+				Cookies.set(user.Username, user.Role);
 				getCurrentWebSocket();
-				const nearestMeeting = await this.getElderlyNearestMeeting(user.user.userName);
-				this.props.history.push('/' + user.user.userRole, nearestMeeting);
+				const nearestMeeting = await this.getElderlyNearestMeeting(user.Username);
+				this.props.history.push('/' + user.Role, nearestMeeting);
 			}
 			else {
-				this.props.history.push('/' + user.user.userRole, user.user.organizationType);
+				this.props.history.push('/' + user.Role, user.Organization);
 			}
 
-			Cookies.set('userName', user.user.userName);
-			Cookies.set('organizationName', user.user.organizationName);
+			Cookies.set(usersFields.username, user[usersFields.username]);
+			Cookies.set("Organization", user.Organization);
 		}
 		catch (error) {
 			this.setState({message: error.message});

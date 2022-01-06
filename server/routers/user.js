@@ -1,12 +1,11 @@
+const {usersFields} = require('../constants/collections');
+const {sendForgotPasswordEmail} = require('../emailSender');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const DButils = require('../DButils.js');
 const {bcrypt_saltRounds} = require('../DButils');
-const {initWebSocketServer} = require('../notifications');
-const server = require('../server');
-const {sendForgotPasswordEmail} = require('../emailSender');
-const {userFields} = require('../constants/collections')
-
+// const {initWebSocketServer} = require('../notifications');
+// const server = require('../server');
 const router = express.Router();
 
 router.post('/login', async (req, res, next) => {
@@ -14,8 +13,8 @@ router.post('/login', async (req, res, next) => {
 		const {username, password} = req.body;
 		// check that username exists
 		const user = await DButils.getUserByUsername(username);
-
-		if (!user || !bcrypt.compareSync(password, user[userFields.password])) {
+		console.log(usersFields.username);	
+		if (!user || !bcrypt.compareSync(password, user[usersFields.password])) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
@@ -43,7 +42,7 @@ router.post('/activate/:username&:password', async (req, res, next) => {
 		console.log(user);
 		// check that username exists
 		// check that the password is correct
-		if (!user || !bcrypt.compareSync(password, user[userFields.password])) {
+		if (!user || !bcrypt.compareSync(password, user[usersFields.password])) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}

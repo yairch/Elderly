@@ -1,4 +1,4 @@
-const { responsiblesFields, collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
+const {collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
 
 const {MongoClient} = require('mongodb');
 
@@ -212,19 +212,12 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		const cursor = await users.find({[usersFields.username]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			users.insertOne({
-				[usersFields.username]: username,
-				[usersFields.password]: hash_password,
-				[usersFields.role]: userRole,
-				[usersFields.organization]: organizationName
-			})
-		}
+		users.insertOne({
+			[usersFields.username]: username,
+			[usersFields.password]: hash_password,
+			[usersFields.role]: userRole,
+			[usersFields.organization]: organizationName
+		});
 	}
 	catch(error){
 		console.error(error);
@@ -400,7 +393,7 @@ exports.getVoluName = async (volunteerId) => {
 
 		const volunteerUsers = db.collection(collectionIds.volunteerUsers);
 		const cursor = await volunteerUsers.find({[volunteersCollectionFields.volunteerUsername]:volunteerId});
-		res = cursor.next();
+		let res = cursor.next();
 		return{
 
 			firstName: res.firstName,
@@ -442,23 +435,16 @@ exports.insertToVol = async (username, firstName, lastName, birthYear, city, ema
 		const db = client.db(config.database.name);
 
 		const volunteers = db.collection(collectionIds.volunteerUsers);
-		const cursor = await volunteers.find({[volunteersCollectionFields.userName]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			volUsers.insertOne({
-				[volunteersCollectionFields.volunteerUsername]: username,
-				[volunteersCollectionFields.firstName]: firstName,
-				[volunteersCollectionFields.lastName]: lastName,
-				[volunteersCollectionFields.birthYear]: birthYear,
-				[volunteersCollectionFields.city]: city,
-				[volunteersCollectionFields.email]: email,
-				[volunteersCollectionFields.gender]: gender,
-				[volunteersCollectionFields.phoneNumber]: phoneNumber
-			})
-		}
+		volunteers.insertOne({
+			[volunteersCollectionFields.volunteerUsername]: username,
+			[volunteersCollectionFields.firstName]: firstName,
+			[volunteersCollectionFields.lastName]: lastName,
+			[volunteersCollectionFields.birthYear]: birthYear,
+			[volunteersCollectionFields.city]: city,
+			[volunteersCollectionFields.email]: email,
+			[volunteersCollectionFields.gender]: gender,
+			[volunteersCollectionFields.phoneNumber]: phoneNumber
+		});
 	}
 	catch(error){
 		console.error(error);
@@ -507,35 +493,28 @@ digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber,
 		const db = client.db(config.database.name);
 
 		const elderlies = db.collection(collectionIds.elderlyUsers);
-		const cursor = await elderlies.find({[elderlyCollectionFields.elderlyUsername]:username});
-		if (cursor.hasNext()){
-			res.status(409).send('Username taken');
-			return;
-		}
-		else{
-			elderlies.insertOne({
-				[elderlyCollectionFields.elderlyUsername]: userName,
-				[elderlyCollectionFields.firstName]: firstName,
-				[elderlyCollectionFields.lastName]: lastName,
-				[elderlyCollectionFields.birthYear]: birthYear,
-				[elderlyCollectionFields.city]: city,
-				[elderlyCollectionFields.email]: email,
-				[elderlyCollectionFields.gender]: gender,
-				[elderlyCollectionFields.phoneNumber]: phoneNumber,				
-				[elderlyCollectionFields.areasOfInterest]: areasOfInterest,
-				[elderlyCollectionFields.languages]: languages,
-				[elderlyCollectionFields.organizationName]: organizationName,
-				[elderlyCollectionFields.wantedServices]: wantedServices,
-				[elderlyCollectionFields.genderToMeetWith]: genderToMeetWith,
-				[elderlyCollectionFields.preferredDaysAndHours]: preferredDays,
-				[elderlyCollectionFields.digitalDevices]: digitalDevices,
-				[elderlyCollectionFields.additionalInformation]: additionalInformation,
-				[elderlyCollectionFields.contactName]: contactName,
-				[elderlyCollectionFields.kinship]: kinship,
-				[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
-				[elderlyCollectionFields.contactEmail]: contactEmail
-			})
-		}
+		elderlies.insertOne({
+			[elderlyCollectionFields.elderlyUsername]: userName,
+			[elderlyCollectionFields.firstName]: firstName,
+			[elderlyCollectionFields.lastName]: lastName,
+			[elderlyCollectionFields.birthYear]: birthYear,
+			[elderlyCollectionFields.city]: city,
+			[elderlyCollectionFields.email]: email,
+			[elderlyCollectionFields.gender]: gender,
+			[elderlyCollectionFields.phoneNumber]: phoneNumber,				
+			[elderlyCollectionFields.areasOfInterest]: areasOfInterest,
+			[elderlyCollectionFields.languages]: languages,
+			[elderlyCollectionFields.organizationName]: organizationName,
+			[elderlyCollectionFields.wantedServices]: wantedServices,
+			[elderlyCollectionFields.genderToMeetWith]: genderToMeetWith,
+			[elderlyCollectionFields.preferredDaysAndHours]: preferredDays,
+			[elderlyCollectionFields.digitalDevices]: digitalDevices,
+			[elderlyCollectionFields.additionalInformation]: additionalInformation,
+			[elderlyCollectionFields.contactName]: contactName,
+			[elderlyCollectionFields.kinship]: kinship,
+			[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
+			[elderlyCollectionFields.contactEmail]: contactEmail
+		});
 	}
 	catch(error){
 		console.error(error);
@@ -561,7 +540,7 @@ exports.getElderlyUsers = async() => {
 		client.close();
 	}
 }
-exports.getElderlyDetails = async() => {
+exports.getElderlyDetails = async(organizationName) => {
 	const client = new MongoClient(config.url);
 	try{
 		await client.connect()
