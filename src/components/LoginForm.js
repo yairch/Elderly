@@ -4,7 +4,9 @@ import Modal from './modal/Modal';
 import { fetchMeetingsFullDetails, loginCheck } from '../services/server';
 import { getCurrentWebSocket } from '../services/notifacationService';
 // import { filterMeetings } from '../server.js';
-import {usersFields} from "../constants/collections"
+import {meetingsCollectionFields, usersFields} from "../constants/collections";
+import {userTypes} from '../constants/userTypes';
+
 class LoginForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,15 +25,9 @@ class LoginForm extends React.Component {
 	}
 
 	async getElderlyNearestMeeting(userName) {
-		const response = await fetchMeetingsFullDetails(userName, 'קשישים');
-		let meetings = await response.json();
-		meetings = meetings.map((dic) => ({
-				meetingDate: dic.meeting,
-				...dic
-			})
-		);
+		const meetings = await fetchMeetingsFullDetails(userName, userTypes.elderly);
 		// meetings = filterMeetings(meetings);
-		return meetings.reduce((prev, curr) => (prev.date < curr.date ? prev : curr));
+		return meetings.reduce((prev, curr) => (prev[meetingsCollectionFields.meetingDayAndHour] < curr[meetingsCollectionFields.meetingDayAndHour] ? prev : curr));
 	}
 
 	async checkOnSubmit() {

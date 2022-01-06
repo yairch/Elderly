@@ -1,5 +1,6 @@
 import { serverURL } from '../ClientUtils';
 import { handleError } from './errorHandler';
+import { userTypes } from '../constants/userTypes';
 
 const loginCheck = async (username, password) => {
 	const response = await fetch(serverURL + `/user/login`, {
@@ -175,18 +176,18 @@ const getMeetings = async (volunteerUserName) => {
 	return response.json();
 };
 
-const fetchMeetingsFullDetails = async (userName, usersType) => {
-	const requestURL = usersType === 'קשישים'
-		? '/elderly/meetings-full-details/'
-		: '/volunteer/meetings-full-details/';
+const fetchMeetingsFullDetails = async (username, usersType) => {
+	const requestURL = 
+	(usersType === userTypes.elderly ? '/elderly' : '/volunteer')
+	 + '/meetings-full-details';
 
-	const response = await fetch(serverURL + requestURL + new URLSearchParams(userName),
+	const response = await fetch(`${serverURL + requestURL}/:${username}`,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
 const fetchChannels = async (elderlyUserName) => {
