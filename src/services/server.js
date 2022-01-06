@@ -166,13 +166,13 @@ const fetchElderlyOrganizationMeetings = async (organizationName) => {
 };
 
 const getMeetings = async (volunteerUserName) => {
-	const response = await fetch(serverURL + `/volunteer/meetings/` + new URLSearchParams(volunteerUserName),
+	const response = await fetch(`${serverURL}/volunteer/meetings/:${volunteerUserName}`,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
 const fetchMeetingsFullDetails = async (userName, usersType) => {
@@ -210,7 +210,7 @@ const fetchElderlyDetails = async (organizationName) => {
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
 const deleteMeetingFromDB = async (channelName) => {

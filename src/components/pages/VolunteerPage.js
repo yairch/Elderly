@@ -12,13 +12,14 @@ function VolunteerPage(props) {
 
 	async function getMeetingsNames() {
 		const response = await getMeetings(Cookies.get(usersFields.username));
+		console.log("get Meeting name ");
 		console.log(response);
-		return await response.json();
+		return response;
 	}
 
 	async function getElderlyDetails() {
 		const response = await fetchElderlyDetails();
-		return await response.json();
+		return await response;
 	}
 
 	async function onClick() {

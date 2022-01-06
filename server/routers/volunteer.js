@@ -5,9 +5,8 @@ const {notifyElderly} = require('../notifications');
 
 router.get('/meetings/:userName', async (req, res, next) => {
 	try {
-		let {userName} = req.params;
-		userName = userName.substring(0, userName.length - 1);
-		let meetingsPerElderly = await DButils.volunteeruserName(userName);
+		const {userName} = req.params;
+		const meetingsPerElderly = await DButils.getVoluMeetings(userName);
 		console.log(meetingsPerElderly);
 		res.send(meetingsPerElderly);
 
