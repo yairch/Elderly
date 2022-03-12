@@ -18,7 +18,7 @@ router.get('/channels/:userName', async (req, res, next) => {
 router.get('/meetings-full-details/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
-		userName = userName.substring(0, userName.length - 1);
+		userName = userName.substring(1, userName.length);
 		let meetings = await DButils.getFullMeetingDetails(userName);
 		console.log(meetings);
 		res.send((meetings));

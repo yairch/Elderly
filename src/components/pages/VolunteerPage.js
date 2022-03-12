@@ -17,7 +17,7 @@ function VolunteerPage(props) {
 	}
 
 	async function getElderlyDetails() {
-		const response = await fetchElderlyDetails();
+		const response = await fetchElderlyDetails(Cookies.get(usersFields.username));
 		return await response;
 	}
 

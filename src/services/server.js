@@ -58,10 +58,12 @@ const updatePassword = async (username, newPassword) => {
 	});
 };
 
-const fetchOrganizationsNames = async () =>
-	await fetch(serverURL + `/admin/organizationNames`, {
+const fetchOrganizationsNames = async () =>{
+	const res = await fetch(serverURL + `/admin/organizationNames`, {
 		method: 'get'
 	});
+	return res.json()
+}
 
 const fetchElderlyMatches = async (user) => {
 	const response = await fetch(serverURL + `/responsible/assign`,
@@ -157,7 +159,7 @@ const fetchVolunteerOrganizationMeetings = async (organizationName) => {
 };
 
 const fetchElderlyOrganizationMeetings = async (organizationName) => {
-	const response = await fetch(serverURL + `/responsible/meetings-elderly/` + new URLSearchParams(organizationName),
+	const response = await fetch(`${serverURL}/responsible/meetings-elderly/${organizationName}`,
 		{
 			method: 'get'
 		});
@@ -205,7 +207,7 @@ const fetchElderlyDetails = async (organizationName) => {
 		organizationName = 'NONE';
 	}
 
-	const response = await fetch(serverURL + `/responsible/elderlyDetails/` + new URLSearchParams(organizationName),
+	const response = await fetch(`${serverURL}/volunteer/meetings/:${organizationName}`,
 		{
 			method: 'get'
 		});

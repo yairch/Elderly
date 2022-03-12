@@ -4,6 +4,7 @@ exports.collectionIds = {
     volunteerUsers: 'Volunteers',
     elderlyUsers: 'Elderlies',
     responsibleUsers: 'ResponsibleUsers',
+    organizations: "Organizations"
 }
 
 exports.meetingsCollectionFields = {

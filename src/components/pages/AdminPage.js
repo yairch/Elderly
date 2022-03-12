@@ -11,7 +11,7 @@ function AdminPage(props) {
 
 	async function getOrganizationsNames() {
 		const response = await fetchOrganizationsNames();
-		return await response.json();
+		return await response;
 	}
 
 	async function getVolunteers() {
@@ -36,6 +36,7 @@ function AdminPage(props) {
 
 	async function onClick() {
 		let organizations = await getOrganizationsNames();
+		console.log(organizations)
 		organizations = organizations.map((dic) => {
 			return {value: dic.organizationName, label: dic.organizationName};
 		});

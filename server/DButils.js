@@ -125,7 +125,7 @@ exports.getAllOrganizations = async () => {
 
 		const db = client.db(config.database.name);
 
-		const organizations = db.collection(collectionIds.organizations);
+		const organizations = db.collection(collectionIds.organizations); // Error here .organizations is undefine
 		const cursor = await organizations.find();
 		const allOrganizations = await cursor.toArray();
 		
@@ -235,12 +235,13 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		users.insertOne({
+		let newUser = {
 			[usersFields.username]: username,
 			[usersFields.password]: hash_password,
 			[usersFields.role]: userRole,
-			[usersFields.organization]: organizationName
-		});
+			[usersFields.organization]: "organizationName"
+		}
+		await users.insertOne(newUser);
 	}
 	catch(error){
 		console.error(error);
@@ -284,13 +285,13 @@ exports.getFullMeetingDetails = async (username)=> {
 			{ $lookup:
 				{
 				  from: collectionIds.volunteerUsers,
-				  localField: collectionIds.meetingsCollectionFields.volunteerUsername,
+				  localField: meetingsCollectionFields.volunteerUsername,
 				  foreignField: volunteersCollectionFields.volunteerUsername,
 				  as: 'volunteer'
 				}
 			}
 		]);
-		return meetings.toArray();
+		return meetings;
 	}
 	catch(error){
 		console.error(error);
@@ -595,7 +596,7 @@ exports.getElderlyDetails = async(organizationName) => {
 
 exports.insertResponsible = async (username, firstName, lastName, email, gender, organization, responsibleType) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 

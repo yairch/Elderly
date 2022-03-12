@@ -8,7 +8,9 @@ const router = express.Router();
 // register organization
 router.post('/registerOrganization', async (req, res, next) => {
 	try {
-		const {name, englishName, phoneNumber} = req.body;
+		const name = req.body.organizationName
+		const englishName = req.body.organizationEnglishName
+		const phoneNumber = req.body.phoneNumber
 		const type = req.body.organizationType.value;
 
 		console.log('organization');
@@ -51,7 +53,7 @@ router.post('/registerResponsible', async (req, res, next) => {
 		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.insertUser(username, hash_password, 'responsible', organizationName);
+		await DButils.insertToUser(username, hash_password, 'responsible', organizationName);
 
 		// insert into DB responsibleUsers
 		await DButils.insertResponsible(username, firstName, lastName, email, gender, organizationName, responsibleType);
