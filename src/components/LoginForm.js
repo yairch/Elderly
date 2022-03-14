@@ -3,7 +3,9 @@ import * as Cookies from 'js-cookie';
 import Modal from './modal/Modal';
 import { fetchMeetingsFullDetails, loginCheck } from '../services/server';
 import { getCurrentWebSocket } from '../services/notifacationService';
-import { filterMeetings } from '../ClientUtils';
+// import { filterMeetings } from '../server.js';
+import {meetingsCollectionFields, usersFields} from "../constants/collections";
+import {userTypes} from '../constants/userTypes';
 
 class LoginForm extends React.Component {
 	constructor(props) {
@@ -23,37 +25,30 @@ class LoginForm extends React.Component {
 	}
 
 	async getElderlyNearestMeeting(userName) {
-		const response = await fetchMeetingsFullDetails(userName, 'קשישים');
-		let meetings = await response.json();
-		meetings = meetings.map((dic) => ({
-				meetingDate: dic.meeting,
-				...dic
-			})
-		);
-		meetings = filterMeetings(meetings);
-		return meetings.reduce((prev, curr) => (prev.date < curr.date ? prev : curr));
+		const meetings = await fetchMeetingsFullDetails(userName, userTypes.elderly);
+		// meetings = filterMeetings(meetings);
+		return meetings.reduce((prev, curr) => (prev[meetingsCollectionFields.meetingDayAndHour] < curr[meetingsCollectionFields.meetingDayAndHour] ? prev : curr));
 	}
 
 	async checkOnSubmit() {
 		try {
-			const result = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
-			const user = await result.json();
+			const user = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
 
-			if (user.user.userRole === 'volunteer') {
-				this.props.history.push('/' + user.user.userRole, user.user.userName);
+			if (user[usersFields.role] === 'volunteer') {
+				this.props.history.push('/volunteer', user[usersFields.username]);
 			}
-			else if (user.user.userRole === 'elderly') {
-				Cookies.set('userName', user.user.userName);
+			else if (user[usersFields.role] === 'elderly') {
+				Cookies.set(user.Username, user[usersFields.role]);
 				getCurrentWebSocket();
-				const nearestMeeting = await this.getElderlyNearestMeeting(user.user.userName);
-				this.props.history.push('/' + user.user.userRole, nearestMeeting);
+				const nearestMeeting = await this.getElderlyNearestMeeting(user.Username);
+				this.props.history.push('/elderly', nearestMeeting);
 			}
 			else {
-				this.props.history.push('/' + user.user.userRole, user.user.organizationType);
+				this.props.history.push('/' + user[usersFields.role], user[usersFields.organization]);
 			}
 
-			Cookies.set('userName', user.user.userName);
-			Cookies.set('organizationName', user.user.organizationName);
+			Cookies.set(usersFields.username, user[usersFields.username]);
+			Cookies.set(usersFields.organization, user[usersFields.organization]);
 		}
 		catch (error) {
 			this.setState({message: error.message});

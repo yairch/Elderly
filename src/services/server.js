@@ -1,5 +1,6 @@
 import { serverURL } from '../ClientUtils';
 import { handleError } from './errorHandler';
+import { userTypes } from '../constants/userTypes';
 
 const loginCheck = async (username, password) => {
 	const response = await fetch(serverURL + `/user/login`, {
@@ -10,9 +11,9 @@ const loginCheck = async (username, password) => {
 			password
 		})
 	});
-
 	handleError(response);
-	return response;
+
+	return response.json();
 };
 
 const registerNotifications = async (username) => {
@@ -57,10 +58,12 @@ const updatePassword = async (username, newPassword) => {
 	});
 };
 
-const fetchOrganizationsNames = async () =>
-	await fetch(serverURL + `/admin/organizationNames`, {
+const fetchOrganizationsNames = async () =>{
+	const res = await fetch(serverURL + `/admin/organizationNames`, {
 		method: 'get'
 	});
+	return res.json()
+}
 
 const fetchElderlyMatches = async (user) => {
 	const response = await fetch(serverURL + `/responsible/assign`,
@@ -156,7 +159,7 @@ const fetchVolunteerOrganizationMeetings = async (organizationName) => {
 };
 
 const fetchElderlyOrganizationMeetings = async (organizationName) => {
-	const response = await fetch(serverURL + `/responsible/meetings-elderly/` + new URLSearchParams(organizationName),
+	const response = await fetch(`${serverURL}/responsible/meetings-elderly/${organizationName}`,
 		{
 			method: 'get'
 		});
@@ -166,27 +169,27 @@ const fetchElderlyOrganizationMeetings = async (organizationName) => {
 };
 
 const getMeetings = async (volunteerUserName) => {
-	const response = await fetch(serverURL + `/volunteer/meetings/` + new URLSearchParams(volunteerUserName),
+	const response = await fetch(`${serverURL}/volunteer/meetings/:${volunteerUserName}`,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
-const fetchMeetingsFullDetails = async (userName, usersType) => {
-	const requestURL = usersType === 'קשישים'
-		? '/elderly/meetings-full-details/'
-		: '/volunteer/meetings-full-details/';
+const fetchMeetingsFullDetails = async (username, usersType) => {
+	const requestURL = 
+	(usersType === userTypes.elderly ? '/elderly' : '/volunteer')
+	 + '/meetings-full-details';
 
-	const response = await fetch(serverURL + requestURL + new URLSearchParams(userName),
+	const response = await fetch(`${serverURL + requestURL}/:${username}`,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
 const fetchChannels = async (elderlyUserName) => {
@@ -204,13 +207,13 @@ const fetchElderlyDetails = async (organizationName) => {
 		organizationName = 'NONE';
 	}
 
-	const response = await fetch(serverURL + `/responsible/elderlyDetails/` + new URLSearchParams(organizationName),
+	const response = await fetch(`${serverURL}/volunteer/meetings/:${organizationName}`,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	return response.json();
 };
 
 const deleteMeetingFromDB = async (channelName) => {

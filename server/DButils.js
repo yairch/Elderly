@@ -1,4 +1,4 @@
-const { responsiblesFields, collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
+const {responsiblesFields, collectionIds, meetingsCollectionFields, volunteersCollectionFields, elderlyCollectionFields, usersFields, organizationsFields } = require("./constants/collections");
 
 const {MongoClient} = require('mongodb');
 
@@ -125,7 +125,7 @@ exports.getAllOrganizations = async () => {
 
 		const db = client.db(config.database.name);
 
-		const organizations = db.collection(collectionIds.organizations);
+		const organizations = db.collection(collectionIds.organizations); // Error here .organizations is undefine
 		const cursor = await organizations.find();
 		const allOrganizations = await cursor.toArray();
 		
@@ -207,7 +207,7 @@ exports.getUsers = async () => {
 	}
 }
 
-exports.getUserChannels = async (userName)=> {
+exports.getUserChannels = async (username)=> {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -215,7 +215,7 @@ exports.getUserChannels = async (userName)=> {
 		const db = client.db(config.database.name);
 
 		const meetings = db.collection(collectionIds.meetings);
-		const cursor = await meetings.find({vo:userName});
+		const cursor = await meetings.find({[meetingsCollectionFields.elderlyUsername]: username});
 		const allColl = await cursor.toArray();
 		return allColl;
 	}
@@ -235,12 +235,13 @@ exports.insertToUser = async (username, hash_password, userRole, organizationNam
 		const db = client.db(config.database.name);
 
 		const users = db.collection(collectionIds.users);
-		users.insertOne({
+		let newUser = {
 			[usersFields.username]: username,
 			[usersFields.password]: hash_password,
 			[usersFields.role]: userRole,
-			[usersFields.organization]: organizationName
-		})
+			[usersFields.organization]: "organizationName"
+		}
+		await users.insertOne(newUser);
 	}
 	catch(error){
 		console.error(error);
@@ -271,7 +272,7 @@ exports.deleteFromMeetings = async(channelName) => {
 	}
 }
 
-exports.getFullMeetingDetails = async (userName)=> {
+exports.getFullMeetingDetails = async (username)=> {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -280,16 +281,17 @@ exports.getFullMeetingDetails = async (userName)=> {
 
 		const meetings = db.collection(collectionIds.meetings);
 		meetings.aggregate([
+			{ $match: { [meetingsCollectionFields.elderlyUsername]: username}},
 			{ $lookup:
 				{
 				  from: collectionIds.volunteerUsers,
-				  localField: collectionIds.meetingsCollectionFields.volunteerUsername,
+				  localField: meetingsCollectionFields.volunteerUsername,
 				  foreignField: volunteersCollectionFields.volunteerUsername,
-				  as: 'res'
+				  as: 'volunteer'
 				}
 			}
 		]);
-		return meetings.toArray();
+		return meetings;
 	}
 	catch(error){
 		console.error(error);
@@ -545,7 +547,7 @@ digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber,
 			[elderlyCollectionFields.kinship]: kinship,
 			[elderlyCollectionFields.contactPhoneNumber]: contactPhoneNumber,
 			[elderlyCollectionFields.contactEmail]: contactEmail
-		})
+		});
 	}
 	catch(error){
 		console.error(error);
@@ -594,7 +596,7 @@ exports.getElderlyDetails = async(organizationName) => {
 
 exports.insertResponsible = async (username, firstName, lastName, email, gender, organization, responsibleType) => {
 
-	const client = new MongoClient(config.url);
+	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
 

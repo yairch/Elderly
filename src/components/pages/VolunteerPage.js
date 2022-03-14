@@ -4,18 +4,21 @@ import Sidebar from '../sidebar/Sidebar';
 import OpeningScreen from '../openingScreen';
 import { filterMeetings } from '../../ClientUtils';
 import { fetchElderlyDetails, getMeetings } from '../../services/server';
+import {usersFields} from '../../constants/collections'
 
 function VolunteerPage(props) {
 	const [volunteerState, setVolunteerState] = useState({meetings: [], isMeetingsClicked: false});
 
 	async function getMeetingsNames() {
-		const response = await getMeetings(Cookies.get('userName'));
-		return await response.json();
+		const response = await getMeetings(Cookies.get(usersFields.username));
+		console.log("get Meeting name ");
+		console.log(response);
+		return response;
 	}
 
 	async function getElderlyDetails() {
-		const response = await fetchElderlyDetails();
-		return await response.json();
+		const response = await fetchElderlyDetails(Cookies.get(usersFields.username));
+		return await response;
 	}
 
 	async function onClick() {
