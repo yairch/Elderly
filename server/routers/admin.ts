@@ -4,6 +4,7 @@ const DButils = require('../DButils.js');
 const {bcrypt_saltRounds} = require('../DButils');
 const {sendConfirmationEmail} = require('../emailSender');
 const router = express.Router();
+const {Organization} = require("../types/organization");
 
 // register organization
 router.post('/registerOrganization', async (req, res, next) => {
@@ -71,7 +72,7 @@ router.post('/registerResponsible', async (req, res, next) => {
 router.get('/organizationNames', async (req, res, next) => {
 	try {
 		const organizations = (await DButils.getAllOrganizations())
-			.map(org => ({
+			.map((org: Organization) => ({
 				name: org.name,
 				englishName: org.englishName,
 			}))
