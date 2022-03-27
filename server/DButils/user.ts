@@ -15,7 +15,7 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
 
 		const db = client.db(config.database.name);
 
-		const users: Collection<User> = db.collection(collectionIds.users);
+		const users = db.collection<User>(collectionIds.users);
 		const user = await users.findOne({username});
 		
 		return user;
@@ -35,7 +35,7 @@ export const updateUserPassword = async (username: string, password: string) => 
 
 		const db = client.db(config.database.name);
 
-		const users: Collection<User> = db.collection(collectionIds.users);
+		const users = db.collection<User>(collectionIds.users);
 		await users.updateOne({username},
 			{
 				'$set': {
@@ -59,7 +59,7 @@ export const getAllUsers = async (): Promise<User[]> => {
 
 		const db = client.db(config.database.name);
 
-		const users: Collection<User> = db.collection(collectionIds.users);
+		const users = db.collection<User>(collectionIds.users);
 		const cursor = await users.find();
 		const allUsers = await cursor.toArray();
 		
@@ -80,7 +80,7 @@ export const getElderlyChannels = async (username: string): Promise<Pick<Meeting
 
 		const db = client.db(config.database.name);
 
-		const meetings: Collection<Meeting> = db.collection(collectionIds.meetings);
+		const meetings = db.collection<Meeting>(collectionIds.meetings);
 		const findProjection: FindOptions<Meeting> = {projection: {channelName: Projection.Include}}
 		const cursor = await meetings.find({elderlyUsername: username}, findProjection);
 		const allChannels: Pick<Meeting, 'channelName'>[] = await cursor.toArray();
@@ -101,7 +101,7 @@ export const insertUser = async (username: string, hash_password: string, role: 
 
 		const db = client.db(config.database.name);
 
-		const users: Collection<User> = db.collection(collectionIds.users);
+		const users = db.collection<User>(collectionIds.users);
 		const newUser: User = {
 			username,
 			password: hash_password,

@@ -11,7 +11,7 @@ export const getOrganizationByName = async (name: String): Promise<Organization 
 
 		const db = client.db(config.database.name);
 
-		const organizations: Collection<Organization> = db.collection(collectionIds.organizations);
+		const organizations = db.collection<Organization>(collectionIds.organizations);
 		const organization = await organizations.findOne({name});
 		return organization;
 	}
@@ -31,7 +31,7 @@ export const getOrganizationByEnglishName = async (englishName: string): Promise
 
 		const db = client.db(config.database.name);
 
-		const organizations: Collection<Organization> = db.collection(collectionIds.organizations);
+		const organizations = db.collection<Organization>(collectionIds.organizations);
 		const organization = await organizations.findOne({englishName});
 		return organization;
 	}
@@ -51,7 +51,7 @@ export const insertOrganization = async (name: string, englishName: string, type
 
 		const db = client.db(config.database.name);
 
-		const organizations: Collection<Organization> = db.collection(collectionIds.organizations);
+		const organizations = db.collection<Organization>(collectionIds.organizations);
 		await organizations.insertOne({
 			name,
 			englishName,
@@ -74,7 +74,7 @@ export const getAllOrganizations = async (): Promise<Organization[]> => {
 
 		const db = client.db(config.database.name);
 
-		const organizations: Collection<Organization> = db.collection(collectionIds.organizations);
+		const organizations = db.collection<Organization>(collectionIds.organizations);
 		const cursor = await organizations.find();
 		const allOrganizations = await cursor.toArray();
 		
