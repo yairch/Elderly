@@ -1,37 +1,28 @@
-exports.collectionIds = {
-    users: 'Users',
-    meetings: 'Meetings',
-    volunteerUsers: 'Volunteers',
-    elderlyUsers: 'Elderlies',
-    responsibleUsers: 'ResponsibleUsers',
-    organizations: "Organizations"
+export const meetingFields = {
+    volunteerUsername: 'volunteerUsername',
+    elderlyUsername: 'elderlyUsername',
+    date: 'date',
+    meetingSubject: 'meetingSubject',
+    channelName: 'channelName'
 }
 
-exports.meetingsCollectionFields = {
-    volunteerUsername: 'Volunteer Username',
-    elderlyUsername: 'Elderly Username',
-    meetingDayAndHour: 'Date',
-    meetingSubject: 'Meeting Subject',
-    channelName: 'Channel Name'
+export const organizationFields = {
+    name: 'name',
+    englishName: 'englishName',
+    type: 'type',
+    phoneNumber: 'phoneNumber',
 }
 
-exports.organizationsFields = {
-    name: 'Name',
-    englishName: 'English Name',
-    type: 'Type',
-    phoneNumber: 'Phone Number',
-}
-
-exports.usersFields = {
-    username: 'Username',
-    password: 'Password',
-    role: 'Role',
-    organization: 'Organization'
+export const userFields = {
+    username: 'username',
+    password: 'password',
+    role: 'role',
+    organization: 'organization'
 }
 
 
-exports.volunteersCollectionFields = {
-    volunteerUsername: 'username',
+export const volunteerFields = {
+    username: 'username',
     firstName: 'firstName',
     lastName: 'lastName',
     birthYear: 'birthYear',
@@ -48,8 +39,8 @@ exports.volunteersCollectionFields = {
     additionalInformation: 'additionalInformation'
 }
 
-exports.elderlyCollectionFields = {
-    elderlyUsername: 'elderlyUsername',
+export const elderlyFields = {
+    username: 'username',
     firstName: 'firstName',
     lastName: 'lastName',
     birthYear: 'birthYear',
@@ -71,14 +62,14 @@ exports.elderlyCollectionFields = {
     contactEmail: 'contactEmail'
 }
 
-exports.responsiblesFields = {
-    username: 'Username',
-    firstName: 'First Name',
-    lastName: 'Last Name',
-    email: 'Email',
-    gender: 'Gender',
-    organization: 'Organization',
-    responsibleType: 'Responsible Type',
+export const responsibleFields = {
+    username: 'username',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email',
+    gender: 'gender',
+    organization: 'organization',
+    responsibleType: 'responsibleType',
 }
 
 

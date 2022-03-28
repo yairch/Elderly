@@ -1,10 +1,8 @@
-type OrganizationType = 'elderly' | 'volunteer' | 'both';
+export type OrganizationType = 'elderly' | 'volunteer' | 'both';
 
-interface Organization {
-    name: String;
-    englishName: String;
+export interface Organization {
+    name: string;
+    englishName: string;
     type: OrganizationType;
-    phoneNumber: String;
+    phoneNumber: string;
 };
-
-module.exports = module
