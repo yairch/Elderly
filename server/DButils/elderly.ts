@@ -3,8 +3,18 @@ import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 import { Elderly } from "../types/elderly";
 
+// commonjs - JS
+// exports.f = ...
+// module.exports = router
+// const {f} = require('./x')
+// //dustructing
 
-exports.insertToEld = async (username:string, firstName:string, lastName:string, birthYear:number, city:string, email:string, gender:Gender,
+//es6 - TS
+// export default router
+// import* as  router from './/'
+
+
+export const insertToEld = async (username:string, firstName:string, lastName:string, birthYear:number, city:string, email:string, gender:Gender,
     phoneNumber:string, areasOfInterest:string, languages:string, organizationName:string, wantedServices:string, genderToMeetWith:string, 
     preferredDaysAndHours:string, digitalDevices:string, additionalInformation:string, contactName:string, kinship:string, contactPhoneNumber:string, contactEmail:string) => {
         const client = new MongoClient(config.database.url);
@@ -45,7 +55,7 @@ exports.insertToEld = async (username:string, firstName:string, lastName:string,
         }
     }
     
-    exports.getElderlyUsers = async() => {
+    export const getElderlyUsers = async() => {
         const client = new MongoClient(config.database.url);
         try{
             await client.connect()
@@ -64,7 +74,7 @@ exports.insertToEld = async (username:string, firstName:string, lastName:string,
         }
     }
 
-    exports.getElderlyDetails = async(organizationName:string) => {
+    export const getElderlyDetails = async(organizationName:string) => {
         const client = new MongoClient(config.database.url);
         try{
             await client.connect()

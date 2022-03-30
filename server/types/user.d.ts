@@ -1,4 +1,10 @@
-export type UserRole = 'admin' | ' elderly' | ' responsible' | 'volunteer';
+
+export const enum UserRole {
+    Admin = 'admin',
+    Elderly = 'elderly',
+    Responsible = 'responsible',
+    Volunteer = 'volunteer',
+}
 
 export interface User {
     username: string;
@@ -6,3 +12,4 @@ export interface User {
     role: UserRole;
     organization: string;
 };
+

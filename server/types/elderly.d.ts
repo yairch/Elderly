@@ -1,7 +1,7 @@
 import {Gender} from './gender'
 
 // FIXME: what types should each field be?
-interface Elderly {
+export interface Elderly {
     username: string;
     firstName: string;
     lastName: string;
@@ -23,8 +23,6 @@ interface Elderly {
     contactPhoneNumber: string;
     contactEmail: string; //delete
 };
-
-module.exports = module
 
 
 

@@ -1,7 +1,12 @@
 import {Gender} from './gender'
-type ResponsibleType = 'elderly' | 'volunteer' | 'both';
 
-interface Responsible {
+export const enum ResponsibleType {
+    Elderly = 'elderly',
+    Volunteer = 'volunteer',
+    Both = 'both'
+}
+
+export interface Responsible {
     username: string; //Number?
     firstName: string;
     lastName: string;
@@ -11,4 +16,3 @@ interface Responsible {
     responsibleType: ResponsibleType;
 };
 
-module.exports = module

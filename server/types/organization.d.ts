@@ -1,4 +1,8 @@
-export type OrganizationType = 'elderly' | 'volunteer' | 'both';
+export const enum OrganizationType {
+    Elderly = 'elderly',
+    Volunteer = 'volunteer',
+    Both = 'both'
+}
 
 export interface Organization {
     name: string;

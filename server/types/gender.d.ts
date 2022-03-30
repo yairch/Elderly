@@ -1,10 +1,10 @@
-enum Gender {
+export const enum Gender {
     Male = 'male',
     Female = 'female',
     Other = 'other'
 }
 
-module.exports = module
+// export default Gender;
 
 // noya_topaz_karavani - snake case
 // noya-topaz-karavani - kebab case

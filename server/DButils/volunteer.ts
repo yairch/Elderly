@@ -5,7 +5,7 @@ import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 
-exports.getVoluName = async (username:string) => {
+export const getVoluName = async (username:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -14,11 +14,10 @@ exports.getVoluName = async (username:string) => {
 
 		const volunteerUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
 		const cursor = await volunteerUsers.find({volunteerUsername:username});
-		const res = cursor.next();
+		const res = await cursor.next();
 		return{
-            // FIXME: 
-			firstName: res.firstName,
-			lastName: res.lastName
+			firstName: res?.firstName,
+			lastName: res?.lastName
 		}
 	}
 	catch(error){
@@ -29,18 +28,17 @@ exports.getVoluName = async (username:string) => {
 	}
 }
 
-exports.getVolDetails = async (username:string) =>{
+export const getVolDetails = async (username:string) =>{
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
 		const cursor = await volUsers.find({volunteerUsername:username});
-		let res = cursor.next();
+		let res = await cursor.next();
 		return{
-            // FIXME: 
-			firstName: res.firstName,
-			lastName: res.lastName,
-			email: res.email
+			firstName: res?.firstName,
+			lastName: res?.lastName,
+			email: res?.email
 		}
 	}
     catch (error){
@@ -51,7 +49,7 @@ exports.getVolDetails = async (username:string) =>{
 	}
 }
 
-exports.insertToVol = async (username:string, firstName:string, lastName:string, birthYear:string, email:string, city:string, gender:Gender, areasOfInterest:string, languages:string, services:string, preferredDaysAndHours:string, digitalDevices:string, phoneNumber:string, organizationName:string, additionalInformation:string) => {
+export const insertToVol = async (username:string, firstName:string, lastName:string, birthYear:string, email:string, city:string, gender:Gender, areasOfInterest:string, languages:string, services:string, preferredDaysAndHours:string, digitalDevices:string, phoneNumber:string, organizationName:string, additionalInformation:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -85,7 +83,7 @@ exports.insertToVol = async (username:string, firstName:string, lastName:string,
 	}
 }
 
-exports.getVols = async() => {
+export const getVols = async() => {
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
@@ -99,7 +97,7 @@ exports.getVols = async() => {
 	}
 }
 
-exports.getVolsByOrganization = async(organizationName:string) => {
+export const getVolsByOrganization = async(organizationName:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
