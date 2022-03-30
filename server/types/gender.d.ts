@@ -1,5 +1,10 @@
-type Gender = 'male' | 'female' | 'other';
+enum Gender {
+    Male = 'male',
+    Female = 'female',
+    Other = 'other'
+}
 
+module.exports = module
 
 // noya_topaz_karavani - snake case
 // noya-topaz-karavani - kebab case

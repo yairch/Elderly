@@ -1,18 +1,22 @@
+import {Gender} from './gender'
+
 // FIXME: what types should each field be?
-export interface Volunteer {
+interface Volunteer {
     username: string;
     firstName: string;
     lastName: string;
-    birthYear: string;
+    birthYear: number;
     email: string;
     city: string;
-    gender: string;
-    areasOfInterest: string;
-    languages: string;
-    services: string;
+    gender: Gender;
+    areasOfInterest: string; //arr?
+    languages: string; //arr?
+    services: string; //arr?
     preferredDaysAndHours: string;
-    digitalDevices: string;
+    digitalDevices: string; //arr?
     phoneNumber: string;
     organizationName: string;
     additionalInformation: string;
 };
+
+module.exports = module
