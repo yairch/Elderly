@@ -1,4 +1,4 @@
-import { Collection, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 import { Organization, OrganizationType } from "../types/organization";

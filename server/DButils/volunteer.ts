@@ -1,11 +1,10 @@
-import { userFields } from './../constants/collections';
-// import { volunteerFields } from './../constants/collections';
 import { Volunteer } from '../types/volunteer';
 import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
+import { Gender } from '../types/gender';
 
-export const getVoluName = async (username:string) => {
+export const getVolunteerName = async (username:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -28,7 +27,7 @@ export const getVoluName = async (username:string) => {
 	}
 }
 
-export const getVolDetails = async (username:string) =>{
+export const getVolunteerDetails = async (username:string) =>{
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
@@ -49,7 +48,7 @@ export const getVolDetails = async (username:string) =>{
 	}
 }
 
-export const insertToVol = async (username:string, firstName:string, lastName:string, birthYear:string, email:string, city:string, gender:Gender, areasOfInterest:string, languages:string, services:string, preferredDaysAndHours:string, digitalDevices:string, phoneNumber:string, organizationName:string, additionalInformation:string) => {
+export const insertVolunteer = async (username:string, firstName:string, lastName:string, birthYear: number, city:string, email:string,  gender:Gender, areasOfInterest:string, languages:string, services:string, preferredDaysAndHours:string, digitalDevices:string, phoneNumber:string, organizationName:string, additionalInformation:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
@@ -83,21 +82,23 @@ export const insertToVol = async (username:string, firstName:string, lastName:st
 	}
 }
 
-export const getVols = async() => {
+export const getAllVolunteers = async() => {
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);
 		const volUsers = db.collection(collectionIds.volunteerUsers);
 		const cursor = await volUsers.find();
 		return cursor.toArray();
-	}catch (error){
+	}
+	catch (error){
 		console.error(error);
-	}finally{
+	}
+	finally{
 		client.close();
 	}
 }
 
-export const getVolsByOrganization = async(organizationName:string) => {
+export const getVolunteersByOrganization = async(organizationName:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		const db = client.db(config.database.name);

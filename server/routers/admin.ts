@@ -1,12 +1,10 @@
 import bcrypt from 'bcrypt';
-// import router from 'express.Router';
-import * as express from 'express';
+import express from 'express';
 import * as organizationDB from '../DButils/organization';
 import * as responsibleDB from '../DButils/responsible';
 import * as userDB from '../DButils/user';
 import { Organization } from '../types/organization';
-import * as DButils from '../DButils'
-// import fetch from 'node-fetch';
+import { UserRole } from '../types/user';
 const {bcrypt_saltRounds} = require('../DButils');
 const {sendConfirmationEmail} = require('../emailSender');
 const router = express.Router();
@@ -29,7 +27,6 @@ router.post('/registerOrganization', async (req, res, next) => {
 			res.status(409).send('Organization name taken');
 			return;
 		}
-
 		//insert into DB Organization
 		await organizationDB.insertOrganization(name, englishName, type, phoneNumber);
 	} 
@@ -59,7 +56,7 @@ router.post('/registerResponsible', async (req, res, next) => {
 		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await userDB.insertUser(username, hash_password, responsible, organizationName);
+		await userDB.insertUser(username, hash_password, UserRole.Responsible, organizationName);
 
 		// insert into DB responsibleUsers
 		await responsibleDB.insertResponsible(username, firstName, lastName, email, gender, organizationName, responsibleType);
@@ -98,4 +95,4 @@ router.get('/users', async (req, res, next) => {
 	}
 });
 
-export default router
+export default router;

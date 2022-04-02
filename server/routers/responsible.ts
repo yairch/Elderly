@@ -1,9 +1,14 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const DButils = require('../DButils.js');
+import bcrypt from 'bcrypt';
+import express from 'express';
+import * as userDB from '../DButils/user';
+import * as volunteerDB from '../DButils/volunteer';
+import * as elderlyDB from '../DButils/elderly';
+import * as meetingDB from '../DButils/meeting';
+import { UserRole } from '../types/user';
+const router = express.Router();
 const {bcrypt_saltRounds} = require('../DButils');
 const {sendConfirmationEmail, sendMeetingEmail} = require('../emailSender');
-const router = express.Router();
+
 
 // register volunteer
 router.post('/registerVolunteer', async (req, res, next) => {
@@ -19,19 +24,19 @@ router.post('/registerVolunteer', async (req, res, next) => {
 		const digitalDevices = req.body.digitalDevices.map((dict) => dict.value);
 
 		// username exists
-		const user = await DButils.getUserByUsername(username);
+		const user = await userDB.getUserByUsername(username);
 		if (!user) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
 		// make hash to password
-		let hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
+		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.insertToUser(username, hash_password, 'volunteer', organizationName);
+		await userDB.insertUser(username, hash_password, UserRole.Volunteer, organizationName);
 
 		// insert into DB volunteerUsers
-		await DButils.insertToVol(username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber,additionalInformation);
+		await volunteerDB.insertVolunteer(username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber, organizationName, additionalInformation);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
 		//send result
@@ -59,20 +64,20 @@ router.post('/registerElderly', async (req, res, next) => {
 		const genderToMeetWith = req.body.genderToMeetWith.value;
 
 		// username exists
-		const user = await DButils.getUserByUsername(username);
+		const user = await userDB.getUserByUsername(username);
 		if (!user) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
 
 		// make hash to password
-		let hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
+		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.insertToUser(username, hash_password, 'elderly', organizationName);
+		await userDB.insertUser(username, hash_password, UserRole.Elderly, organizationName);
 
 		// insert into DB Elderly
-		await DButils.insertToEld( username, firstName, lastName, birthYear, city, email, gender,
+		await elderlyDB.insertElderly( username, firstName, lastName, birthYear, city, email, gender,
 			phoneNumber, areasOfInterest, languages, organizationName, wantedServices, genderToMeetWith, preferredDaysAndHours,
 			digitalDevices, additionalInformation, contactName, kinship, contactPhoneNumber, contactEmail);
 
@@ -90,12 +95,12 @@ router.post('/registerElderly', async (req, res, next) => {
 router.post('/assign', async (req, res, next) => {
 	try {
 		const {volunteerUsername, volunteerServices} = req.body;
-		let volunteerDetails = await DButils.getVolDetails(volunteerUsername);
-		let elderlyDetails = await DButils.getElderlyUsers();
-		let elderlyWithSameServicesAsVolunteer = [];
+		const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
+		const elderlyDetails = await elderlyDB.getElderlyUsers();
+		const elderlyWithSameServicesAsVolunteer = [];
 
 		//take only the elderly with the same wanted service as the volunteer service
-		for (let elderly of elderlyDetails) {
+		for (const elderly of elderlyDetails) {
 			const foundSameServices = elderly.wantedServices.some(r => volunteerServices.includes(r));
 			if (foundSameServices) {
 				elderlyWithSameServicesAsVolunteer.push(elderly);
@@ -108,7 +113,7 @@ router.post('/assign', async (req, res, next) => {
 		let rankForEachElderly = [];
 
 		if (elderlyWithSameServicesAsVolunteer.length > 0) {
-			for (let elderly of elderlyWithSameServicesAsVolunteer) {
+			for (const elderly of elderlyWithSameServicesAsVolunteer) {
 				let finalRank = 0;
 				let rankForLanguage = 0;
 				let rankForGender = 0;
@@ -182,14 +187,14 @@ router.post('/addMeeting', async (req, res, next) => {
 		console.log(channelName);
 		console.log(meetingSubject);
 
-		await DButils.insertToMeetings(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
+		await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
 
-		let volunteer = await DButils.getVolDetails(volunteerUsername);
+		let volunteer = await volunteerDB.getVolunteerDetails(volunteerUsername);
 
 		await sendMeetingEmail({
-			email: volunteer.email,
-			firstName: volunteer.firstName,
-			lastName: volunteer.lastName,
+			email: volunteer?.email,
+			firstName: volunteer?.firstName,
+			lastName: volunteer?.lastName,
 			meeting: {
 				meetingDate: user.actualDate,
 				elderlyName: user.elderly.firstName +' '+user.elderly.lastName,
@@ -208,7 +213,7 @@ router.get('/meetings-volunteers/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
 		organizationName = organizationName.substring(0, organizationName.length - 1);
-		let volunteerMeetingsInOrganizations = await DButils.getOrganizationMeetings(organizationName);
+		let volunteerMeetingsInOrganizations = await meetingDB.getMeetingsByOrganization(organizationName);
 		console.log(volunteerMeetingsInOrganizations);
 		res.send(JSON.parse(JSON.stringify(volunteerMeetingsInOrganizations)));
 	}
@@ -221,7 +226,7 @@ router.get('/meetings-elderly/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
 		organizationName = organizationName.substring(0, organizationName.length - 1);
-		let elderlyMeetingsInOrganizations = await DButils.getOrganizationMeetings(organizationName);
+		let elderlyMeetingsInOrganizations = await meetingDB.getMeetingsByOrganization(organizationName);
 		console.log(elderlyMeetingsInOrganizations);
 		res.send(JSON.parse(JSON.stringify(elderlyMeetingsInOrganizations)));
 
@@ -237,10 +242,10 @@ router.get('/volunteersDetails/:organizationName', async (req, res, next) => {
 		organizationName = organizationName.substring(0, organizationName.length - 1);
 		let volunteers;
 		if (organizationName !== 'NONE') {
-			volunteers = await DButils.getVolsByOrganization(organizationName);
+			volunteers = await volunteerDB.getVolunteersByOrganization(organizationName);
 		}
 		else{
-			volunteers = await DButils.getVols();
+			volunteers = await volunteerDB.getAllVolunteers();
 		}
 
 		res.send(JSON.stringify(volunteers));
@@ -257,13 +262,13 @@ router.get('/elderlyDetails/:organizationName', async (req, res, next) => {
 		let elderlyDetails;
 
 		if (organizationName !== 'NONE') {
-			elderlyDetails = await DButils.getElderlyDetails(organizationName);
+			elderlyDetails = await elderlyDB.getElderlyDetails(organizationName);
 		}
 		else {
-			elderlyDetails = await DButils.getElderlyUsers();
+			elderlyDetails = await elderlyDB.getElderlyUsers();
 		}
 
-		elderlyDetails = DButils.convertElderlyDetailsFromDB(elderlyDetails);
+		elderlyDetails = elderlyDB.convertElderlyDetailsFromDB(elderlyDetails);
 		res.send(JSON.stringify(elderlyDetails));
 	}
 	catch (error) {
@@ -284,6 +289,6 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 	}
 });
 
-module.exports = router;
+export default router;
 
 

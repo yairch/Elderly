@@ -1,12 +1,13 @@
-const express = require('express');
+import express from 'express';
+import * as volunteerDB from '../DButils/volunteer';
+import * as meetingDB from '../DButils/meeting';
 const router = express.Router();
-const DButils = require('../DButils.js');
 const {notifyElderly} = require('../notifications');
 
 router.get('/meetings/:userName', async (req, res, next) => {
 	try {
 		const {userName} = req.params;
-		const meetingsPerElderly = await DButils.getVoluMeetings(userName);
+		const meetingsPerElderly = await meetingDB.getVolunteerMeetings(userName);
 		console.log(meetingsPerElderly);
 		res.send(meetingsPerElderly);
 
@@ -19,7 +20,7 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
 		userName = userName.substring(0, userName.length - 1);
-		let meetings = await DButils.getFullVoluMeetings(userName);
+		let meetings = await meetingDB.getFullVolunteerMeetings(userName);
 		console.log(meetings);
 		res.send(meetings);
 
@@ -31,16 +32,17 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 router.post('/notify-elderly', async (req, res, next) => {
 		try {
 			let {elderlyId, volunteerId, channel, meetingSubject} = req.body;
-			let volunteerName = await DButils.getVoluName(volunteerId);
-			volunteerName = volunteerName.firstName + ' '+ volunteerName.lastName;
+			let volunteerName = await volunteerDB.getVolunteerName(volunteerId);
+			// volunteerName = volunteerName?.firstName + ' ' + volunteerName?.lastName;
 			console.log(volunteerName);
 			notifyElderly(elderlyId, volunteerName, channel, meetingSubject);
 			res.status(200).send({message: 'register to notifications succeeded', success: true});
 		}
 		catch (error) {
-			res.status(500).send({message: error.message, success: false});
+			next(error)
+			// res.status(500).send({message: error.message, success: false});
 		}
 	}
 );
 
-module.exports = router;
+export default router;

@@ -1,10 +1,10 @@
 import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
-import { Responsible } from "../types/responsible";
-import { OrganizationType } from "../types/organization";
+import { Responsible, ResponsibleType } from "../types/responsible";
+import { Gender } from '../types/gender';
 
-export const insertResponsible = async (username:string , firstName:string, lastName:string, email:string, gender:Gender, organizationName:string, responsibleType:OrganizationType) => {
+export const insertResponsible = async (username:string , firstName:string, lastName:string, email:string, gender:Gender, organizationName:string, responsibleType:ResponsibleType) => {
 
 	const client = new MongoClient(config.database.url);
 	try {

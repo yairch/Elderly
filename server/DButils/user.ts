@@ -1,11 +1,7 @@
-//FIXME: should fix code below
-
-import { Collection, FindOptions, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { collectionIds } from "../constants/collectionsIds";
 import { config } from "./config";
-import {User, UserRole} from '../types/user'
-import { Meeting } from "../types/meeting";
-import { Projection } from "../constants/mongodbCommands";
+import {User, UserRole} from '../types/user';
 
 export const getUserByUsername = async (username: string): Promise<User | null> => {
 
@@ -42,7 +38,6 @@ export const updateUserPassword = async (username: string, password: string) => 
 					password
 				}
 			})
-		
 	}
 	catch(error) {
 		throw(error);
@@ -51,6 +46,7 @@ export const updateUserPassword = async (username: string, password: string) => 
 		client.close();  
 	}
 }
+
 export const getAllUsers = async (): Promise<User[]> => {
 
 	const client = new MongoClient(config.database.url);
@@ -73,26 +69,6 @@ export const getAllUsers = async (): Promise<User[]> => {
 	}
 }
 
-export const getElderlyChannels = async (username: string): Promise<Pick<Meeting, 'channelName'>[]>=> {
-	const client = new MongoClient(config.database.url);
-	try{
-		await client.connect()
-
-		const db = client.db(config.database.name);
-
-		const meetings = db.collection<Meeting>(collectionIds.meetings);
-		const findProjection: FindOptions<Meeting> = {projection: {channelName: Projection.Include}}
-		const cursor = await meetings.find({elderlyUsername: username}, findProjection);
-		const allChannels: Pick<Meeting, 'channelName'>[] = await cursor.toArray();
-		return allChannels;
-	}
-	catch(error){
-		throw(error);
-	}
-	finally {
-		client.close();  
-	}
-}
 
 export const insertUser = async (username: string, hash_password: string, role: UserRole, organization: string) => {
 	const client = new MongoClient(config.database.url);
