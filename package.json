@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "@types/nodemailer": "^6.4.4",
     "agora-rtc-sdk-ng": "^4.3.0",
     "bcrypt": "^5.0.0",
     "bootstrap": "^4.5.3",

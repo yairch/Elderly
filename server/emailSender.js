@@ -1,10 +1,14 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer'
 
+// FIXME: these variables hold specific info for ziv and domain is localhost
+// what is this for if it sends only to ziv? Should this sensitive info be here exposed?
+// if domain is localhost would it work when launching the client as "production" from other computers:
+// => going to chrome and inserting the web andress of televol (elderly) site
 const USER = 'televol.noreply@gmail.com';
 const PASSWORD = 'ZivNadav1!';
 const DOMAIN = 'http://localhost:3000/Tele-vol';
 
-exports.sendEmail = function (messageHTML, subject, email) {
+export const sendEmail = (messageHTML, subject, email) => {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
