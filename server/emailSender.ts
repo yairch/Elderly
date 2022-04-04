@@ -47,6 +47,7 @@ export const sendConfirmationEmail = (emailDetails: ConfirmationEmailDetails) =>
 	const {username, password, firstName, lastName} = emailDetails;
 
 	// Return promise in order to use async/await or "then"
+	// FIXME: I think to remove message from params, use this function without send any message
 	return new Promise((res, rej) => {
 		
 		// Create transporter object with gmail service
@@ -135,7 +136,7 @@ export const sendMeetingEmail = function (emailDetails: MeetingEmailDetails) {
 	});
 };
 
-exports.sendForgotPasswordEmail = function (username: string, email: string) {
+export const sendForgotPasswordEmail = function (username: string, email: string) {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
