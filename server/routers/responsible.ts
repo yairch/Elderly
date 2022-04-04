@@ -4,9 +4,11 @@ import * as userDB from '../DButils/user';
 import * as volunteerDB from '../DButils/volunteer';
 import * as elderlyDB from '../DButils/elderly';
 import * as meetingDB from '../DButils/meeting';
-import { UserRole } from '../types/user';
+import { User, UserRole } from '../types/user';
 import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
-const {bcrypt_saltRounds} = require('../DButils');
+import {bcrypt_saltRounds} from '../constants/bycrypt'
+import { Volunteer } from '../types/volunteer';
+import { Elderly } from '../types/elderly';
 
 const router = express.Router();
 
@@ -14,15 +16,24 @@ const router = express.Router();
 // register volunteer
 router.post('/registerVolunteer', async (req, res, next) => {
 	try {
-		const {firstName, lastName, birthYear, username, password, email, phoneNumber, additionalInformation} = req.body;
-		const organizationName = req.body.organizationName.value;
-		const city = req.body.city.value;
-		const gender = req.body.gender.value;
-		const areasOfInterest = req.body.selectedAreasOfInterest.map((dict) => dict.value);
-		const languages = req.body.selectedLanguages.map((dict) => dict.value);
-		const services = req.body.services.map((dict) => dict.value);
-		const preferredDaysAndHours = req.body.preferredDaysAndHours.map((dict) => dict.value);
-		const digitalDevices = req.body.digitalDevices.map((dict) => dict.value);
+		const {
+			username,
+			password,
+			firstName,
+			lastName,
+			birthYear,
+			email,
+			city,
+			gender,
+			areasOfInterest,
+			languages,
+			services,
+			preferredDaysAndHours,
+			digitalDevices,
+			phoneNumber,
+			organizationName,
+			additionalInformation
+		} = req.body as User & Volunteer;
 
 		// username exists
 		const user = await userDB.getUserByUsername(username);
@@ -30,6 +41,7 @@ router.post('/registerVolunteer', async (req, res, next) => {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
+		
 		// make hash to password
 		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
@@ -40,6 +52,7 @@ router.post('/registerVolunteer', async (req, res, next) => {
 		await volunteerDB.insertVolunteer(username, firstName, lastName, birthYear, city, email, gender, areasOfInterest, languages, services, preferredDaysAndHours, digitalDevices, phoneNumber, organizationName, additionalInformation);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
+		
 		//send result
 		res.setHeader('Content-Type', 'application/json');
 		res.status(200).send({message: 'registration succeeded', success: true});
@@ -52,17 +65,29 @@ router.post('/registerVolunteer', async (req, res, next) => {
 // register elderly
 router.post('/registerElderly', async (req, res, next) => {
 	try {
-		const {firstName, lastName, birthYear, username, password, email, phoneNumber, additionalInformation,
-			contactName, kinship, contactPhoneNumber, contactEmail} = req.body;
-		const organizationName = req.body.organizationName.value;
-		const city = req.body.city.value;
-		const gender = req.body.gender.value;
-		const areasOfInterest = req.body.selectedAreasOfInterest.map((dict) => dict.value);
-		const languages = req.body.selectedLanguages.map((dict) => dict.value);
-		const wantedServices = req.body.wantedServices.map((dict) => dict.value);
-		const preferredDaysAndHours = req.body.preferredDaysAndHours.map((dict) => dict.value);
-		const digitalDevices = req.body.digitalDevices.map((dict) => dict.value);
-		const genderToMeetWith = req.body.genderToMeetWith.value;
+		const {
+			username,
+			password,
+			firstName,
+			lastName,
+			birthYear,
+			email,
+			city,
+			gender,
+			phoneNumber,
+			areasOfInterest,
+			languages,
+			organizationName,
+			wantedServices,
+			genderToMeetWith,
+			preferredDaysAndHours,
+			digitalDevices,
+			additionalInformation,
+			contactName,
+			kinship,
+			contactPhoneNumber,
+			contactEmail
+		} = req.body as User & Elderly
 
 		// username exists
 		const user = await userDB.getUserByUsername(username);

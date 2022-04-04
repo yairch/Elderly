@@ -14,7 +14,7 @@ export interface Elderly {
     languages: string;
     organizationName: string;
     wantedServices: string;
-    genderToMeetWith: string; //Gender?
+    genderToMeetWith: Gender;
     preferredDaysAndHours: string;
     digitalDevices: string;
     additionalInformation: string;
