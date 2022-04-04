@@ -8,7 +8,7 @@ const USER = 'televol.noreply@gmail.com';
 const PASSWORD = 'ZivNadav1!';
 const DOMAIN = 'http://localhost:3000/Tele-vol';
 
-export const sendEmail = (messageHTML, subject, email) => {
+export const sendEmail = (messageHTML:string, subject:string, email:string) => {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -41,8 +41,9 @@ export const sendEmail = (messageHTML, subject, email) => {
 	});
 };
 
-exports.sendConfirmationEmail = function ({username, email, password, firstName, lastName, message}) {
+export const sendConfirmationEmail = function ({username, email, password, firstName, lastName, message}) {
 	// Return promise in order to use async/await or "then"
+	// FIXME: I think to remove message from params, use this function without send any message
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -86,7 +87,7 @@ exports.sendConfirmationEmail = function ({username, email, password, firstName,
 	});
 };
 
-exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
+export const sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -128,7 +129,7 @@ exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
 	});
 };
 
-exports.sendForgotPasswordEmail = function (username, email) {
+export const sendForgotPasswordEmail = function (username:string, email:string) {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
