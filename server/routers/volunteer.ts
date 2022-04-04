@@ -1,8 +1,9 @@
 import express from 'express';
 import * as volunteerDB from '../DButils/volunteer';
 import * as meetingDB from '../DButils/meeting';
+import {notifyElderly} from '../notifications'
+
 const router = express.Router();
-const {notifyElderly} = require('../notifications');
 
 router.get('/meetings/:userName', async (req, res, next) => {
 	try {
@@ -31,11 +32,11 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 
 router.post('/notify-elderly', async (req, res, next) => {
 		try {
-			let {elderlyId, volunteerId, channel, meetingSubject} = req.body;
-			let volunteerName = await volunteerDB.getVolunteerName(volunteerId);
+			const {elderlyId, volunteerId, channel, meetingSubject} = req.body;
+			const volunteerName = await volunteerDB.getVolunteerName(volunteerId);
 			// volunteerName = volunteerName?.firstName + ' ' + volunteerName?.lastName;
 			console.log(volunteerName);
-			notifyElderly(elderlyId, volunteerName, channel, meetingSubject);
+			notifyElderly(elderlyId, volunteerName?.firstName, volunteerName?.lastName, channel, meetingSubject);
 			res.status(200).send({message: 'register to notifications succeeded', success: true});
 		}
 		catch (error) {

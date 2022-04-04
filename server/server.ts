@@ -3,9 +3,14 @@ import express from 'express'
 import bodyParser from 'body-parser';
 // const fs = require('fs');
 // const http = require('http');
-import cors from 'cors'
-import {CorsOptions} from 'cors/lib'
+import cors, { CorsOptions } from 'cors'
 import * as notifications from './notifications'
+import user from './routers/user'
+import responsible from './routers/responsible'
+import admin from './routers/admin'
+import volunteer from './routers/volunteer'
+import elderly from './routers/elderly'
+
 
 const app = express();
 
@@ -21,19 +26,14 @@ const corsOptions: CorsOptions = {
 }
 app.use(cors(corsOptions))
 
-const user = require("./routers/user.js");
 app.use("/user", user);
 
-const responsible = require("./routers/responsible.js");
 app.use("/responsible", responsible);
 
-const admin = require("./routers/admin.js");
 app.use("/admin", admin);
 
-const volunteer = require("./routers/volunteer.js");
 app.use("/volunteer", volunteer);
 
-const elderly = require("./routers/elderly.js");
 app.use("/elderly", elderly);
 
 

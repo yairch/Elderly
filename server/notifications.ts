@@ -1,20 +1,21 @@
-import {connection, request, server as WebSocketServer} from 'websocket'
+import { Server } from 'http';
+import {connection, Message, request, server as WebSocketServer} from 'websocket'
 
-export const clients = new Set<connection>();
-// let clients: { [clientId: number] : any} = {};
+export const clients: {[clientId: string]: connection | null} = {};
 let wws;
 
-export const initWebSocketServer = (server) => {
+export const initWebSocketServer = (server: Server) => {
 	wws = new WebSocketServer({
 		httpServer: server
 	});
 
 	wws.on('request', (request: request) => {
 		const connection = request.accept(null, request.origin);
-		const clientId = (request?.resourceURL?.query);
+		const clientId = request.resourceURL.query as string;
+		console.log({clientId})
 		clients[clientId] = connection;
 		console.log(new Date() +'- Received new connection from origin: ' + request.origin);
-		console.log(clients);
+		console.log({clients});
 
 		connection.on('close', ()=> {
 			console.log('connection closed to '+ clientId);
@@ -22,22 +23,25 @@ export const initWebSocketServer = (server) => {
 			console.log(clients);
 		});
 
-		connection.on('message', (message: string) => {
+		connection.on('message', (message: Message) => {
 			console.log('Server received message: '+ message);
 		})
 
 	});
 };
 
-export const notifyElderly = (elderlyId: number, volunteerName: string, channel: string, meetingSubject: string) => {
+export const notifyElderly = (elderlyId: string, volunteerFirstName: string | undefined, volunteerLastName: string | undefined, channelName: string, subject: string) => {
 	try {
-		clients[elderlyId].send(JSON.stringify({
-			//FIXME: change the fields according to types/meeting
-			message: 'incoming call',
-			volunteerName: volunteerName,
-			channel: channel,
-			meetingSubject: meetingSubject
-		}));
+		if(clients[elderlyId]){
+			clients[elderlyId]!.send(JSON.stringify({
+				//FIXME: change the fields according to types/meeting
+				message: 'incoming call',
+				volunteerFirstName,
+				volunteerLastName,
+				channelName,
+				subject
+			}));
+		}
 	}
 	catch (e) {
 		console.log(e);
