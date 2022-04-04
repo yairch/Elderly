@@ -5,9 +5,10 @@ import * as volunteerDB from '../DButils/volunteer';
 import * as elderlyDB from '../DButils/elderly';
 import * as meetingDB from '../DButils/meeting';
 import { UserRole } from '../types/user';
-const router = express.Router();
+import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
 const {bcrypt_saltRounds} = require('../DButils');
-const {sendConfirmationEmail, sendMeetingEmail} = require('../emailSender');
+
+const router = express.Router();
 
 
 // register volunteer

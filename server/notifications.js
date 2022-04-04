@@ -1,9 +1,9 @@
-const WebSocketServer = require('websocket').server;
+import {server as WebSocketServer} from 'websocket'
 
-let clients = new Set();
+export const clients = new Set();
 let wws;
 
-const initWebSocketServer = (server) => {
+export const initWebSocketServer = (server) => {
 	wws = new WebSocketServer({
 		httpServer: server
 	});
@@ -28,7 +28,7 @@ const initWebSocketServer = (server) => {
 	});
 };
 
-const notifyElderly = (elderlyId, volunteerName, channel, meetingSubject) => {
+export const notifyElderly = (elderlyId, volunteerName, channel, meetingSubject) => {
 	try {
 		clients[elderlyId].send(JSON.stringify({
 			message: 'incoming call',
@@ -43,6 +43,3 @@ const notifyElderly = (elderlyId, volunteerName, channel, meetingSubject) => {
 	}
 }
 
-exports.initWebSocketServer = initWebSocketServer;
-exports.notifyElderly = notifyElderly;
-exports.clients = clients;

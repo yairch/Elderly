@@ -1,17 +1,20 @@
 // HTTPS=true;SSL_CRT_FILE=cert.pem;SSL_KEY_FILE=key.pem
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express'
+import bodyParser from 'body-parser';
 // const fs = require('fs');
 // const http = require('http');
-const cors = require('cors');
-const notifications = require('./notifications');
+import cors from 'cors'
+import {CorsOptions} from 'cors/lib'
+import * as notifications from './notifications'
+
 const app = express();
 
 const PORT = 3001;
 app.use(bodyParser.json());
 
 app.use(express.json());
-const corsOptions = {
+
+const corsOptions: CorsOptions = {
     origin: 'http://localhost:3000', //Ziv
     //origin: 'http://192.168.242.1:3000', //Nadav
     credentials: true
