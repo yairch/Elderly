@@ -8,12 +8,9 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const users = db.collection<User>(collectionIds.users);
 		const user = await users.findOne({username});
-		
 		return user;
 	}
 	catch(error) {
@@ -28,9 +25,7 @@ export const updateUserPassword = async (username: string, password: string) => 
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const users = db.collection<User>(collectionIds.users);
 		await users.updateOne({username},
 			{
@@ -52,13 +47,10 @@ export const getAllUsers = async (): Promise<User[]> => {
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const users = db.collection<User>(collectionIds.users);
-		const cursor = await users.find();
+		const cursor = users.find();
 		const allUsers = await cursor.toArray();
-		
 		return allUsers;
 	}
 	catch(error) {
@@ -74,9 +66,7 @@ export const insertUser = async (username: string, hash_password: string, role: 
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const users = db.collection<User>(collectionIds.users);
 		const newUser: User = {
 			username,

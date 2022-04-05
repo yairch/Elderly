@@ -2,7 +2,6 @@ import express from 'express';
 import * as volunteerDB from '../DButils/volunteer';
 import * as meetingDB from '../DButils/meeting';
 import {notifyElderly} from '../notifications'
-
 const router = express.Router();
 
 router.get('/meetings/:userName', async (req, res, next) => {
@@ -24,8 +23,8 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 		let meetings = await meetingDB.getFullVolunteerMeetings(userName);
 		console.log(meetings);
 		res.send(meetings);
-
-	} catch (error) {
+	} 
+	catch (error) {
 		next(error);
 	}
 });
@@ -33,7 +32,7 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 router.post('/notify-elderly', async (req, res, next) => {
 		try {
 			const {elderlyId, volunteerId, channel, meetingSubject} = req.body;
-			const volunteerName = await volunteerDB.getVolunteerName(volunteerId);
+			let volunteerName = await volunteerDB.getVolunteerName(volunteerId);
 			// volunteerName = volunteerName?.firstName + ' ' + volunteerName?.lastName;
 			console.log(volunteerName);
 			notifyElderly(elderlyId, volunteerName?.firstName, volunteerName?.lastName, channel, meetingSubject);
@@ -41,9 +40,20 @@ router.post('/notify-elderly', async (req, res, next) => {
 		}
 		catch (error) {
 			next(error)
-			// res.status(500).send({message: error.message, success: false});
+			res.status(500).send({message: "notify elderly didnt succeed", success: false});
 		}
 	}
 );
+
+// router.get('/get-volunteer-services/:userName', async (req, res, next) => {
+// 	try {
+// 		const {userName} = req.params;
+// 		const volunterServices = await volunteerDB.getVolunteerServices(userName);
+// 		res.send(volunterServices);
+
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// });
 
 export default router;

@@ -11,7 +11,7 @@ export interface Volunteer {
     areasOfInterest: string[];
     languages: string[];
     services: string[]; 
-    preferredDaysAndHours: string;
+    preferredDaysAndHours: string[];
     digitalDevices: string[];
     phoneNumber: string;
     organizationName: string;

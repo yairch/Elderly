@@ -7,7 +7,7 @@ export const enum ResponsibleType {
 }
 
 export interface Responsible {
-    username: string; //Number?
+    username: string;
     firstName: string;
     lastName: string;
     email: string;

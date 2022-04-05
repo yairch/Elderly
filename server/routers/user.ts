@@ -1,10 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import * as userDB from '../DButils/user';
-// import { sendForgotPasswordEmail} from '../emailSender';
+import { sendForgotPasswordEmail} from '../emailSender';
+import {bcrypt_saltRounds} from '../constants/bycrypt'
 const router = express.Router();
-const {sendForgotPasswordEmail} = require('../emailSender');
-const {bcrypt_saltRounds} = require('../DButils');
 
 
 router.post('/login', async (req, res, next) => {
@@ -16,7 +15,6 @@ router.post('/login', async (req, res, next) => {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
-
 		res.status(200).send(user);
 	}
 	catch (error) {
@@ -31,8 +29,8 @@ router.post('/activate/:username/:password', async (req, res, next) => {
 	try {
 		//the password is hashed
 		let {username, password} = req.params;
-		// username = username.substring(9, username.length);
-		// password = password.substring(9, password.length);
+		username = username.substring(9, username.length);
+		password = password.substring(9, password.length);
 
 		console.log('username ' + username);
 		console.log('password ' + password);
@@ -74,7 +72,7 @@ router.post('/forgot-password/:username/:email', async (req, res, next) => {
 	catch (error) {
 		next(error);
 		console.log(error);
-		// res.status(401).send({message: error.message, success: false});
+		res.status(401).send({message: "unauthorized", success: false});
 	}
 });
 
@@ -91,7 +89,7 @@ router.put('/updatePassword', async (req, res, next) => {
 	catch (error) {
 		next(error);
 		console.log(error);
-		// res.status(401).send({message: error.message, success: false});
+		res.status(401).send({message: "unauthorized", success: false});
 	}
 });
 

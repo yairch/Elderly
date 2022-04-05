@@ -5,8 +5,8 @@ import * as responsibleDB from '../DButils/responsible';
 import * as userDB from '../DButils/user';
 import { Organization } from '../types/organization';
 import { UserRole } from '../types/user';
-const {bcrypt_saltRounds} = require('../DButils');
-const {sendConfirmationEmail} = require('../emailSender');
+import {sendConfirmationEmail} from '../emailSender';
+import {bcrypt_saltRounds} from '../constants/bycrypt'
 const router = express.Router();
 
 // register organization

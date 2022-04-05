@@ -8,9 +8,7 @@ export const getOrganizationByName = async (name: String): Promise<Organization 
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const organizations = db.collection<Organization>(collectionIds.organizations);
 		const organization = await organizations.findOne({name});
 		return organization;
@@ -28,9 +26,7 @@ export const getOrganizationByEnglishName = async (englishName: string): Promise
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const organizations = db.collection<Organization>(collectionIds.organizations);
 		const organization = await organizations.findOne({englishName});
 		return organization;
@@ -48,9 +44,7 @@ export const insertOrganization = async (name: string, englishName: string, type
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const organizations = db.collection<Organization>(collectionIds.organizations);
 		await organizations.insertOne({
 			name,
@@ -71,13 +65,10 @@ export const getAllOrganizations = async (): Promise<Organization[]> => {
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const organizations = db.collection<Organization>(collectionIds.organizations);
-		const cursor = await organizations.find();
+		const cursor = organizations.find();
 		const allOrganizations = await cursor.toArray();
-		
 		return allOrganizations;
 	}
 	catch(error) {

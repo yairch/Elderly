@@ -9,7 +9,6 @@ import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
 import {bcrypt_saltRounds} from '../constants/bycrypt'
 import { Volunteer } from '../types/volunteer';
 import { Elderly } from '../types/elderly';
-
 const router = express.Router();
 
 
@@ -120,16 +119,18 @@ router.post('/registerElderly', async (req, res, next) => {
 
 router.post('/assign', async (req, res, next) => {
 	try {
-		const {volunteerUsername, volunteerServices} = req.body;
+		const {volunteerUsername} = req.body;
 		const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
 		const elderlyDetails = await elderlyDB.getElderlyUsers();
-		const elderlyWithSameServicesAsVolunteer = [];
+		let elderlyWithSameServicesAsVolunteer = [];
 
 		//take only the elderly with the same wanted service as the volunteer service
-		for (const elderly of elderlyDetails) {
-			const foundSameServices = elderly.wantedServices.some(r => volunteerServices.includes(r));
-			if (foundSameServices) {
-				elderlyWithSameServicesAsVolunteer.push(elderly);
+		if (elderlyDetails){
+			for (let elderly of elderlyDetails) {
+				let commonServices = elderly.wantedServices.some(r => volunteerDetails?.services.includes(r))
+				if (commonServices) {
+					elderlyWithSameServicesAsVolunteer.push(elderly);
+				}
 			}
 		}
 
@@ -139,43 +140,50 @@ router.post('/assign', async (req, res, next) => {
 		let rankForEachElderly = [];
 
 		if (elderlyWithSameServicesAsVolunteer.length > 0) {
-			for (const elderly of elderlyWithSameServicesAsVolunteer) {
-				let finalRank = 0;
+			for (let elderly of elderlyWithSameServicesAsVolunteer) {
+				// let rankForServices = 0;
+				let rankForPreferredDays = 0;
 				let rankForLanguage = 0;
 				let rankForGender = 0;
 				let rankForInterest = 0;
-				let rankForPreferredDays = 0;
-				const commonServices = elderly.wantedServices.filter(service => volunteerServices.includes(service));
-				//handle preferred days
-				const commonPreferredDays = elderly.preferredDays.filter(day => volunteerDetails.preferredDays.includes(day));
+				let finalRank = 0;
+				
+				//services
+				let commonServices = elderly.wantedServices.filter(service => volunteerDetails?.services.includes(service));
+				
+				//preferred days and hours
+				let commonPreferredDays = elderly.preferredDaysAndHours.filter(day => volunteerDetails?.preferredDaysAndHours.includes(day));
 				if (commonPreferredDays.length > 0) {
 					rankForPreferredDays = 1;
 				}
-				//handle languages
-				const commonLanguages = elderly.languages.filter(lan => volunteerDetails.languages.includes(lan));
-				// const foundSameLanguage = elderlyWithDay.elderly.languages.some(r => volunteerDetails.languages.includes(r));
+				
+				//languages
+				const commonLanguages = elderly.languages.filter(lan => volunteerDetails?.languages.includes(lan));
 				if (commonLanguages.length > 0) {
 					rankForLanguage = 1;
 				}
-				//handle gender
+				
+				//gender
 				let preferredGender = null;
-				if (volunteerDetails.gender.includes(elderly.genderToMeetWith) || elderly.genderToMeetWith === 'אין העדפה') {
+				if (volunteerDetails?.gender.includes(elderly.genderToMeetWith) || elderly.genderToMeetWith === 'I don`t care') {
 					preferredGender = elderly.genderToMeetWith;
 				}
 				if (preferredGender) {
 					rankForGender = 1;
 				}
-				//handle areaOfInterest
-				const commonAreaOfInterest = elderly.areasOfInterest.filter(area => volunteerDetails.areasOfInterest.includes(area));
+
+				//areaOfInterest
+				const commonAreaOfInterest = elderly.areasOfInterest.filter(area => volunteerDetails?.areasOfInterest.includes(area));
 				if (commonAreaOfInterest.length > 0) {
 					rankForInterest = 1;
 				}
 
 				finalRank = 0.35 * rankForPreferredDays + 0.35 * rankForLanguage + 0.2 * rankForInterest + 0.1 * rankForGender;
+
 				rankForEachElderly.push({
 					elderly: elderly,
 					volunteerUsername: volunteerUsername,
-					preferredDay: elderly.preferredDays,
+					preferredDay: elderly.preferredDaysAndHours,
 					finalRank: finalRank.toFixed(2),
 					commonAreaOfInterest: commonAreaOfInterest,
 					commonLanguages: commonLanguages,
@@ -184,11 +192,10 @@ router.post('/assign', async (req, res, next) => {
 					preferredGender: elderly.genderToMeetWith
 				});
 			}
-
+			//FIXME: ask for type for a,b
 			rankForEachElderly.sort(function (a, b) {
 				return b.finalRank - a.finalRank;
 			});
-
 			res.send(rankForEachElderly);
 		}
 
@@ -215,7 +222,7 @@ router.post('/addMeeting', async (req, res, next) => {
 
 		await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
 
-		let volunteer = await volunteerDB.getVolunteerDetails(volunteerUsername);
+		const volunteer = await volunteerDB.getVolunteerDetails(volunteerUsername);
 
 		await sendMeetingEmail({
 			email: volunteer?.email,
@@ -271,7 +278,8 @@ router.get('/volunteersDetails/:organizationName', async (req, res, next) => {
 			volunteers = await volunteerDB.getVolunteersByOrganization(organizationName);
 		}
 		else{
-			volunteers = await volunteerDB.getAllVolunteers();
+			res.status(204).send({message: 'organization not found', success: false});
+			// volunteers = await volunteerDB.getAllVolunteers();
 		}
 
 		res.send(JSON.stringify(volunteers));
@@ -285,17 +293,18 @@ router.get('/elderlyDetails/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
 		organizationName = organizationName.substring(0, organizationName.length - 1);
-		let elderlyDetails;
+		let elderlys;
 
 		if (organizationName !== 'NONE') {
-			elderlyDetails = await elderlyDB.getElderlyDetails(organizationName);
+			elderlys = await elderlyDB.getElderlyDetails(organizationName);
 		}
 		else {
-			elderlyDetails = await elderlyDB.getElderlyUsers();
+			res.status(204).send({message: 'organization not found', success: false});
+			// elderlys = await elderlyDB.getElderlyUsers();
 		}
 
-		elderlyDetails = elderlyDB.convertElderlyDetailsFromDB(elderlyDetails);
-		res.send(JSON.stringify(elderlyDetails));
+		// elderlys = elderlyDB.convertElderlyDetailsFromDB(elderlys);
+		res.send(JSON.stringify(elderlys));
 	}
 	catch (error) {
 		next(error);
@@ -307,8 +316,11 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 		console.log('deleteMeeting');
 		let {channelName} = req.params;
 		channelName = channelName.substring(0, channelName.length - 1);
-		await DButils.execQuery(`DELETE from meetings WHERE meetings.channelName= '${channelName}'`);
-		res.status(200).send({message: 'delete succeeded', success: true});
+		let check = await meetingDB.checkMeetingExistsByChannel(channelName);
+		if(check){
+			await meetingDB.deleteMeetingsByChannel(channelName);
+			res.status(200).send({message: 'delete succeeded', success: true});
+		}
 	}
 	catch (error) {
 		next(error);

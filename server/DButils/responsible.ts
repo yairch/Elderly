@@ -9,11 +9,8 @@ export const insertResponsible = async (username:string , firstName:string, last
 	const client = new MongoClient(config.database.url);
 	try {
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const responsibles = db.collection<Responsible>(collectionIds.responsibleUsers);
-		
 		await responsibles.insertOne({
 			username,
 			firstName,

@@ -4,13 +4,28 @@ import { collectionIds } from "../constants/collectionsIds";
 import { Meeting } from "../types/meeting";
 import { config } from "./config";
 
+export const checkMeetingExistsByChannel =async (channelName:string) => {
+	const client = new MongoClient(config.database.url);
+	try{
+		await client.connect()
+		const db = client.db(config.database.name);
+		const meetings = db.collection<Meeting>(collectionIds.meetings);
+		const meeting = await meetings.findOne({channelName});
+		return meeting;
+	}
+	catch(error){
+		throw(error);
+	}
+	finally {
+		client.close();  
+	}
+}
+
 export const deleteMeetingsByChannel = async (channelName: string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
-
 		const db = client.db(config.database.name);
-
 		const meetings = db.collection<Meeting>(collectionIds.meetings);
 		meetings.deleteMany({channelName});
 	}
