@@ -9,4 +9,4 @@ export interface Organization {
     englishName: string;
     type: OrganizationType;
     phoneNumber: string;
-};
+}
