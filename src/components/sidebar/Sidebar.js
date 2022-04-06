@@ -23,7 +23,7 @@ function Sidebar({history, content}) {
 				</div>
 			</div>
 			<div className="hr">
-				<img className="space-filler" src={spaceFiller}/>
+				<img className="space-filler" src={spaceFiller} alt=''/>
 			</div>
 			{content}
 		</div>

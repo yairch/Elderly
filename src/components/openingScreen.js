@@ -4,7 +4,7 @@ import plusIcon from '../resources/plus-icon.png';
 const OpeningScreen = () => (
 	<div className="page-content">
 		<div>
-			<img id="plusIcon" src={plusIcon}/>
+			<img id="plusIcon" src={plusIcon} alt=''/>
 		</div>
 		<div className="center-page">
 			<div id="chooseOptionTitle">

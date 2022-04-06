@@ -19,7 +19,7 @@ const FullDetailsPage = (props) => {
 		}
 
 		setMeetingsFullDetails()
-	},[])
+	},[details.userName, usersType])
 
 	return (
 		<div className="no-sidebar-page">

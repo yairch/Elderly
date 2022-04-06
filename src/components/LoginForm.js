@@ -78,6 +78,8 @@ class LoginForm extends React.Component {
 						<label>סיסמה</label>
 						<input ref={this.passwordRef} type="password" id="password"/>
 						<div className="align-right">
+							{/* FIXME: */}
+							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a className="forgot-password" href="" onClick={this.forgotPassword}>שכחתי סיסמה</a>
 						</div>
 						<button className="sb-btn" type="button" onClick={this.checkOnSubmit}>כניסה</button>
