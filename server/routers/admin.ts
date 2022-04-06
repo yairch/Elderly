@@ -1,8 +1,12 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const DButils = require('../DButils.js');
-const {bcrypt_saltRounds} = require('../DButils');
-const {sendConfirmationEmail} = require('../emailSender');
+import bcrypt from 'bcrypt';
+import express from 'express';
+import * as organizationDB from '../DButils/organization';
+import * as responsibleDB from '../DButils/responsible';
+import * as userDB from '../DButils/user';
+import { Organization } from '../types/organization';
+import { UserRole } from '../types/user';
+import {sendConfirmationEmail} from '../emailSender';
+import {bcrypt_saltRounds} from '../constants/bycrypt'
 const router = express.Router();
 
 // register organization
@@ -17,17 +21,16 @@ router.post('/registerOrganization', async (req, res, next) => {
 		console.log(req.body);
 
 		// organization exist
-		const organizationByName = await DButils.getOrganizationByName(name);
-		const organizationByEnglishName = await DButils.getOrganizationByEnglishName(englishName);
+		const organizationByName = await organizationDB.getOrganizationByName(name);
+		const organizationByEnglishName = await organizationDB.getOrganizationByEnglishName(englishName);
 		if ( organizationByName || organizationByEnglishName){
 			res.status(409).send('Organization name taken');
 			return;
 		}
-
 		//insert into DB Organization
-		await DButils.insertOrganization(name, englishName, type, phoneNumber);
-
-	} catch (error) {
+		await organizationDB.insertOrganization(name, englishName, type, phoneNumber);
+	} 
+	catch (error) {
 		next(error);
 	}
 });
@@ -43,7 +46,7 @@ router.post('/registerResponsible', async (req, res, next) => {
 		console.log(organizationName);
 		
 		// username exists
-		const user = await DButils.getUserByUsername(username);
+		const user = await userDB.getUserByUsername(username);
 		if (user){
 			res.status(409).send('Username taken');
 			return;
@@ -53,10 +56,10 @@ router.post('/registerResponsible', async (req, res, next) => {
 		const hash_password = bcrypt.hashSync(password, parseInt(bcrypt_saltRounds));
 
 		//insert into DB users
-		await DButils.insertToUser(username, hash_password, 'responsible', organizationName);
+		await userDB.insertUser(username, hash_password, UserRole.Responsible, organizationName);
 
 		// insert into DB responsibleUsers
-		await DButils.insertResponsible(username, firstName, lastName, email, gender, organizationName, responsibleType);
+		await responsibleDB.insertResponsible(username, firstName, lastName, email, gender, organizationName, responsibleType);
 
 		await sendConfirmationEmail({username, email, password, firstName, lastName});
 		
@@ -68,10 +71,11 @@ router.post('/registerResponsible', async (req, res, next) => {
 	}
 });
 
+
 router.get('/organizationNames', async (req, res, next) => {
 	try {
-		const organizations = (await DButils.getAllOrganizations())
-			.map(org => ({
+		const organizations = (await organizationDB.getAllOrganizations())
+			.map((org: Organization) => ({
 				name: org.name,
 				englishName: org.englishName,
 			}))
@@ -84,11 +88,11 @@ router.get('/organizationNames', async (req, res, next) => {
 
 router.get('/users', async (req, res, next) => {
 	try {
-		const users = await DButils.getUsers()
+		const users = await userDB.getAllUsers()
 		res.send(users);
 	} catch (error) {
 		next(error);
 	}
 });
 
-module.exports = router;
+export default router;

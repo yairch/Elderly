@@ -11,7 +11,7 @@ import {
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
 import separatorIcon from '../../resources/separator-icon.png';
-import plusIcon from '../../resources/plus-icon.png';
+// import plusIcon from '../../resources/plus-icon.png';
 import OpeningScreen from '../openingScreen';
 
 function ResponsiblePage(props) {
@@ -59,7 +59,7 @@ function ResponsiblePage(props) {
 				isElderlyResponsible: true
 			});
 		}
-	}, [organizationType]);
+	}, [organizationType, responsibleState]);
 
 	async function getOrganizationsNames() {
 		const response = fetchOrganizationsNames();
@@ -233,7 +233,7 @@ function ResponsiblePage(props) {
 				...responsibleState,
 				modalisOpen: !responsibleState.modalisOpen
 			});
-		}, [responsibleState.modalisOpen]);
+		}, [responsibleState]);
 
 	const content = (
 		<>
@@ -288,7 +288,7 @@ function ResponsiblePage(props) {
 			}
 			{responsibleState.isVolunteerResponsible && responsibleState.isElderlyResponsible ?
 				<div className="hr">
-					<img className="separator" src={separatorIcon}/>
+					<img className="separator" src={separatorIcon} alt=''/>
 				</div>
 				: null
 			}

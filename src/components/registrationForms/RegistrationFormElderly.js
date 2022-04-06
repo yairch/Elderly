@@ -137,7 +137,7 @@ class RegistrationFormElderly extends Component {
 	}
 
 	checkOnSubmit() {
-		const {firstName, lastName, username, email, birthYear, phoneNumber, contactPhoneNumber, contactEmail} = this.state;
+		const {firstName, lastName, username, email, birthYear, phoneNumber} = this.state;
 		const formFilled = !(firstName === '' || lastName === '' || username === '' || email === '' || birthYear === '' || phoneNumber === '');
 		const formInvalid = Object.keys(this.state.valid).some(x => !this.state.valid[x]);
 		const formHasErrors = !formFilled || formInvalid;

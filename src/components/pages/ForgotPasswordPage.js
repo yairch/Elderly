@@ -14,7 +14,7 @@ const ForgotPasswordPage = () => {
 
 	const checkOnSubmit = async () => {
 		try {
-			const response = await forgotPassword(userName.current.value, email.current.value);
+			await forgotPassword(userName.current.value, email.current.value);
 			setState({
 				modalisOpen: true,
 				message: 'התהליך הושלם בהצלחה \n נשלח אליך אימייל לשחזור הסיסמה'

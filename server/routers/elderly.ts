@@ -1,12 +1,13 @@
-const express = require('express');
+import express from 'express';
+import * as elderlyDB from '../DButils/elderly';
+import * as meetingDB from '../DButils/meeting';
 const router = express.Router();
-const DButils = require('../DButils.js');
 
 router.get('/channels/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
 		userName = userName.substring(0, userName.length - 1);
-		let channels = await DButils.getUserChannels(userName);
+		let channels = await elderlyDB.getElderlyChannels(userName);
 		console.log(channels);
 		res.send(JSON.parse(JSON.stringify(channels)));
 
@@ -19,7 +20,7 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 	try {
 		let {userName} = req.params;
 		userName = userName.substring(1, userName.length);
-		let meetings = await DButils.getFullMeetingDetails(userName);
+		const meetings = await meetingDB.getFullElderlyMeetings(userName);
 		console.log(meetings);
 		res.send((meetings));
 
@@ -28,4 +29,4 @@ router.get('/meetings-full-details/:userName', async (req, res, next) => {
 	}
 });
 
-module.exports = router;
+export default router;

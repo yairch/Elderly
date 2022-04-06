@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import OrganizationMeetingTable from '../meetings/OrganizationMeetingTable';
 import { deleteMeetingFromDB } from '../../services/server';
 import DeleteModal from '../modal/DeleteModal';
@@ -27,23 +27,13 @@ const ManageMeetingsPage = (props) => {
 		}));
 	};
 
-	let meetingsComponent = (
+	const meetingsComponent = React.useCallback(() => (
 		<OrganizationMeetingTable
 			meetings={meetingsState.meetings}
 			setMeetings={setMeetingsState}
 			toggleModal={toggleModal}
 			setChannelState={setChannelState}/>
-	)
-
-	useEffect(() => {
-		meetingsComponent = (
-			<OrganizationMeetingTable
-				meetings={meetingsState.meetings}
-				setMeetings={setMeetingsState}
-				toggleModal={toggleModal}
-				setChannelState={setChannelState}/>
-		)
-	}, [meetingsState])
+	), [meetingsState.meetings])
 
 	return (
 		<div className="no-sidebar-page">
@@ -51,7 +41,7 @@ const ManageMeetingsPage = (props) => {
 			<h2 className="header">
 				פגישות בארגון
 			</h2>
-			{meetingsComponent}
+			{meetingsComponent()}
 			{state.modalisOpen ?
 				<DeleteModal
 					text='שים/י לב'

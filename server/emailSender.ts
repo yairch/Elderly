@@ -1,10 +1,16 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer'
+import Mail from 'nodemailer/lib/mailer';
+import { ConfirmationEmailDetails, MeetingEmailDetails } from './types/emailDetails';
 
+// FIXME: these variables hold specific info for ziv and domain is localhost
+// what is this for if it sends only to ziv? Should this sensitive info be here exposed?
+// if domain is localhost would it work when launching the client as "production" from other computers:
+// => going to chrome and inserting the web andress of televol (elderly) site
 const USER = 'televol.noreply@gmail.com';
 const PASSWORD = 'ZivNadav1!';
 const DOMAIN = 'http://localhost:3000/Tele-vol';
 
-exports.sendEmail = function (messageHTML, subject, email) {
+export const sendEmail = (messageHTML: string, subject: string, email: string) => {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -19,7 +25,7 @@ exports.sendEmail = function (messageHTML, subject, email) {
 			secure: false
 		});
 
-		const message = {
+		const message: Mail.Options = {
 			from: USER,
 			to: email,
 			subject: `${subject}`,
@@ -37,9 +43,13 @@ exports.sendEmail = function (messageHTML, subject, email) {
 	});
 };
 
-exports.sendConfirmationEmail = function ({username, email, password, firstName, lastName, message}) {
+export const sendConfirmationEmail = (emailDetails: ConfirmationEmailDetails) => {
+	const {username, password, firstName, lastName} = emailDetails;
+
 	// Return promise in order to use async/await or "then"
+	// FIXME: I think to remove message from params, use this function without send any message
 	return new Promise((res, rej) => {
+		
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
 			service: 'gmail',
@@ -54,7 +64,7 @@ exports.sendConfirmationEmail = function ({username, email, password, firstName,
 		});
 
 		// Create a message you want to send to a user
-		const message = {
+		const message: Mail.Options = {
 			from: USER,
 			// todo: change email field
 			// to: email // in production uncomment this
@@ -62,12 +72,12 @@ exports.sendConfirmationEmail = function ({username, email, password, firstName,
 			to: USER,
 			subject: 'Tele-Vol - Activate Account',
 			html: `
-        <h3> שלום ${firstName + ' ' + lastName}</h3>
-        <p>Thank you for registering into our Application. Much Appreciated! Just one last step is laying ahead of you...</p>
-        <p>To activate your account please follow this link: <a target="_" href="${DOMAIN}/user/activate/${username}/${password}">${DOMAIN}/activate </a></p>
-        <p>Cheers</p>
-        <p>Your Application Team</p>
-      `
+				<h3> שלום ${firstName + ' ' + lastName}</h3>
+				<p>Thank you for registering into our Application. Much Appreciated! Just one last step is laying ahead of you...</p>
+				<p>To activate your account please follow this link: <a target="_" href="${DOMAIN}/user/activate/${username}/${password}">${DOMAIN}/activate </a></p>
+				<p>Cheers</p>
+				<p>Your Application Team</p>
+			`
 		};
 
 		// send an email
@@ -82,7 +92,9 @@ exports.sendConfirmationEmail = function ({username, email, password, firstName,
 	});
 };
 
-exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
+export const sendMeetingEmail = function (emailDetails: MeetingEmailDetails) {
+	const {firstName, lastName, meeting} = emailDetails;
+
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -97,7 +109,7 @@ exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
 			secure: false
 		});
 
-		const message = {
+		const message: Mail.Options = {
 			from: USER,
 			// todo: change email field
 			// to: email // in production uncomment this
@@ -105,12 +117,12 @@ exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
 			to: USER,
 			subject: 'Tele-Vol - נקבעה לך פגישה',
 			html: `
-        <h3> שלום ${firstName + ' ' + lastName}</h3>
-        <p>נקבעה לך פגישה עם ${meeting.elderlyName}, ב ${meeting.meetingDate} בנושא ${meeting.meetingSubject}</p>
-        <p>לצפיה בפגישות שלך היכנס למערכת בקישור הבא <a target="_" href="${DOMAIN}">${DOMAIN} </a></p>
-        <p>תודה,</p>
-        <p>צוות המערכת</p>
-      `
+				<h3> שלום ${firstName + ' ' + lastName}</h3>
+				<p>נקבעה לך פגישה עם ${meeting.elderlyName}, ב ${meeting.date} בנושא ${meeting.subject}</p>
+				<p>לצפיה בפגישות שלך היכנס למערכת בקישור הבא <a target="_" href="${DOMAIN}">${DOMAIN} </a></p>
+				<p>תודה,</p>
+				<p>צוות המערכת</p>
+			`
 		};
 
 		transporter.sendMail(message, function (err, info) {
@@ -124,7 +136,7 @@ exports.sendMeetingEmail = function ({email, firstName, lastName, meeting}) {
 	});
 };
 
-exports.sendForgotPasswordEmail = function (username, email) {
+export const sendForgotPasswordEmail = function (username: string, email: string) {
 	return new Promise((res, rej) => {
 		// Create transporter object with gmail service
 		const transporter = nodemailer.createTransport({
@@ -139,7 +151,7 @@ exports.sendForgotPasswordEmail = function (username, email) {
 			secure: false
 		});
 
-		const message = {
+		const message: Mail.Options = {
 			from: USER,
 			// todo: change email field
 			// to: email // in production uncomment this
@@ -147,12 +159,12 @@ exports.sendForgotPasswordEmail = function (username, email) {
 			to: USER,
 			subject: 'Tele-Vol - שחזור סיסמה',
 			html: `
-        <h3> שלום, בעל מספר תעודת הזהות ${username}</h3>
-        <p>קיבלנו ממך בקשה לשחזור הסיסמה שלך במערכת</p>
-        <p>לחץ על הקישור כדי לבחור סיסמה חדשה <a target="_" href="${DOMAIN}/user/forgot-password/change-password/${username}">${DOMAIN} </a></p>
-        <p>תודה,</p>
-        <p>צוות המערכת</p>
-      `
+				<h3> שלום, בעל מספר תעודת הזהות ${username}</h3>
+				<p>קיבלנו ממך בקשה לשחזור הסיסמה שלך במערכת</p>
+				<p>לחץ על הקישור כדי לבחור סיסמה חדשה <a target="_" href="${DOMAIN}/user/forgot-password/change-password/${username}">${DOMAIN} </a></p>
+				<p>תודה,</p>
+				<p>צוות המערכת</p>
+			`
 		};
 
 		transporter.sendMail(message, function (err, info) {

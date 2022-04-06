@@ -70,8 +70,8 @@ class VideoComponent extends React.Component {
 			console.log('AgoraRTC client initialized');
 			this.subscribeStreamEvents();
 			this.client.join($.appId, $.channel, $.uid, (uid) => {
-				this.state.uid = uid;
-				// this.setState(prevState => prevState.uid !== uid ? {uid} : {});
+				// this.state.uid = uid;
+				this.setState(prevState => prevState.uid !== uid ? {uid} : {});
 				console.log('User ' + uid + ' join channel successfully');
 				console.log('At ' + new Date().toLocaleTimeString());
 				// create local stream
@@ -127,8 +127,8 @@ class VideoComponent extends React.Component {
 				this.setState({displayMode: 'tile'});
 				return;
 			}
-			this.state.streamList.map((item, index) => {
-				let id = item.getId();
+			this.state.streamList.forEach((item, index) => {
+				const id = item.getId();
 				let dom = document.querySelector('#ag-item-' + id);
 				if (!dom) {
 					dom = document.createElement('section');
@@ -154,7 +154,7 @@ class VideoComponent extends React.Component {
 		// tile mode
 		else if (this.state.displayMode === 'tile') {
 			let no = this.state.streamList.length;
-			this.state.streamList.map((item, index) => {
+			this.state.streamList.forEach((item, index) => {
 				let id = item.getId();
 				let dom = document.querySelector('#ag-item-' + id);
 				if (!dom) {
@@ -255,7 +255,7 @@ class VideoComponent extends React.Component {
 	};
 
 	removeStream = (uid) => {
-		this.state.streamList.map((item, index) => {
+		this.state.streamList.forEach((item, index) => {
 			if (item.getId() === uid) {
 				item.close();
 				let element = document.querySelector('#ag-item-' + uid);
@@ -337,7 +337,7 @@ class VideoComponent extends React.Component {
 		list = Array.from(
 			document.querySelectorAll(`.ag-item:not(#ag-item-${id})`)
 		);
-		list.map((item) => {
+		list.forEach((item) => {
 			if (item.style.display !== 'none') {
 				item.style.display = 'none';
 			}
