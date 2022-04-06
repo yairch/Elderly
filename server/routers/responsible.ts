@@ -9,6 +9,9 @@ import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
 import {bcrypt_saltRounds} from '../constants/bycrypt'
 import { Volunteer } from '../types/volunteer';
 import { Elderly } from '../types/elderly';
+import { Match } from '../types/match';
+import { GenderToMeet } from '../types/genderToMeet';
+
 const router = express.Router();
 
 
@@ -119,16 +122,17 @@ router.post('/registerElderly', async (req, res, next) => {
 
 router.post('/assign', async (req, res, next) => {
 	try {
-		const {volunteerUsername} = req.body;
+		// req.body takes only username of volunteer type and is beign renamed (alias) as volunteerUsername
+		const {username: volunteerUsername} = req.body as Pick<Volunteer, 'username'>;
 		const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
 		const elderlyDetails = await elderlyDB.getElderlyUsers();
-		let elderlyWithSameServicesAsVolunteer = [];
+		const elderlyWithSameServicesAsVolunteer: Elderly[] = [];
 
 		//take only the elderly with the same wanted service as the volunteer service
 		if (elderlyDetails){
 			for (let elderly of elderlyDetails) {
-				let commonServices = elderly.wantedServices.some(r => volunteerDetails?.services.includes(r))
-				if (commonServices) {
+				const hasCommonServices = elderly.wantedServices.some(service => volunteerDetails?.services.includes(service))
+				if (hasCommonServices) {
 					elderlyWithSameServicesAsVolunteer.push(elderly);
 				}
 			}
@@ -137,7 +141,7 @@ router.post('/assign', async (req, res, next) => {
 		console.log('elderlyWithSameServicesAsVolunteer');
 		console.log(elderlyWithSameServicesAsVolunteer);
 
-		let rankForEachElderly = [];
+		const matches: Match[] = [];
 
 		if (elderlyWithSameServicesAsVolunteer.length > 0) {
 			for (let elderly of elderlyWithSameServicesAsVolunteer) {
@@ -149,10 +153,10 @@ router.post('/assign', async (req, res, next) => {
 				let finalRank = 0;
 				
 				//services
-				let commonServices = elderly.wantedServices.filter(service => volunteerDetails?.services.includes(service));
+				const commonServices = elderly.wantedServices.filter(service => volunteerDetails?.services.includes(service));
 				
 				//preferred days and hours
-				let commonPreferredDays = elderly.preferredDaysAndHours.filter(day => volunteerDetails?.preferredDaysAndHours.includes(day));
+				const commonPreferredDays = elderly.preferredDaysAndHours.filter(day => volunteerDetails?.preferredDaysAndHours.includes(day));
 				if (commonPreferredDays.length > 0) {
 					rankForPreferredDays = 1;
 				}
@@ -164,8 +168,8 @@ router.post('/assign', async (req, res, next) => {
 				}
 				
 				//gender
-				let preferredGender = null;
-				if (volunteerDetails?.gender.includes(elderly.genderToMeetWith) || elderly.genderToMeetWith === 'I don`t care') {
+				let preferredGender: GenderToMeet | undefined = undefined;
+				if (volunteerDetails?.gender.valueOf() === elderly.genderToMeetWith.valueOf() || elderly.genderToMeetWith === GenderToMeet.IDC) {
 					preferredGender = elderly.genderToMeetWith;
 				}
 				if (preferredGender) {
@@ -180,7 +184,7 @@ router.post('/assign', async (req, res, next) => {
 
 				finalRank = 0.35 * rankForPreferredDays + 0.35 * rankForLanguage + 0.2 * rankForInterest + 0.1 * rankForGender;
 
-				rankForEachElderly.push({
+				matches.push({
 					elderly: elderly,
 					volunteerUsername: volunteerUsername,
 					preferredDay: elderly.preferredDaysAndHours,
@@ -192,11 +196,11 @@ router.post('/assign', async (req, res, next) => {
 					preferredGender: elderly.genderToMeetWith
 				});
 			}
-			//FIXME: ask for type for a,b
-			rankForEachElderly.sort(function (a, b) {
-				return b.finalRank - a.finalRank;
+
+			matches.sort(function (a, b) {
+				return parseFloat(b.finalRank) - parseFloat(a.finalRank);
 			});
-			res.send(rankForEachElderly);
+			res.send(matches);
 		}
 
 		res.send();
@@ -208,11 +212,12 @@ router.post('/assign', async (req, res, next) => {
 
 router.post('/addMeeting', async (req, res, next) => {
 	try {
+		// FIXME: better to understand what type is user and change types
 		const user = req.body.user;
-		const meetingDayAndHour = req.body.user.actualDate;
-		const volunteerUsername = req.body.user.volunteerUsername;
-		const elderlyUsername = req.body.user.elderly.userName;
-		const meetingSubject = req.body.user.meetingSubject;
+		const meetingDayAndHour = req.body.user.actualDate as Date;
+		const volunteerUsername = req.body.user.volunteerUsername as string;
+		const elderlyUsername = req.body.user.elderly.userName as string;
+		const meetingSubject = req.body.user.meetingSubject as string;
 		const channelName = volunteerUsername + elderlyUsername + meetingDayAndHour;
 		console.log(meetingDayAndHour);
 		console.log(volunteerUsername);
@@ -220,22 +225,32 @@ router.post('/addMeeting', async (req, res, next) => {
 		console.log(channelName);
 		console.log(meetingSubject);
 
-		await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
-
+		
 		const volunteer = await volunteerDB.getVolunteerDetails(volunteerUsername);
+		
+		// FIXME: what to do if volunteer null?
+		if (volunteer){
+			
+			// FIXME: fix types
+			await sendMeetingEmail({
+				email: volunteer.email,
+				firstName: volunteer.firstName,
+				lastName: volunteer.lastName,
+				meeting: {
+					date: user.actualDate,
+					elderlyName: user.elderly.firstName + ' ' +user.elderly.lastName,
+					subject: user.meetingSubject
+				}
+			});
 
-		await sendMeetingEmail({
-			email: volunteer?.email,
-			firstName: volunteer?.firstName,
-			lastName: volunteer?.lastName,
-			meeting: {
-				meetingDate: user.actualDate,
-				elderlyName: user.elderly.firstName +' '+user.elderly.lastName,
-				meetingSubject: user.meetingSubject
-			}
-		});
-
-		res.status(200).send({message: 'added meeting', success: true});
+			await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
+			res.status(200).send({message: 'added meeting', success: true});
+		} else{
+			throw Object.assign(
+				new Error(),
+				{message: 'volunteer does not exist'}
+			)
+		}
 	}
 	catch (error) {
 		next(error);
