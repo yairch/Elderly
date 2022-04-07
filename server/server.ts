@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 // const fs = require('fs');
 // const http = require('http');
 import cors, { CorsOptions } from 'cors'
+import logger from 'morgan'
 import * as notifications from './notifications'
 import user from './routers/user'
 import responsible from './routers/responsible'
@@ -15,8 +16,9 @@ import elderly from './routers/elderly'
 const app = express();
 
 const PORT = 3001;
-app.use(bodyParser.json());
 
+app.use(logger('dev'));
+app.use(bodyParser.json());
 app.use(express.json());
 
 const corsOptions: CorsOptions = {
