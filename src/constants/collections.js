@@ -1,47 +1,53 @@
 exports.collectionIds = {
-    users: 'Users',
-    meetings: 'Meetings',
-    volunteerUsers: 'Volunteers',
-    elderlyUsers: 'Elderlies',
-    responsibleUsers: 'ResponsibleUsers',
+    volunteerUsername: 'volunteerUsername',
+    elderlyUsername: 'elderlyUsername',
+    date: 'date',
+    meetingSubject: 'meetingSubject',
+    channelName: 'channelName',
 }
 
-exports.meetingsCollectionFields = {
-    volunteerUsername: 'Volunteer Username',
-    elderlyUsername: 'Elderly Username',
-    meetingDayAndHour: 'Date',
-    meetingSubject: 'Meeting Subject',
-    channelName: 'Channel Name',
-    volunteer: 'volunteer', // after aggregation
+exports.meetingFields = {
+    volunteerUsername: 'volunteerUsername',
+    elderlyUsername: 'elderlyUsername',
+    date: 'date',
+    meetingSubject: 'meetingSubject',
+    channelName: 'channelName',
 }
 
 exports.organizationsFields = {
-    name: 'Name',
-    englishName: 'English Name',
-    type: 'Type',
-    phoneNumber: 'Phone Number',
+    name: 'name',
+    englishName: 'englishName',
+    type: 'type',
+    phoneNumber: 'phoneNumber',
 }
 
 exports.usersFields = {
-    username: 'Username',
-    password: 'Password',
-    role: 'Role',
-    organization: 'Organization'
+    username: 'username',
+    password: 'password',
+    role: 'role',
+    organization: 'organization',
 }
-exports.volunteersCollectionFields = {
-    volunteerUsername: 'username',
+
+exports.volunteerFields = {
+    username: 'username',
     firstName: 'firstName',
     lastName: 'lastName',
     birthYear: 'birthYear',
     email: 'email',
     city: 'city',
     gender: 'gender',
+    areasOfInterest: 'areasOfInterest',
+    languages: 'languages',
+    services: 'services',
+    preferredDaysAndHours: 'preferredDaysAndHours',
+    digitalDevices: 'digitalDevices',
     phoneNumber: 'phoneNumber',
-    organizationName: 'organizationName'
+    organizationName: 'organizationName',
+    additionalInformation: 'additionalInformation',
 }
 
-exports.elderlyCollectionFields = {
-    elderlyUsername: 'elderlyUsername',
+exports.elderlyFields = {
+    username: 'username',
     firstName: 'firstName',
     lastName: 'lastName',
     birthYear: 'birthYear',
@@ -64,13 +70,13 @@ exports.elderlyCollectionFields = {
 }
 
 exports.responsiblesFields = {
-    username: 'Username',
-    firstName: 'First Name',
-    lastName: 'Last Name',
-    email: 'Email',
-    gender: 'Gender',
-    organization: 'Organization',
-    responsibleType: 'Responsible Type',
+    username: 'username',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email',
+    gender: 'gender',
+    organization: 'organization',
+    responsibleType: 'responsibleType',
 }
 
 

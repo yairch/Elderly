@@ -3,7 +3,7 @@ export const meetingFields = {
     elderlyUsername: 'elderlyUsername',
     date: 'date',
     meetingSubject: 'meetingSubject',
-    channelName: 'channelName'
+    channelName: 'channelName',
 }
 
 export const organizationFields = {
@@ -17,7 +17,7 @@ export const userFields = {
     username: 'username',
     password: 'password',
     role: 'role',
-    organization: 'organization'
+    organization: 'organization',
 }
 
 
@@ -36,7 +36,7 @@ export const volunteerFields = {
     digitalDevices: 'digitalDevices',
     phoneNumber: 'phoneNumber',
     organizationName: 'organizationName',
-    additionalInformation: 'additionalInformation'
+    additionalInformation: 'additionalInformation',
 }
 
 export const elderlyFields = {
