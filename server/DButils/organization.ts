@@ -43,6 +43,10 @@ export const insertOrganization = async (name: string, englishName: string, type
 
 	const client = new MongoClient(config.database.url);
 	try {
+		if(!Object.values(OrganizationType).includes(type)) {
+			throw new Error('organization type invalid');
+		}
+
 		await client.connect()
 		const db = client.db(config.database.name);
 		const organizations = db.collection<Organization>(collectionIds.organizations);
