@@ -1,7 +1,9 @@
+import { Gender } from "../../types/gender";
+
 const genderList = [
-    {value: "זכר",label: "זכר"},
-    {value: "נקבה",label: "נקבה"},
-    {value: "אחר",label: "אחר"}
+    {value: Gender.Male, label: "זכר"},
+    {value: Gender.Female, label: "נקבה"},
+    {value: Gender.Other, label: "אחר"}
 ];
 
 export default genderList;

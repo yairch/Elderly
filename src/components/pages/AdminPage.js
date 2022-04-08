@@ -35,14 +35,14 @@ function AdminPage(props) {
 	}
 
 	async function onClick() {
-		let organizations = await getOrganizationsNames();
-		console.log(organizations)
-		organizations = organizations.map((dic) => {
-			return {value: dic.organizationName, label: dic.organizationName};
+		const organizations = await getOrganizationsNames();
+		console.log({organizations})
+		const organizationOptions = organizations.map(organization => {
+			return {value: organization.name, label: organization.name};
 		});
 
-		console.log(organizations);
-		setAdminState({organizations: organizations});
+		console.log({organizationOptions});
+		setAdminState({organizations: organizationOptions});
 	}
 
 	async function onClickSearch(event) {
