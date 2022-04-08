@@ -1,3 +1,4 @@
+import { Gender } from './gender';
 import {GenderToMeet} from './genderToMeet'
 
 // FIXME: what types should each field be?

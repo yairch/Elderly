@@ -6,6 +6,7 @@ import { registerOrganization } from '../../services/server';
 import { regexes } from '../../ClientUtils';
 import './RegistrationForm.css';
 import Navbar from '../navbar/Navbar';
+import { OrganizationType } from '../../types/organization';
 
 class RegistrationFormOrganization extends Component {
 	constructor(props) {
@@ -42,6 +43,8 @@ class RegistrationFormOrganization extends Component {
 		this.checkData = this.checkData.bind(this);
 		this.toggleModal = this.toggleModal.bind(this);
 		this.checkOnSubmit = this.checkOnSubmit.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.registerOrganization = this.registerOrganization.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 	}
 
@@ -87,14 +90,14 @@ class RegistrationFormOrganization extends Component {
 		return !this.state.valid[name] && this.state[name] !== '' ? invalidStr : requiredStr;
 	}
 
-	checkOnSubmit() {
+	async checkOnSubmit() {
 		const {organizationName, organizationEnglishName, organizationType, phoneNumber} = this.state;
 		const formFilled = !(organizationName === '' || organizationType === '' || phoneNumber === '' || organizationEnglishName === '');
-		const formInvalid = Object.keys(this.state.valid).some(x => !this.state.valid[x]);
+		const formInvalid = Object.keys(this.state.valid).some(input => !this.state.valid[input]);
 		const formHasErrors = !formFilled || formInvalid;
 
 		if (!formHasErrors) {
-			this.handleSubmit();
+			await this.handleSubmit();
 		}
 		else {
 			this.setState({message: `אחד או יותר מהשדות לא תקינים`, hasErrors: true});
@@ -110,17 +113,41 @@ class RegistrationFormOrganization extends Component {
 		});
 	}
 
-	async handleSubmit() {
+	convertOrganizationTypeInput(input) {
+		const convertedInput = {...input};
+		switch(input.value){
+			case 'מתנדבים':
+				convertedInput.value = OrganizationType.Volunteer;
+				break;
+			case 'קשישים':
+				convertedInput.value = OrganizationType.Elderly;
+				break;
+			case 'מתנדבים וקשישים':
+			default: // FIXME: add default case
+				convertedInput.value = OrganizationType.Both;
+				break;
+		}
+		return convertedInput;
+	}
+
+	async registerOrganization() {
 		try {
 			const response = await registerOrganization(this.state);
 			await response.json();
-			this.setState({message: 'הרישום הצליח', hasErrors: false});
+			this.setState({message: 'הרישום הצליח', hasErrors: false}, this.toggleModal);
 		}
 		catch (error) {
-			this.setState({message: `הרישום נכשל. \n ${error.message}`, hasErrors: true});
+			this.setState({message: `הרישום נכשל. \n ${error.message}`, hasErrors: true}, this.toggleModal);
 		}
-
-		this.toggleModal();
+	}
+	 
+	handleSubmit() {
+		this.setState((prevState) => {
+			const convertedOrganizationType = this.convertOrganizationTypeInput(prevState.organizationType)
+			return {
+				organizationType: convertedOrganizationType,
+			};
+		}, this.registerOrganization);
 	}
 
 	toggleModal() {

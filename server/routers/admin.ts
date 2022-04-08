@@ -29,6 +29,7 @@ router.post('/registerOrganization', async (req, res, next) => {
 		}
 		//insert into DB Organization
 		await organizationDB.insertOrganization(name, englishName, type, phoneNumber);
+		res.status(200).send({message: 'registration succeeded', success: true});
 	} 
 	catch (error) {
 		next(error);
