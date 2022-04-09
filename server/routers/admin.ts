@@ -4,9 +4,10 @@ import * as organizationDB from '../DButils/organization';
 import * as responsibleDB from '../DButils/responsible';
 import * as userDB from '../DButils/user';
 import { Organization } from '../types/organization';
-import { UserRole } from '../types/user';
+import { User, UserRole } from '../types/user';
 import {sendConfirmationEmail} from '../emailSender';
 import {bcrypt_saltRounds} from '../constants/bycrypt'
+import { Responsible } from '../types/responsible';
 const router = express.Router();
 
 // register organization
@@ -38,10 +39,16 @@ router.post('/registerOrganization', async (req, res, next) => {
 
 router.post('/registerResponsible', async (req, res, next) => {
 	try {
-		const {firstName, lastName, username, password, email} = req.body;
-		const organizationName = req.body.organizationName.value;
-		const responsibleType = req.body.responsibleType.value;
-		const gender = req.body.gender.value;
+		const {
+			username,
+			password,
+			firstName,
+			lastName,
+			email,
+			gender,
+			organizationName,
+			responsibleType
+		} = req.body as User & Responsible
 
 		console.log("organizationName");
 		console.log(organizationName);

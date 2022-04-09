@@ -126,7 +126,12 @@ class RegistrationFormResponsible extends Component {
 
 	async handleSubmit() {
 		try {
-			const response = await registerResponsible(this.state);
+			const response = await registerResponsible({
+				...this.state,
+				organizationName: this.state.organizationName.value,
+				gender: this.state.gender.value,
+				responsibleType: this.state.responsibleType.value,
+			});
 			await response.json();
 			this.setState({message: 'הרישום הצליח', hasErrors: false});
 		}
@@ -181,7 +186,7 @@ class RegistrationFormResponsible extends Component {
 												placeholder="בחר/י..."
 												name="organizationName"
 												value={this.state.organizationName}
-												options={this.props.history.location.state.organizations}
+												options={this.props.location.state.organizations}
 												onChange={(value) => this.setState({organizationName: value})}
 											/>
 										</label>
@@ -254,7 +259,7 @@ class RegistrationFormResponsible extends Component {
 												className={shouldMarkError('gender') ? 'error' : ''}
 												value={this.state.gender}
 												options={genderList}
-												onChange={(value) => this.setState({gender: value})}
+												onChange={(value) => {this.setState({gender: value})}}
 											/>
 										</label>
 										<span className="required-field"
