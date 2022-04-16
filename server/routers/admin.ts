@@ -85,7 +85,7 @@ router.get('/organizationNames', async (req, res, next) => {
 		const organizations = (await organizationDB.getAllOrganizations())
 			.map((org: Organization) => ({
 				name: org.name,
-				englishName: org.englishName,
+				englishName: org.englishName
 			}))
 		res.send(organizations);
 	} catch (error) {

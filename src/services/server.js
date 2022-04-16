@@ -59,10 +59,13 @@ const updatePassword = async (username, newPassword) => {
 };
 
 const fetchOrganizationsNames = async () =>{
-	const res = await fetch(serverURL + `/admin/organizationNames`, {
-		method: 'get'
+	const res = await fetch(`${serverURL}/admin/organizationNames`, {
+		method: 'get',
+		headers: {'Content-Type': 'application/json'}
 	});
-	return res.json()
+	const result = await res.json()
+	console.log(result)
+	return result
 }
 
 const fetchElderlyMatches = async (user) => {
@@ -128,13 +131,15 @@ const fetchVolunteers = async (organizationName) => {
 	if (!organizationName) {
 		organizationName = 'NONE';
 	}
-	const response = await fetch(serverURL + `/responsible/volunteersDetails/` + new URLSearchParams(organizationName),
+	const response = await fetch(`${serverURL}/responsible/volunteersDetails/${organizationName}`,
 		{
-			method: 'get'
+			method: 'get',
+			headers: {'Content-Type': 'application/json'},
 		});
 
 	handleError(response);
-	return response;
+	const result = await response.json()
+	return result;
 };
 
 const addMeetingDB = async (state) => {
@@ -149,13 +154,14 @@ const addMeetingDB = async (state) => {
 };
 
 const fetchVolunteerOrganizationMeetings = async (organizationName) => {
-	const response = await fetch(serverURL + `/responsible/meetings-volunteers/` + new URLSearchParams(organizationName),
+	const response = await fetch(serverURL + `/responsible/meetings-volunteers/` + organizationName,
 		{
 			method: 'get'
 		});
 
 	handleError(response);
-	return response;
+	const result = await response.json()
+	return result;
 };
 
 const fetchElderlyOrganizationMeetings = async (organizationName) => {
@@ -207,7 +213,7 @@ const fetchElderlyDetails = async (organizationName) => {
 		organizationName = 'NONE';
 	}
 
-	const response = await fetch(`${serverURL}/volunteer/meetings/:${organizationName}`,
+	const response = await fetch(`${serverURL}/responsible/elderlyDetails/${organizationName}`,
 		{
 			method: 'get'
 		});

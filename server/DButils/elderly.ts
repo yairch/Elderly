@@ -1,5 +1,6 @@
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
+import {elderlyFields} from '../constants/collections'
 import { Elderly } from "../types/elderly";
 import { Meeting } from "../types/meeting";
 import { FindOptions, MongoClient } from "mongodb";
@@ -25,7 +26,7 @@ export const insertElderly = async (username:string, firstName:string, lastName:
             await client.connect()
             const db = client.db(config.database.name);
             const elderlies = db.collection<Elderly>(collectionIds.elderlyUsers);
-            elderlies.insertOne({
+            await elderlies.insertOne({
                 username,
                 firstName,
                 lastName,
@@ -62,7 +63,7 @@ export const getElderlyUsers = async() => {
         await client.connect()
         const db = client.db(config.database.name);
         const elderlies = db.collection<Elderly>(collectionIds.elderlyUsers);
-        const cursor = elderlies.find();
+        const cursor = await elderlies.find();
         const allElderly = await cursor.toArray();
         return allElderly;
     }
@@ -80,8 +81,9 @@ export const getElderlyDetails = async(organizationName:string) => {
         await client.connect()
         const db = client.db(config.database.name);
         const elderlies = db.collection<Elderly>(collectionIds.elderlyUsers);
-        const cursor = elderlies.find({organizationName: organizationName});
-        return cursor.toArray();
+        const cursor = await elderlies.find({[elderlyFields.organizationName]: organizationName});
+        const result = await cursor.toArray()
+        return result
     }
     catch(error){
         console.error(error);
@@ -98,7 +100,7 @@ export const getElderlyChannels = async (username: string): Promise<Pick<Meeting
         const db = client.db(config.database.name);
         const meetings = db.collection<Meeting>(collectionIds.meetings);
         const findProjection: FindOptions<Meeting> = {projection: {channelName: Projection.Include}}
-        const cursor = meetings.find({elderlyUsername: username}, findProjection);
+        const cursor = await meetings.find({elderlyUsername: username}, findProjection);
         const allChannels: Pick<Meeting, 'channelName'>[] = await cursor.toArray();
         return allChannels;
     }

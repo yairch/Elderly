@@ -39,7 +39,7 @@ router.post('/registerVolunteer', async (req, res, next) => {
 
 		// username exists
 		const user = await userDB.getUserByUsername(username);
-		if (!user) {
+		if (user) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
@@ -93,7 +93,7 @@ router.post('/registerElderly', async (req, res, next) => {
 
 		// username exists
 		const user = await userDB.getUserByUsername(username);
-		if (!user) {
+		if (user) {
 			res.status(401).send('Username or Password incorrect');
 			return;
 		}
@@ -260,7 +260,6 @@ router.post('/addMeeting', async (req, res, next) => {
 router.get('/meetings-volunteers/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
-		organizationName = organizationName.substring(0, organizationName.length - 1);
 		let volunteerMeetingsInOrganizations = await meetingDB.getMeetingsByOrganization(organizationName);
 		console.log(volunteerMeetingsInOrganizations);
 		res.send(JSON.parse(JSON.stringify(volunteerMeetingsInOrganizations)));
@@ -287,7 +286,6 @@ router.get('/meetings-elderly/:organizationName', async (req, res, next) => {
 router.get('/volunteersDetails/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
-		organizationName = organizationName.substring(0, organizationName.length - 1);
 		let volunteers;
 		if (organizationName !== 'NONE') {
 			volunteers = await volunteerDB.getVolunteersByOrganization(organizationName);
@@ -307,7 +305,6 @@ router.get('/volunteersDetails/:organizationName', async (req, res, next) => {
 router.get('/elderlyDetails/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
-		organizationName = organizationName.substring(0, organizationName.length - 1);
 		let elderlys;
 
 		if (organizationName !== 'NONE') {
