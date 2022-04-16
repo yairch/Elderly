@@ -55,7 +55,8 @@ class RegistrationFormResponsible extends Component {
 
 	handleChange = (e, name) => {
 		if (name === 'username' && this.state.password === '') {
-			this.setState({password: generatePassword()});
+			//FIXME: temporary. password is id
+			// this.setState({password: generatePassword()});
 		}
 		this.setState({[e.target.name]: e.target.value}, () => {
 			this.checkData(this.rexExpMap[name], this.state[name], this.state.valid[name], name);
@@ -106,7 +107,10 @@ class RegistrationFormResponsible extends Component {
 		const formHasErrors = !formFilled || formInvalid;
 
 		if (!formHasErrors) {
-			this.handleSubmit();
+			this.setState((prevState) => {
+				console.log('username is', prevState.username)
+				return {password: prevState.username}
+			}, this.handleSubmit);
 		}
 		else {
 			this.setState({message: `אחד או יותר מהשדות לא תקינים`, hasErrors: true});
