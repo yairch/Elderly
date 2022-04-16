@@ -4,6 +4,10 @@ import Sidebar from '../sidebar/Sidebar';
 import OpeningScreen from '../openingScreen';
 
 function AdminPage(props) {
+	// FIXME: search is not working and no high priority
+	// hide search until we can fix it. Remove this flag after search is fixed
+	const allowSearch = false;
+
 	const [adminState, setAdminState] = useState({
 		organizations: [],
 		isSearchClicked: false
@@ -87,13 +91,14 @@ function AdminPage(props) {
 					onClick={onClick}>
 					צור אחראי חדש
 				</button>
+				{ allowSearch &&
 				<button
 					className="sb-btn"
 					type="button"
 					name="isSearchClicked"
 					onClick={e => onClickSearch(e)}>
 					חפש משתמשים
-				</button>
+				</button>}
 			</div>
 		</>
 	)
