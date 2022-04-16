@@ -165,8 +165,8 @@ export const getMeetingsByOrganization = async (organizationName: string): Promi
                 $match: {[elderlyFields.organizationName]: organizationName}
             }
 		]);
-		
-        return cursor.toArray();
+		const toArr = await cursor.toArray();
+        return toArr
 	}
 	catch(error){
 		throw(error);

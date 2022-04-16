@@ -12,7 +12,8 @@ function AssignableUser({user, setUser, toggleModal}) {
 
 	async function getElderlyMatch() {
 		const response = await fetchElderlyMatches(user);
-		return response.json();
+		const res = await response.json()
+		return res;
 	}
 
 	async function onClick() {

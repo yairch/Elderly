@@ -14,62 +14,49 @@ import separatorIcon from '../../resources/separator-icon.png';
 // import plusIcon from '../../resources/plus-icon.png';
 import OpeningScreen from '../openingScreen';
 
+const responsibleTemplate = {
+	organizations: [],
+	users: [],
+	elderlyUsers: [],
+	volunteersUsers: [],
+	isElderlyResponsible: false,
+	isVolunteerResponsible: false,
+	isVolunteerClicked: false,
+	isElderlyClicked: false,
+	isManageVolunteersClicked: false,
+	isManageVolunteersMeetingsClicked: false,
+	isManageElderlyMeetingsClicked: false,
+	isSearchVolunteersClicked: false,
+	isSearchElderlyClicked: false,
+	modalisOpen: false,
+	elderlyOrganizationMeetings: [],
+	volunteerOrganizationMeetings: []
+}
+
 function ResponsiblePage(props) {
 	if (props?.history?.location.state) {
 		Cookies.set('organizationType', props.history.location.state);
 	}
 
-	const organizationName = Cookies.get('organizationName');
+	const organizationName = Cookies.get('organization');
 	const organizationType = Cookies.get('organizationType');
 	console.log(organizationType);
 
+	const setTrue = organizationType === 'volunteer' ? {isVolunteerResponsible: true} : {isElderlyResponsible: true}
 	const [responsibleState, setResponsibleState] = useState({
-		organizations: [],
-		users: [],
-		elderlyUsers: [],
-		volunteersUsers: [],
-		isElderlyResponsible: false,
-		isVolunteerResponsible: false,
-		isVolunteerClicked: false,
-		isElderlyClicked: false,
-		isManageVolunteersClicked: false,
-		isManageVolunteersMeetingsClicked: false,
-		isManageElderlyMeetingsClicked: false,
-		isSearchVolunteersClicked: false,
-		isSearchElderlyClicked: false,
-		modalisOpen: false
+		...responsibleTemplate,
+		...setTrue
 	});
 
-	useEffect(() => {
-		if (organizationType.includes('מתנדבים') && organizationType.includes('קשישים')) {
-			setResponsibleState({
-				isVolunteerResponsible: true,
-				isElderlyResponsible: true
-			});
-		}
-		else if (organizationType.includes('מתנדבים')) {
-			setResponsibleState({
-				...responsibleState,
-				isVolunteerResponsible: true
-			});
-		}
-		else if (organizationType.includes('קשישים')) {
-			setResponsibleState({
-				...responsibleState,
-				isElderlyResponsible: true
-			});
-		}
-	}, [organizationType, responsibleState]);
-
 	async function getOrganizationsNames() {
-		const response = fetchOrganizationsNames();
-		return (await response).json();
+		const response = await fetchOrganizationsNames();
+		return response;
 	}
 
 	async function getVolunteerOrganizationMeetings() {
 		try {
-			const response = fetchVolunteerOrganizationMeetings(organizationName);
-			return (await response).json();
+			const response = await fetchVolunteerOrganizationMeetings(organizationName);
+			return response;
 		}
 		catch (e) {
 			console.log('e.message.toString()');
@@ -102,18 +89,18 @@ function ResponsiblePage(props) {
 
 	async function getVolunteers() {
 		try {
-			const response = fetchVolunteers(organizationName);
-			return (await response).json();
+			const response = await fetchVolunteers(organizationName);
+			return response;
 		}
 		catch (error) {
-
+			console.log(error)
 		}
 	}
 
 	async function getElderly() {
 		try {
-			const response = fetchElderlyDetails(organizationName);
-			return (await response).json();
+			const response = await fetchElderlyDetails(organizationName);
+			return response;
 		}
 		catch (error) {
 
@@ -123,7 +110,7 @@ function ResponsiblePage(props) {
 	async function onClick(event) {
 		let organizations = await getOrganizationsNames();
 		organizations = organizations.map((dic) => (
-			{value: dic.organizationName, label: dic.organizationName}
+			{value: dic.englishName, label: dic.name}
 		));
 
 		organizations = organizations.filter(obj => obj.value !== 'admin');
@@ -225,7 +212,7 @@ function ResponsiblePage(props) {
 				usersType: 'קשישים'
 			});
 		}
-	});
+	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers]);
 
 	const toggleModal = useCallback(
 		() => {

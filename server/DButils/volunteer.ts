@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 import { Gender } from '../types/gender';
+import {volunteerFields} from '../constants/collections'
 
 export const getVolunteerName = async (username:string) => {
 	const client = new MongoClient(config.database.url);
@@ -10,7 +11,7 @@ export const getVolunteerName = async (username:string) => {
 		await client.connect()
 		const db = client.db(config.database.name);
 		const volunteerUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
-		const cursor = volunteerUsers.find({volunteerUsername:username});
+		const cursor = await volunteerUsers.find({volunteerUsername:username});
 		const res = await cursor.next();
 		return{
 			firstName: res?.firstName,
@@ -28,6 +29,7 @@ export const getVolunteerName = async (username:string) => {
 export const getVolunteerDetails = async (username:string) =>{
 	const client = new MongoClient(config.database.url);
 	try{
+		await client.connect()
 		const db = client.db(config.database.name);
 		const volUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
 		const res = await volUsers.findOne({volunteerUsername:username});
@@ -58,7 +60,7 @@ export const insertVolunteer = async (username:string, firstName:string, lastNam
 		const db = client.db(config.database.name);
 		const volunteers = db.collection<Volunteer>(collectionIds.volunteerUsers);
 
-		volunteers.insertOne({
+		await volunteers.insertOne({
 			username,
 			firstName,
 			lastName,
@@ -87,6 +89,7 @@ export const insertVolunteer = async (username:string, firstName:string, lastNam
 export const getAllVolunteers = async() => {
 	const client = new MongoClient(config.database.url);
 	try{
+		await client.connect()
 		const db = client.db(config.database.name);
 		const volUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
 		const cursor = await volUsers.find();
@@ -103,10 +106,13 @@ export const getAllVolunteers = async() => {
 export const getVolunteersByOrganization = async(organizationName:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
+		await client.connect()
 		const db = client.db(config.database.name);
 		const volUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
-		const cursor = await volUsers.find({organizationName: organizationName});
-		return cursor.toArray();
+		const cursor = await volUsers.find({"organizationName.label": organizationName});
+		// const cursor = await volUsers.findOne({});
+		const arr = await cursor.toArray()
+		return arr;
 	}
     catch (error){
 		console.error(error);
