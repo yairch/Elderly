@@ -38,9 +38,9 @@ class LoginForm extends React.Component {
 				this.props.history.push('/volunteer', user[usersFields.username]);
 			}
 			else if (user[usersFields.role] === 'elderly') {
-				Cookies.set(user.Username, user[usersFields.role]);
+				Cookies.set(usersFields.username, user[usersFields.username]);
 				getCurrentWebSocket();
-				const nearestMeeting = await this.getElderlyNearestMeeting(user.Username);
+				const nearestMeeting = await this.getElderlyNearestMeeting(user.username);
 				this.props.history.push('/elderly', nearestMeeting);
 			}
 			else {

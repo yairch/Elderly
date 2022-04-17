@@ -4,9 +4,10 @@ import * as Cookies from 'js-cookie';
 import { notifyElderly } from '../../services/server';
 import videoCall from '../../resources/video-call-icon.png';
 import '../manage/manage.css';
+import { usersFields } from '../../constants/collections';
 
 function MeetingView({meeting, history,setModal}) {
-	const userName = Cookies.get('userName');
+	const userName = Cookies.get(usersFields.username);
 	const elderlyDetails = meeting.elderlyDetails;
 	const channel = userName+meeting.elderlyUserName+meeting.meetingDate;
 	const videoOptions = {
