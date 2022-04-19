@@ -3,6 +3,7 @@ import Select from 'react-select';
 import Modal from '../modal/Modal.js';
 import { registerResponsible } from '../../services/server';
 import { genderList, responsibleTypes } from '../../resources/lists';
+// eslint-disable-next-line
 import { generatePassword, regexes } from '../../ClientUtils';
 import './RegistrationForm.css';
 import Navbar from '../navbar/Navbar';

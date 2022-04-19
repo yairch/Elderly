@@ -1,4 +1,5 @@
 import { Server } from 'http';
+import { ParsedUrlQuery } from 'querystring';
 import {connection, Message, request, server as WebSocketServer} from 'websocket'
 
 export const clients: {[clientId: string]: connection | null} = {};
@@ -11,7 +12,9 @@ export const initWebSocketServer = (server: Server) => {
 
 	wws.on('request', (request: request) => {
 		const connection = request.accept(null, request.origin);
-		const clientId = request.resourceURL.query as string;
+		const url = request.resourceURL;
+		console.log({url});
+		const clientId = (request.resourceURL.query! as ParsedUrlQuery).id as string;
 		console.log({clientId})
 		clients[clientId] = connection;
 		console.log(new Date() +'- Received new connection from origin: ' + request.origin);

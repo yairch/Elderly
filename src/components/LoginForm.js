@@ -27,7 +27,7 @@ class LoginForm extends React.Component {
 	async getElderlyNearestMeeting(userName) {
 		const meetings = await fetchMeetingsFullDetails(userName, userTypes.elderly);
 		// meetings = filterMeetings(meetings);
-		return meetings.reduce((prev, curr) => (prev[meetingFields.meetingDayAndHour] < curr[meetingFields.meetingDayAndHour] ? prev : curr));
+		return meetings.length === 0 ? null : meetings.reduce((prev, curr) => (prev[meetingFields.date] < curr[meetingFields.date] ? prev : curr));
 	}
 
 	async checkOnSubmit() {
@@ -38,9 +38,9 @@ class LoginForm extends React.Component {
 				this.props.history.push('/volunteer', user[usersFields.username]);
 			}
 			else if (user[usersFields.role] === 'elderly') {
-				Cookies.set(user.Username, user[usersFields.role]);
+				Cookies.set(usersFields.username, user[usersFields.username]);
 				getCurrentWebSocket();
-				const nearestMeeting = await this.getElderlyNearestMeeting(user.Username);
+				const nearestMeeting = await this.getElderlyNearestMeeting(user.username);
 				this.props.history.push('/elderly', nearestMeeting);
 			}
 			else {

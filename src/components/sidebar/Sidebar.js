@@ -3,11 +3,12 @@ import * as Cookies from 'js-cookie';
 import { closeWebSocket } from '../../services/notifacationService';
 import spaceFiller from '../../resources/space-filler.png';
 import './sidebar.css';
+import { usersFields } from '../../constants/collections';
 
 function Sidebar({history, content}) {
 	const onClick = () => {
 		closeWebSocket();
-		Cookies.remove('userName');
+		Cookies.remove(usersFields.username);
 		Cookies.remove('organizationName');
 		Cookies.remove('organizationType');
 		history.push('/login');

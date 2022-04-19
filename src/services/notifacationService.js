@@ -1,6 +1,7 @@
 import { w3cwebsocket as W3WebSocket } from 'websocket';
 import { wssURL } from '../ClientUtils';
 import * as Cookies from 'js-cookie';
+import { usersFields } from '../constants/collections';
 
 let webSocket=null;
 let onMessage;
@@ -12,7 +13,7 @@ const getCurrentWebSocket = () => {
 	}
 
 	console.log("ws is null, so init")
-	webSocket = createWebSocket(Cookies.get('userName'));
+	webSocket = createWebSocket(Cookies.get(usersFields.username));
 	return webSocket;
 }
 
@@ -27,7 +28,7 @@ const setOnMessage = (func) => {
 }
 
 const createWebSocket = (clientId) => {
-	const ws = new W3WebSocket(`${wssURL}?param=${clientId}`);
+	const ws = new W3WebSocket(`${wssURL}?id=${clientId}`);
 
 	ws.onopen = () => {
 		console.log('client websocket connected');
