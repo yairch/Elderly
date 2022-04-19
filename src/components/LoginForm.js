@@ -27,7 +27,7 @@ class LoginForm extends React.Component {
 	async getElderlyNearestMeeting(userName) {
 		const meetings = await fetchMeetingsFullDetails(userName, userTypes.elderly);
 		// meetings = filterMeetings(meetings);
-		return meetings.reduce((prev, curr) => (prev[meetingFields.meetingDayAndHour] < curr[meetingFields.meetingDayAndHour] ? prev : curr));
+		return meetings.length === 0 ? null : meetings.reduce((prev, curr) => (prev[meetingFields.date] < curr[meetingFields.date] ? prev : curr));
 	}
 
 	async checkOnSubmit() {

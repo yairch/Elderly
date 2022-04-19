@@ -7,8 +7,11 @@ import CountdownTimer from '../countDownTimer/CountdownTimer';
 import dateFormat from 'dateformat';
 
 function ElderlyPage(props) {
+	// FIXME: temporary. remove when decide about elderly functionality
+	const showEldrelyOptions = false;
+
 	const nearestMeeting = props.history.location.state;
-	const formattedDate = dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
+	const formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
 	const [state, setState] = useState({
 		modalisOpen: false
 	});
@@ -55,7 +58,7 @@ function ElderlyPage(props) {
 
 	}
 
-	const content = (
+	const content = ( showEldrelyOptions && 
 		<div className="buttons-section">
 			<button
 				className="sb-btn"
@@ -81,7 +84,8 @@ function ElderlyPage(props) {
 						</span>
 
 					: <div className="opening-screen-title">
-						אין לך שיחות בזמן הקרוב, ניתן ללחוץ על בקשת שיחה
+						אין לך שיחות בזמן הקרוב
+						{/* אין לך שיחות בזמן הקרוב, ניתן ללחוץ על בקשת שיחה */}
 					</div>
 				}
 			</div>

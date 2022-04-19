@@ -16,11 +16,10 @@ router.get('/channels/:userName', async (req, res, next) => {
 	}
 });
 
-router.get('/meetings-full-details/:userName', async (req, res, next) => {
+router.get('/meetings-full-details/:username', async (req, res, next) => {
 	try {
-		let {userName} = req.params;
-		userName = userName.substring(1, userName.length);
-		const meetings = await meetingDB.getFullElderlyMeetings(userName);
+		const {username} = req.params;
+		const meetings = await meetingDB.getFullElderlyMeetings(username);
 		console.log(meetings);
 		res.send((meetings));
 

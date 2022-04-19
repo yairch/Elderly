@@ -1,6 +1,6 @@
 import { serverURL } from '../ClientUtils';
 import { handleError } from './errorHandler';
-import { userTypes } from '../constants/userTypes';
+import { UserRole } from '../types/user';
 
 const loginCheck = async (username, password) => {
 	const response = await fetch(serverURL + `/user/login`, {
@@ -186,10 +186,10 @@ const getMeetings = async (volunteerUserName) => {
 
 const fetchMeetingsFullDetails = async (username, usersType) => {
 	const requestURL = 
-	(usersType === userTypes.elderly ? '/elderly' : '/volunteer')
+	(usersType === UserRole.Elderly ? '/elderly' : '/volunteer')
 	 + '/meetings-full-details';
 
-	const response = await fetch(`${serverURL + requestURL}/:${username}`,
+	const response = await fetch(`${serverURL + requestURL}/${username}`,
 		{
 			method: 'get'
 		});
