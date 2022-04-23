@@ -76,7 +76,7 @@ export const getFullElderlyMeetings = async (username: string): Promise<Meeting[
 			}
 		]);
 
-		return aggregationCursor.toArray();
+		return await aggregationCursor.toArray();
 	}
 	catch(error){
 		throw(error);

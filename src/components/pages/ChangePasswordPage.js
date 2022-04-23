@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import * as Cookies from 'js-cookie';
 import { tryLogin, updatePassword } from '../../services/server';
 import Modal from '../modal/Modal';
+import { usersFields } from '../../constants/collections';
 
 function ChangePasswordPage() {
 	const [state, setState] = useState({message: '', modalisOpen: false});
@@ -19,7 +20,7 @@ function ChangePasswordPage() {
 		async function tryToLogin() {
 			try {
 				await tryLogin(username, password);
-				Cookies.set('userName', username);
+				Cookies.set(usersFields.username, username);
 			}
 			catch (error) {
 				setState({
