@@ -47,7 +47,8 @@ function Routes() {
 				<Route exact path="/responsible/full-details/elderly" component={FullDetailsPage}/>
 				<Route exact path="/responsible/full-details/volunteer" component={FullDetailsPage}/>
 				<Route exact path="/volunteer" component={VolunteerPage}/>
-				<Route exact path="/volunteer/meetings" component={MeetingsPage}/>
+				<Route exact path="/volunteer/meetings" component={MeetingsPage}/> 
+				<Route exact path="/volunteer//meetings-full-details/:username" component={MeetingsPage}/>
 				<Route exact path="/volunteer/meetings/videoCall" component={VideoCallPage}/>
 				<Route exact path="/volunteer/meetings/feedback" component={AfterVideoCallPage}/>
 				<Route exact path="/elderly" component={ElderlyPage}/>

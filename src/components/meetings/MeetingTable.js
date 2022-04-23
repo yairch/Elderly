@@ -11,8 +11,8 @@ function MeetingTable({props,setModal}) {
 				(<table className="users-table">
 					<thead className="table-header">
 					<tr>
-						<th className="col-1">קשיש</th>
-						<th className="col-2">פגישה</th>
+						<th className="col-1">שם הקשיש</th>
+						<th className="col-2">תאריך הפגישה</th>
 						<th className="col-3">נושא הפגישה</th>
 						<th className="col-4">פעולות</th>
 					</tr>

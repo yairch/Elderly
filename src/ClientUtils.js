@@ -83,6 +83,7 @@ const filterMeetings = (meetings) => {
 	yesterday.setHours(23,59,59);
 
 	return meetings.reduce((filteredMeetings, meeting) => {
+		console.log("mm"+JSON.stringify(meeting));
 		const day = parseInt(meeting.meetingDate.substring(0, 2));
 		const month = parseInt(meeting.meetingDate.substring(3, 5));
 		const year = parseInt(meeting.meetingDate.substring(6, 10));

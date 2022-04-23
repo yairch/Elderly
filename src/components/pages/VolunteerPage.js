@@ -3,41 +3,39 @@ import * as Cookies from 'js-cookie';
 import Sidebar from '../sidebar/Sidebar';
 import OpeningScreen from '../openingScreen';
 import { filterMeetings } from '../../ClientUtils';
-import { fetchElderlyDetails, getMeetings } from '../../services/server';
+import { getElderlyMeeting, getMeetingsVolunteer } from '../../services/server';
 import {usersFields} from '../../constants/collections'
 
 function VolunteerPage(props) {
 	const [volunteerState, setVolunteerState] = useState({meetings: [], isMeetingsClicked: false});
+	
+	// async function getMeetings() {
+	// 	const response = await getMeetingsVolunteer(Cookies.get(usersFields.username));
+	// 	console.log("get Meeting name ");
+	// 	console.log(response);
+	// 	return response;
+	// }
 
-	async function getMeetingsNames() {
-		const response = await getMeetings(Cookies.get(usersFields.username));
-		console.log("get Meeting name ");
-		console.log(response);
-		return response;
-	}
-
-	async function getElderlyDetails() {
-		const response = await fetchElderlyDetails(Cookies.get(usersFields.username));
+	async function getElderlyDetails(volunteerUsername) {
+		const response = await getElderlyMeeting(volunteerUsername);
 		return await response;
 	}
 
 	async function onClick() {
-		let meetings = await getMeetingsNames();
-		let elderlyDetails = await getElderlyDetails();
-		meetings = meetings.map((dic) => (
+		// let meetings = await getMeetings();
+		let volunteerUsername = Cookies.get(usersFields.username);
+		let meetingFullElderlyDetails = await getElderlyDetails(volunteerUsername);
+		meetingFullElderlyDetails = meetingFullElderlyDetails.map((meeting) => (
 				{
-					meetingDate: dic.meeting,
-					elderlyUserName: dic.elderlyuserName,
-					meetingSubject: dic.meetingSubject,
-					elderlyDetails: elderlyDetails.find(row => row.userName === dic.elderlyuserName)
+					date: meeting.date,
+					elderlyUsername: meeting.elderlyUsername,
+					subject: meeting.subject,
+					elderlyObject: meeting.elderly[0]
 				}
 			)
 		);
-
-		meetings = filterMeetings(meetings);
-		console.log('filtered meetings');
-		console.log(meetings);
-		setVolunteerState({meetings: meetings, isMeetingsClicked: true});
+		// meetings = filterMeetings(meetings);
+		setVolunteerState({meetings: meetingFullElderlyDetails, isMeetingsClicked: true});
 	}
 
 	useEffect(() => {
