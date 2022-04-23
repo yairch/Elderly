@@ -27,10 +27,10 @@ function VolunteerPage(props) {
 		let meetingFullElderlyDetails = await getElderlyDetails(volunteerUsername);
 		meetingFullElderlyDetails = meetingFullElderlyDetails.map((meeting) => (
 				{
-					date: meeting.date,
+					meetingDate: meeting.date,
 					elderlyUsername: meeting.elderlyUsername,
 					subject: meeting.subject,
-					elderlyObject: meeting.elderly[0]
+					elderlyDetails: meeting.elderly[0]
 				}
 			)
 		);
