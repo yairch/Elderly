@@ -96,7 +96,7 @@ export const getVolunteerMeetings = async (username: string): Promise<Meeting[]>
 		const cursor = await meetings.find({volunteerUsername: username});
 		const allMeetings = await cursor.toArray();
 		
-        return allMeetings;
+        return await allMeetings;
 	}
 	catch(error){
 		throw(error);
@@ -127,7 +127,7 @@ export const getFullVolunteerMeetings = async (username: string): Promise<Meetin
 			}
 		]);
 
-		return aggregationCursor.toArray();
+		return await aggregationCursor.toArray();
 	}
 	catch(error){
 		throw(error);

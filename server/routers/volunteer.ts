@@ -4,23 +4,25 @@ import * as meetingDB from '../DButils/meeting';
 import {notifyElderly} from '../notifications'
 const router = express.Router();
 
-router.get('/meetings/:userName', async (req, res, next) => {
-	try {
-		const {userName} = req.params;
-		const meetingsPerElderly = await meetingDB.getVolunteerMeetings(userName);
-		console.log(meetingsPerElderly);
-		res.send(meetingsPerElderly);
+// router.get('/meetings/:username', async (req, res, next) => {
+// 	try {
+// 		const {username} = req.params;
+// 		const meetingsVolunteer = await meetingDB.getVolunteerMeetings(username);
+// 		console.log(meetingsVolunteer);
+// 		res.send(meetingsVolunteer);
 
-	} catch (error) {
-		next(error);
-	}
-});
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// });
 
-router.get('/meetings-full-details/:userName', async (req, res, next) => {
+router.get('/meetings/:username', async (req, res, next) => {
 	try {
-		let {userName} = req.params;
-		userName = userName.substring(0, userName.length - 1);
-		let meetings = await meetingDB.getFullVolunteerMeetings(userName);
+		let {username} = req.params;
+		console.log(username);
+		// username = username.substring(0, username.length - 1);
+		// console.log(username);
+		let meetings = await meetingDB.getFullVolunteerMeetings(username);
 		console.log(meetings);
 		res.send(meetings);
 	} 

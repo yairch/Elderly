@@ -7,9 +7,9 @@ import '../manage/manage.css';
 import { usersFields } from '../../constants/collections';
 
 function MeetingView({meeting, history,setModal}) {
-	const userName = Cookies.get(usersFields.username);
+	const username = Cookies.get(usersFields.username);
 	const elderlyDetails = meeting.elderlyDetails;
-	const channel = userName+meeting.elderlyUserName+meeting.meetingDate;
+	const channel = username+meeting.elderlyUserName+meeting.meetingDate;
 	const videoOptions = {
 		'appId': AGORA_APP_ID,
 		'channel': channel,
@@ -21,7 +21,7 @@ function MeetingView({meeting, history,setModal}) {
 
 	const onClick = async () => {
 		try {
-			const response = await notifyElderly(meeting.elderlyUserName, userName, channel, meeting.meetingSubject);
+			const response = await notifyElderly(meeting.elderlyUsername, username, channel, meeting.subject);
 			console.log('response');
 			console.log(response);
 			response.status
@@ -42,8 +42,8 @@ function MeetingView({meeting, history,setModal}) {
 	return (
 		<React.Fragment>
 			<td className="col-1">{elderlyDetails.firstName +' '+elderlyDetails.lastName}</td>
-			<td className="col-2">{meeting.meetingDate}</td>
-			<td className="col-3">{meeting.meetingSubject}</td>
+			<td className="col-2">{meeting.date}</td>
+			<td className="col-3">{meeting.subject}</td>
 			<td className="col-4">
 				<button className="check-icon-button">
 					<img className="video-call-icon-button" src={videoCall} alt="call" onClick={onClick}/>
