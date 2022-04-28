@@ -171,6 +171,10 @@ function ResponsiblePage(props) {
 		});
 	}
 
+	async function onClickChangeAdjustmentPercentages(event){
+		console.log("not ready");
+	}
+
 	useEffect(() => {
 		if (responsibleState.isVolunteerClicked) {
 			console.log(responsibleState.organizations);
@@ -304,6 +308,14 @@ function ResponsiblePage(props) {
 						onClick={(e) => onClickSearchElderly(e)}
 					>
 						חפש קשישים
+					</button>
+					<button
+						className="sb-btn"
+						name="isChangeAdjustmentPercentages"
+						type="button"
+						onClick={(e) => onClickChangeAdjustmentPercentages(e)}
+					>
+						שנה אחוזי התאמה
 					</button>
 				</div>
 				: null

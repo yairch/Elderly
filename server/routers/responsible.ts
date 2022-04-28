@@ -1,9 +1,12 @@
+import { userFields } from './../constants/collections';
 import bcrypt from 'bcrypt';
 import express from 'express';
+import * as Cookies from 'js-cookie';
 import * as userDB from '../DButils/user';
 import * as volunteerDB from '../DButils/volunteer';
 import * as elderlyDB from '../DButils/elderly';
 import * as meetingDB from '../DButils/meeting';
+import * as adjustmentPercentageDB from '../DButils/adjustmentPercentage';
 import { User, UserRole } from '../types/user';
 import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
 import {bcrypt_saltRounds} from '../constants/bycrypt'
@@ -334,6 +337,23 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 			res.status(200).send({message: 'delete succeeded', success: true});
 		}
 	}
+	catch (error) {
+		next(error);
+	}
+});
+
+router.put('/change-adjustment-percentages', async (req, res, next) => {
+	try {
+		const dateRank = req.body.dateRank as number;
+		const languageRank = req.body.dateRank as number;
+		const interestRank = req.body.interestRank as number;
+		const genderRank = req.body.genderRank as number;
+		const username = Cookies.get(userFields.username);
+		const organizationName = await userDB.getOrganizationNameByUsername(username);
+		if(organizationName){
+			await adjustmentPercentageDB.changePercent(organizationName.organizationName, dateRank, languageRank, interestRank, genderRank);
+		}
+	}	
 	catch (error) {
 		next(error);
 	}

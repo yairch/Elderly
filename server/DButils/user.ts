@@ -83,3 +83,25 @@ export const insertUser = async (username: string, hash_password: string, role: 
 		client.close();  
 	}
 }
+
+export const getOrganizationNameByUsername = async (username: string | undefined) => {
+
+	const client = new MongoClient(config.database.url);
+	try {
+		await client.connect()
+		const db = client.db(config.database.name);
+		const users = db.collection<User>(collectionIds.users);
+		const user = await users.find({username});
+		const res = await user.next();
+		const organizationName = res?.organization;
+		return{
+			organizationName
+		}
+	}
+	catch(error) {
+		throw(error);
+	}
+	finally {
+		client.close();  
+	}
+}

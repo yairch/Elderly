@@ -3,6 +3,7 @@ import express from 'express';
 import * as organizationDB from '../DButils/organization';
 import * as responsibleDB from '../DButils/responsible';
 import * as userDB from '../DButils/user';
+import * as adjustmentPercentageDB from '../DButils/adjustmentPercentage';
 import { Organization } from '../types/organization';
 import { User, UserRole } from '../types/user';
 import {sendConfirmationEmail} from '../emailSender';
@@ -30,6 +31,8 @@ router.post('/registerOrganization', async (req, res, next) => {
 		}
 		//insert into DB Organization
 		await organizationDB.insertOrganization(name, englishName, type, phoneNumber);
+		//set default values for adjustment percentages
+		await adjustmentPercentageDB.setDefaultPercent(name, 0.25, 0.25, 0.25, 0.25);
 		res.status(200).send({message: 'registration succeeded', success: true});
 	} 
 	catch (error) {
