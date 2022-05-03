@@ -6,6 +6,7 @@ import { getCurrentWebSocket } from '../services/notifacationService';
 // import { filterMeetings } from '../server.js';
 import {meetingFields, usersFields} from "../constants/collections";
 import {userTypes} from '../constants/userTypes';
+import {UserRole} from '../types/user'
 
 class LoginForm extends React.Component {
 	constructor(props) {
@@ -42,6 +43,9 @@ class LoginForm extends React.Component {
 				getCurrentWebSocket();
 				const nearestMeeting = await this.getElderlyNearestMeeting(user.username);
 				this.props.history.push('/elderly', nearestMeeting);
+			}
+			else if (user[usersFields.role] === UserRole.Responsible) {
+				this.props.history.push(`/${UserRole.Responsible}`);
 			}
 			else {
 				this.props.history.push('/' + user[usersFields.role], user[usersFields.organization]);

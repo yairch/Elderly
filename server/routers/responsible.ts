@@ -4,6 +4,7 @@ import * as userDB from '../DButils/user';
 import * as volunteerDB from '../DButils/volunteer';
 import * as elderlyDB from '../DButils/elderly';
 import * as meetingDB from '../DButils/meeting';
+import * as responsibleDB from '../DButils/responsible';
 import { User, UserRole } from '../types/user';
 import {sendConfirmationEmail, sendMeetingEmail} from '../emailSender';
 import {bcrypt_saltRounds} from '../constants/bycrypt'
@@ -14,6 +15,24 @@ import { GenderToMeet } from '../types/genderToMeet';
 
 const router = express.Router();
 
+// get responsible
+router.get('/:username', async (req, res, next) => {
+	try {
+		const {username} = req.params;
+		
+		// username exists
+		const responsible = await responsibleDB.getResponsibleByUsername(username);
+		if (!responsible) {
+			res.status(404).send('responsible doesn\'t exist');
+			return;
+		}
+		
+		res.status(200).send(JSON.stringify(responsible));
+	}
+	catch (error) {
+		next(error);
+	}
+});
 
 // register volunteer
 router.post('/registerVolunteer', async (req, res, next) => {

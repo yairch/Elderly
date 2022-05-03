@@ -6,13 +6,16 @@ import {
 	fetchElderlyOrganizationMeetings,
 	fetchOrganizationsNames,
 	fetchVolunteerOrganizationMeetings,
-	fetchVolunteers
+	fetchVolunteers,
+	getResponsible
 } from '../../services/server';
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
 import separatorIcon from '../../resources/separator-icon.png';
 // import plusIcon from '../../resources/plus-icon.png';
 import OpeningScreen from '../openingScreen';
+import { responsiblesFields, usersFields } from '../../constants/collections';
+import {ResponsibleType} from '../../types/responsible'
 
 const responsibleTemplate = {
 	organizations: [],
@@ -34,19 +37,48 @@ const responsibleTemplate = {
 }
 
 function ResponsiblePage(props) {
-	if (props?.history?.location.state) {
-		Cookies.set('organizationType', props.history.location.state);
-	}
+	const [responsibleState, setResponsibleState] = useState({...responsibleTemplate});
+	const [responsibleDetails, setResponsibleDetails] = useState({});
+	const organizationName = Cookies.get(usersFields.organization);
 
-	const organizationName = Cookies.get('organization');
-	const organizationType = Cookies.get('organizationType');
-	console.log(organizationType);
+	useEffect(() => {
+		const fetchResponsible = async () => {
+			const username = Cookies.get(usersFields.username);
+			setResponsibleDetails(await getResponsible(username));
+		}
 
-	const setTrue = organizationType === 'volunteer' ? {isVolunteerResponsible: true} : {isElderlyResponsible: true}
-	const [responsibleState, setResponsibleState] = useState({
-		...responsibleTemplate,
-		...setTrue
-	});
+		fetchResponsible();
+	}, [setResponsibleDetails])
+
+	useEffect(() => {
+
+		const responsibleType = responsibleDetails[responsiblesFields.responsibleType];
+	
+		const isResponsibleType = {
+			isVolunteerResponsible: false,
+			isElderlyResponsible: false,
+		};
+			
+		switch(responsibleType) {
+			case ResponsibleType.Volunteer:
+				isResponsibleType.isVolunteerResponsible = true;
+				break;
+			case ResponsibleType.Elderly:
+				isResponsibleType.isElderlyResponsible = true;
+				break;
+			case ResponsibleType.Both:
+				isResponsibleType.isVolunteerResponsible = true;
+				isResponsibleType.isElderlyResponsible = true;
+				break;
+			default:
+		}
+
+		setResponsibleState({
+			...responsibleTemplate,
+			...isResponsibleType
+		})
+
+	},[responsibleDetails])
 
 	async function getOrganizationsNames() {
 		const response = await fetchOrganizationsNames();

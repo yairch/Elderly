@@ -28,3 +28,22 @@ export const insertResponsible = async (username:string , firstName:string, last
 		client.close();  
 	}
 }
+
+export const getResponsibleByUsername = async (username:string): Promise<Responsible | null> => {
+
+	const client = new MongoClient(config.database.url);
+	try {
+		await client.connect();
+		
+		const db = client.db(config.database.name);
+		const responsibles = db.collection<Responsible>(collectionIds.responsibleUsers);
+		
+		return await responsibles.findOne({username});
+	}
+	catch(error) {
+		throw(error);
+	}
+	finally {
+		client.close();  
+	}
+}
