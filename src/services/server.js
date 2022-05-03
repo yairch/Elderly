@@ -183,14 +183,28 @@ const fetchElderlyOrganizationMeetings = async (organizationName) => {
 	return response;
 };
 
-const getMeetings = async (volunteerUserName) => {
-	const response = await fetch(`${serverURL}/volunteer/meetings/:${volunteerUserName}`,
+//volunteer - not used
+// const getMeetingsVolunteer = async (volunteerUsername) => {
+// 	const response = await fetch(`${serverURL}/volunteer/meetings/${volunteerUsername}`,
+// 		{
+// 			method: 'get'
+// 		});
+// 	const result = await response.json();
+// 	console.log(result);
+// 	handleError(response);
+// 	return result;
+// };
+
+//volunteer - used
+const getElderlyMeeting = async (volunteerUsername) => {
+	const response = await fetch(`${serverURL}/volunteer/meetings/${volunteerUsername}`,
 		{
 			method: 'get'
 		});
-
+	const result = await response.json();
+	// console.log(result); 
 	handleError(response);
-	return response.json();
+	return result;
 };
 
 const fetchMeetingsFullDetails = async (username, usersType) => {
@@ -218,6 +232,7 @@ const fetchChannels = async (elderlyUserName) => {
 };
 
 const fetchElderlyDetails = async (organizationName) => {
+	console.log(organizationName);
 	if (!organizationName) {
 		organizationName = 'NONE';
 	}
@@ -226,9 +241,10 @@ const fetchElderlyDetails = async (organizationName) => {
 		{
 			method: 'get'
 		});
-
+	const result = await response.json();
+	console.log(result);
 	handleError(response);
-	return response.json();
+	return result;
 };
 
 const deleteMeetingFromDB = async (channelName) => {
@@ -251,7 +267,7 @@ const notifyElderly = async (elderlyId, volunteerId, channel, meetingSubject) =>
 	handleError(response);
 	return response;
 };
-
+ 
 export {
 	registerNotifications,
 	loginCheck,
@@ -266,12 +282,13 @@ export {
 	registerVolunteer,
 	fetchVolunteers,
 	addMeetingDB,
-	getMeetings,
+	// getMeetingsVolunteer,
 	fetchMeetingsFullDetails,
 	fetchChannels,
 	fetchElderlyDetails,
 	fetchVolunteerOrganizationMeetings,
 	fetchElderlyOrganizationMeetings,
+	getElderlyMeeting,
 	deleteMeetingFromDB,
 	notifyElderly
 };
