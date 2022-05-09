@@ -198,6 +198,18 @@ const getElderlyMeeting = async (volunteerUsername) => {
 	return result;
 };
 
+const fetchAdjustmentPercentages = async (responsibleUsername) => {
+	console.log(responsibleUsername);
+	const response = await fetch(`${serverURL}/responsible/change-adjustment-percentages/${responsibleUsername}`,
+		{
+			method: 'get'
+		});
+	const result = await response.json();
+	console.log(result); 
+	handleError(response);
+	return result;
+};
+
 const fetchMeetingsFullDetails = async (username, usersType) => {
 	const requestURL = 
 	(usersType === UserRole.Elderly ? '/elderly' : '/volunteer')
@@ -280,6 +292,7 @@ export {
 	fetchVolunteerOrganizationMeetings,
 	fetchElderlyOrganizationMeetings,
 	getElderlyMeeting,
+	fetchAdjustmentPercentages,
 	deleteMeetingFromDB,
 	notifyElderly
 };

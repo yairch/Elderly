@@ -342,16 +342,19 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 	}
 });
 
-router.put('/change-adjustment-percentages', async (req, res, next) => {
+router.put('/change-adjustment-percentages/:username', async (req, res, next) => {
 	try {
+		let {username} = req.params;
+		console.log(username);
 		const dateRank = req.body.dateRank as number;
 		const languageRank = req.body.dateRank as number;
 		const interestRank = req.body.interestRank as number;
 		const genderRank = req.body.genderRank as number;
-		const username = Cookies.get(userFields.username);
+		// const username = Cookies.get(userFields.username);
 		const organizationName = await userDB.getOrganizationNameByUsername(username);
 		if(organizationName){
-			await adjustmentPercentageDB.changePercent(organizationName.organizationName, dateRank, languageRank, interestRank, genderRank);
+			let ap = await adjustmentPercentageDB.changePercent(organizationName.organizationName, dateRank, languageRank, interestRank, genderRank);
+			res.send(ap);
 		}
 	}	
 	catch (error) {

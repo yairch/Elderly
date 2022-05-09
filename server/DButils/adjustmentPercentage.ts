@@ -44,6 +44,8 @@ export const changePercent = async (organizationName: string | undefined , dateR
                     genderRank: genderRank
                 }
             });
+		console.log(adjustmentPercentages);
+		return adjustmentPercentages
 	}
 	catch(error) {
 		console.error(error);

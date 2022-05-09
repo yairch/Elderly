@@ -6,13 +6,15 @@ import {
 	fetchElderlyOrganizationMeetings,
 	fetchOrganizationsNames,
 	fetchVolunteerOrganizationMeetings,
-	fetchVolunteers
+	fetchVolunteers,
+	fetchAdjustmentPercentages
 } from '../../services/server';
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
 import separatorIcon from '../../resources/separator-icon.png';
 // import plusIcon from '../../resources/plus-icon.png';
 import OpeningScreen from '../openingScreen';
+import {usersFields} from '../../constants/collections'
 
 const responsibleTemplate = {
 	organizations: [],
@@ -28,9 +30,11 @@ const responsibleTemplate = {
 	isManageElderlyMeetingsClicked: false,
 	isSearchVolunteersClicked: false,
 	isSearchElderlyClicked: false,
+	isChangePercentagesClicked: false,
 	modalisOpen: false,
 	elderlyOrganizationMeetings: [],
-	volunteerOrganizationMeetings: []
+	volunteerOrganizationMeetings: [],
+	adjustmentPercentages: []
 }
 
 function ResponsiblePage(props) {
@@ -40,7 +44,8 @@ function ResponsiblePage(props) {
 
 	const organizationName = Cookies.get('organization');
 	const organizationType = Cookies.get('organizationType');
-	console.log(organizationType);
+	const username = Cookies.get('username');
+	console.log(organizationType); //print organizationName
 
 	const setTrue = organizationType === 'volunteer' ? {isVolunteerResponsible: true} : {isElderlyResponsible: true}
 	const [responsibleState, setResponsibleState] = useState({
@@ -104,6 +109,16 @@ function ResponsiblePage(props) {
 		}
 		catch (error) {
 
+		}
+	}
+
+	async function changeAdjustmentPercentages() {
+		try {
+			console.log(username);
+			const response = await fetchAdjustmentPercentages(username);
+			return await response;
+		}
+		catch (error) {
 		}
 	}
 
@@ -172,7 +187,12 @@ function ResponsiblePage(props) {
 	}
 
 	async function onClickChangeAdjustmentPercentages(event){
-		console.log("not ready");
+		// let responsibleUsername = Cookies.get(usersFields.username);
+		let adjustmentPercentages = changeAdjustmentPercentages(username);
+		setResponsibleState({
+			adjustmentPercentages: adjustmentPercentages,
+			[event.target.name]: true
+		});
 	}
 
 	useEffect(() => {
@@ -216,7 +236,14 @@ function ResponsiblePage(props) {
 				usersType: 'קשישים'
 			});
 		}
-	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers]);
+		else if (responsibleState.isChangePercentagesClicked) {
+			console.log('responsibleState.adjustmentPercentages');
+			console.log(responsibleState.adjustmentPercentages);
+			props.history.push('/responsible/change-adjustment-percentages', {
+				adjustmentPercentages: responsibleState.adjustmentPercentages
+			});
+		}
+	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers, responsibleState.isChangePercentagesClicked, responsibleState.adjustmentPercentages]);
 
 	const toggleModal = useCallback(
 		() => {
