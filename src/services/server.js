@@ -116,6 +116,15 @@ const registerResponsible = async (state) => {
 	return response;
 };
 
+export const getResponsible = async (username) => {
+	const response = await fetch(serverURL + `/responsible/${username}`, {
+		method: 'GET',
+	});
+
+	handleError(response);
+	return response.json();
+};
+
 const registerVolunteer = async (state) => {
 	const response = await fetch(serverURL + `/responsible/registerVolunteer`, {
 		method: 'post',
