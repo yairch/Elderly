@@ -54,7 +54,7 @@ function Routes() {
 				<Route exact path="/volunteer/meetings/feedback" component={AfterVideoCallPage}/>
 				<Route exact path="/elderly" component={ElderlyPage}/>
 				<Route exact path="/elderly/meetings/videoCall" component={VideoCallPage}/>
-				<Route exact path="/responsible/change-adjustment-percentages/:username" component={ChangeAdjustmentPercentages}/>
+				<Route exact path="/responsible/change-adjustment-percentages" component={ChangeAdjustmentPercentages}/>
 			</Switch>
 		</div>
 	);

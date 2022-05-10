@@ -8,7 +8,7 @@ import {
 	fetchVolunteerOrganizationMeetings,
 	fetchVolunteers,
 	getResponsible,
-	fetchAdjustmentPercentages
+	updateAdjustmentPercentages
 } from '../../services/server';
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
@@ -32,7 +32,7 @@ const responsibleTemplate = {
 	isManageElderlyMeetingsClicked: false,
 	isSearchVolunteersClicked: false,
 	isSearchElderlyClicked: false,
-	isChangePercentagesClicked: false,
+	isChangeAdjustmentPercentages: false,
 	modalisOpen: false,
 	elderlyOrganizationMeetings: [],
 	volunteerOrganizationMeetings: [],
@@ -146,7 +146,8 @@ function ResponsiblePage(props) {
 	async function changeAdjustmentPercentages() {
 		try {
 			console.log(username);
-			const response = await fetchAdjustmentPercentages(username);
+			const response = await updateAdjustmentPercentages(username);
+			console.log(response);
 			return await response;
 		}
 		catch (error) {
@@ -219,7 +220,8 @@ function ResponsiblePage(props) {
 
 	async function onClickChangeAdjustmentPercentages(event){
 		// let responsibleUsername = Cookies.get(usersFields.username);
-		let adjustmentPercentages = changeAdjustmentPercentages(username);
+		let adjustmentPercentages = await changeAdjustmentPercentages(username);
+		console.log(adjustmentPercentages);
 		setResponsibleState({
 			adjustmentPercentages: adjustmentPercentages,
 			[event.target.name]: true
@@ -267,14 +269,14 @@ function ResponsiblePage(props) {
 				usersType: 'קשישים'
 			});
 		}
-		else if (responsibleState.isChangePercentagesClicked) {
+		else if (responsibleState.isChangeAdjustmentPercentages) {
 			console.log('responsibleState.adjustmentPercentages');
 			console.log(responsibleState.adjustmentPercentages);
 			props.history.push('/responsible/change-adjustment-percentages', {
 				adjustmentPercentages: responsibleState.adjustmentPercentages
 			});
 		}
-	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers, responsibleState.isChangePercentagesClicked, responsibleState.adjustmentPercentages]);
+	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers, responsibleState.isChangeAdjustmentPercentages, responsibleState.adjustmentPercentages, responsibleState.isChangePercentagesClicked]);
 
 	const toggleModal = useCallback(
 		() => {
@@ -286,6 +288,14 @@ function ResponsiblePage(props) {
 
 	const content = (
 		<>
+					<button
+						className="sb-btn"
+						name="isChangeAdjustmentPercentages"
+						type="button"
+						onClick={(e) => onClickChangeAdjustmentPercentages(e)}
+					>
+						שנה אחוזי התאמה
+					</button>
 			{responsibleState.isVolunteerResponsible ?
 				<div className="buttons-section">
 					<button
@@ -366,14 +376,6 @@ function ResponsiblePage(props) {
 						onClick={(e) => onClickSearchElderly(e)}
 					>
 						חפש קשישים
-					</button>
-					<button
-						className="sb-btn"
-						name="isChangeAdjustmentPercentages"
-						type="button"
-						onClick={(e) => onClickChangeAdjustmentPercentages(e)}
-					>
-						שנה אחוזי התאמה
 					</button>
 				</div>
 				: null

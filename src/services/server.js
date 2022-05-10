@@ -207,11 +207,11 @@ const getElderlyMeeting = async (volunteerUsername) => {
 	return result;
 };
 
-const fetchAdjustmentPercentages = async (responsibleUsername) => {
+const updateAdjustmentPercentages = async (responsibleUsername) => {
 	console.log(responsibleUsername);
 	const response = await fetch(`${serverURL}/responsible/change-adjustment-percentages/${responsibleUsername}`,
 		{
-			method: 'get'
+			method: 'put'
 		});
 	const result = await response.json();
 	console.log(result); 
@@ -301,7 +301,7 @@ export {
 	fetchVolunteerOrganizationMeetings,
 	fetchElderlyOrganizationMeetings,
 	getElderlyMeeting,
-	fetchAdjustmentPercentages,
+	updateAdjustmentPercentages,
 	deleteMeetingFromDB,
 	notifyElderly
 };

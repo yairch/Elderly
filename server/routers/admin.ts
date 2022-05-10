@@ -32,7 +32,7 @@ router.post('/registerOrganization', async (req, res, next) => {
 		//insert into DB Organization
 		await organizationDB.insertOrganization(name, englishName, type, phoneNumber);
 		//set default values for adjustment percentages
-		await adjustmentPercentageDB.setDefaultPercent(name, 0.25, 0.25, 0.25, 0.25);
+		await adjustmentPercentageDB.setDefaultPercent(name, 25, 25, 25, 25);
 		res.status(200).send({message: 'registration succeeded', success: true});
 	} 
 	catch (error) {
