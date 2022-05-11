@@ -361,12 +361,29 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 	}
 });
 
+router.get('/change-adjustment-percentages/:username', async (req, res, next) => {
+	try {
+		let {username} = req.params;
+		console.log(username);
+		const organizationName = await userDB.getOrganizationNameByUsername(username);
+		if(organizationName){
+			//get current organization's percentages
+			let percentages = await adjustmentPercentageDB.getPercent(organizationName.organizationName);
+			console.log(percentages);
+			res.send(percentages);
+		}
+	}	
+	catch (error) {
+		next(error);
+	}
+});
+
 router.put('/change-adjustment-percentages/:username', async (req, res, next) => {
 	try {
 		let {username} = req.params;
 		console.log(username);
 		const dateRank = req.body.dateRank as number;
-		const languageRank = req.body.dateRank as number;
+		const languageRank = req.body.languageRank as number;
 		const interestRank = req.body.interestRank as number;
 		const genderRank = req.body.genderRank as number;
 		// const username = Cookies.get(userFields.username);
@@ -374,13 +391,12 @@ router.put('/change-adjustment-percentages/:username', async (req, res, next) =>
 		// console.log(organizationName);
 		// res.send(organizationName);
 		if(organizationName){
-			//get current organization's percentages
-			let percentages = await adjustmentPercentageDB.getPercent(organizationName.organizationName);
 			//update new organization's percentages
 			await adjustmentPercentageDB.changePercent(organizationName.organizationName, dateRank, languageRank, interestRank, genderRank);
-			console.log(percentages);
-			res.send(percentages);
+			console.log(adjustmentPercentageDB);
+			// res.send(adjustmentPercentageDB);
 		}
+		res.status(200).send({message: 'update succeeded', success: true});
 	}	
 	catch (error) {
 		next(error);

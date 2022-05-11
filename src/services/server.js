@@ -207,16 +207,34 @@ const getElderlyMeeting = async (volunteerUsername) => {
 	return result;
 };
 
-const updateAdjustmentPercentages = async (responsibleUsername) => {
+const fetchAdjustmentPercentages = async (responsibleUsername) => {
 	console.log(responsibleUsername);
 	const response = await fetch(`${serverURL}/responsible/change-adjustment-percentages/${responsibleUsername}`,
 		{
-			method: 'put'
+			method: 'get'
 		});
 	const result = await response.json();
 	console.log(result); 
 	handleError(response);
 	return result;
+};
+
+const updateAdjustmentPercentages = async (responsibleUsername, dateRank, languageRank, interestRank, genderRank) => {
+	console.log(responsibleUsername);
+	console.log(dateRank+" "+languageRank+" "+interestRank+" "+genderRank);
+	const response = await fetch(`${serverURL}/responsible/change-adjustment-percentages/${responsibleUsername}`,
+		{
+			method: 'put',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				responsibleUsername,
+				dateRank,
+				languageRank,
+				interestRank,
+				genderRank
+			})
+		});
+	handleError(response);
 };
 
 const fetchMeetingsFullDetails = async (username, usersType) => {
@@ -301,6 +319,7 @@ export {
 	fetchVolunteerOrganizationMeetings,
 	fetchElderlyOrganizationMeetings,
 	getElderlyMeeting,
+	fetchAdjustmentPercentages,
 	updateAdjustmentPercentages,
 	deleteMeetingFromDB,
 	notifyElderly

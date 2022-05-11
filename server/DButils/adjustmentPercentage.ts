@@ -44,7 +44,7 @@ export const getPercent = async (organizationName: string | undefined) => {
 	}
 }
 
-
+ 
 export const changePercent = async (organizationName: string | undefined , dateRank: number, languageRank: number, interestRank: number, genderRank: number) => {
 
 	const client = new MongoClient(config.database.url);
@@ -53,9 +53,9 @@ export const changePercent = async (organizationName: string | undefined , dateR
 		const db = client.db(config.database.name);
 		const adjustmentPercentages = db.collection<adjustmentPercentage>(collectionIds.adjustmentPercentages);
         await adjustmentPercentages.updateOne(
-            {organizationName: organizationName},
+            {organizationName},
             {
-                $set:
+                '$set':
                 {   
                     dateRank: dateRank,
                     languageRank: languageRank,

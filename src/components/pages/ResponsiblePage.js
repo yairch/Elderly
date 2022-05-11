@@ -8,7 +8,7 @@ import {
 	fetchVolunteerOrganizationMeetings,
 	fetchVolunteers,
 	getResponsible,
-	updateAdjustmentPercentages
+	fetchAdjustmentPercentages
 } from '../../services/server';
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
@@ -146,8 +146,8 @@ function ResponsiblePage(props) {
 	async function changeAdjustmentPercentages() {
 		try {
 			console.log(username);
-			const response = await updateAdjustmentPercentages(username);
-			console.log(response);
+			const response = await fetchAdjustmentPercentages(username);
+			// console.log(response);
 			return await response;
 		}
 		catch (error) {
@@ -221,7 +221,7 @@ function ResponsiblePage(props) {
 	async function onClickChangeAdjustmentPercentages(event){
 		// let responsibleUsername = Cookies.get(usersFields.username);
 		let adjustmentPercentages = await changeAdjustmentPercentages(username);
-		console.log(adjustmentPercentages);
+		// console.log(adjustmentPercentages);
 		setResponsibleState({
 			adjustmentPercentages: adjustmentPercentages,
 			[event.target.name]: true
@@ -270,8 +270,8 @@ function ResponsiblePage(props) {
 			});
 		}
 		else if (responsibleState.isChangeAdjustmentPercentages) {
-			console.log('responsibleState.adjustmentPercentages');
-			console.log(responsibleState.adjustmentPercentages);
+			// console.log('responsibleState.adjustmentPercentages');
+			// console.log(responsibleState.adjustmentPercentages);
 			props.history.push('/responsible/change-adjustment-percentages', {
 				adjustmentPercentages: responsibleState.adjustmentPercentages
 			});

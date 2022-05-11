@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import * as Cookies from 'js-cookie';
 import Navbar from '../navbar/Navbar';
 import Modal from '../modal/Modal';
+import { usersFields } from '../../constants/collections';
+import { updateAdjustmentPercentages } from '../../services/server';
 
 function ChangeAdjustmentPercentages(props) {
 
@@ -10,22 +12,35 @@ function ChangeAdjustmentPercentages(props) {
 	const languageRankDB = props.location.state.adjustmentPercentages.languageRank;
 	const interestRankDB = props.location.state.adjustmentPercentages.interestRank;
 	const genderRankDB = props.location.state.adjustmentPercentages.genderRank;
-	console.log(dateRankDB+" "+languageRankDB+" "+interestRankDB+" "+genderRankDB);
 	
 	const [dateRank, setDateRank] = useState(dateRankDB);
 	const [languageRank, setLanguageRank] = useState(languageRankDB);
 	const [interestRank, setInterestRank] = useState(interestRankDB);
 	const [genderRank, setGenderRank] = useState(genderRankDB);
-
+	
+	async function changeAdjustmentPercentages() {
+		try {
+			checkOnSubmit();
+			const username = Cookies.get(usersFields.username);
+			console.log(username);
+			console.log(dateRank+" "+languageRank+" "+interestRank+" "+genderRank);
+			await updateAdjustmentPercentages(username, dateRank, languageRank, interestRank, genderRank);
+		}
+		catch (error) {
+		}
+	}
+	
 	function checkOnSubmit(){
-		const sum = dateRank + languageRank + interestRank + genderRank;
+		const sum = parseFloat(dateRank) + parseFloat(languageRank) + parseFloat(interestRank) + parseFloat(genderRank);
 		console.log(sum);
 		if(sum !== 100){
 			console.log("incorrect values");
-			// this.handleConfirm();
-		}
+			// this.setState({message: `,העדכון נכשל.וודא שסך האחוזים שווה ל100`, hasErrors: true});
+			// handleConfirm();
+		} 
 		else{
 			console.log("correct values");
+			// this.setState({message: 'העדכון הצליח', hasErrors: false});
 		}
 	}
 
@@ -47,7 +62,8 @@ function ChangeAdjustmentPercentages(props) {
 		<br/><h1>Choose your organization's adjustment percentages</h1>
 		
 		<br/><label>Date Rank
-		<input value={dateRank} type='number' min='0' max='100' pattern="[0-9]*"
+		<input value={dateRank} type='number'
+		//  min='0' max='100' pattern="[0-9]*"
 		onChange={e => setDateRank(e.target.value)} />
 		</label>
 
@@ -66,7 +82,7 @@ function ChangeAdjustmentPercentages(props) {
 		onChange={e => setGenderRank(e.target.value)} />
 		</label>
 		<br/><br/>
-		<button className="sb-btn" onClick={checkOnSubmit}>עדכון אחוזי התאמה מחדש</button>
+		<button className="sb-btn" onClick={changeAdjustmentPercentages}>עדכון אחוזי התאמה מחדש</button>
 		</div>
 	  );
 }
