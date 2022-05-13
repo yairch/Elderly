@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Cookies from 'js-cookie';
 import Sidebar from '../sidebar/Sidebar';
 import OpeningScreen from '../openingScreen';
-import { filterMeetings } from '../../ClientUtils';
+// import { filterMeetings } from '../../ClientUtils';
 import { getElderlyMeeting, getMeetingsVolunteer } from '../../services/server';
 import {usersFields} from '../../constants/collections'
 

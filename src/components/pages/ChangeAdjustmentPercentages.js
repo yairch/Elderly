@@ -7,6 +7,12 @@ import { updateAdjustmentPercentages } from '../../services/server';
 
 function ChangeAdjustmentPercentages(props) {
 
+	const [state, setState] = useState({message: '', modalisOpen: false});
+	const toggleModal = () => {
+		setState({modalisOpen: !state.modalisOpen});
+	};
+	let success = 1;
+
 	//insert to useState the values from DB
 	const dateRankDB = props.location.state.adjustmentPercentages.dateRank;
 	const languageRankDB = props.location.state.adjustmentPercentages.languageRank;
@@ -21,10 +27,17 @@ function ChangeAdjustmentPercentages(props) {
 	async function changeAdjustmentPercentages() {
 		try {
 			checkOnSubmit();
-			const username = Cookies.get(usersFields.username);
-			console.log(username);
-			console.log(dateRank+" "+languageRank+" "+interestRank+" "+genderRank);
-			await updateAdjustmentPercentages(username, dateRank, languageRank, interestRank, genderRank);
+			if( success === 1){
+				const username = Cookies.get(usersFields.username);
+				console.log(username);
+				console.log(dateRank+" "+languageRank+" "+interestRank+" "+genderRank);
+				await updateAdjustmentPercentages(username, dateRank, languageRank, interestRank, genderRank);
+				
+				setState({
+					modalisOpen: true,
+					message: 'עדכון אחוזי ההתאמה הצליח'
+				});
+			}
 		}
 		catch (error) {
 		}
@@ -35,26 +48,13 @@ function ChangeAdjustmentPercentages(props) {
 		console.log(sum);
 		if(sum !== 100){
 			console.log("incorrect values");
-			// this.setState({message: `,העדכון נכשל.וודא שסך האחוזים שווה ל100`, hasErrors: true});
-			// handleConfirm();
-		} 
-		else{
-			console.log("correct values");
-			// this.setState({message: 'העדכון הצליח', hasErrors: false});
+			setState({
+				modalisOpen: true,
+				message: "עדכון אחוזי ההתאמה נכשל, אנא וודא/י כי סכום הפרמטרים שווה ל100"
+			});
+			success = 0;
 		}
 	}
-
-	// async function handleConfirm(){
-	// 	try {
-	// 		const response = await updateAdjustmentPercentages(this.state);
-	// 		await response.json();
-	// 		this.setState({message: 'העדכון הצליח', hasErrors: false});
-	// 	}
-	// 	catch (error) {
-	// 		this.setState({message: `,העדכון נכשל.וודא שסך האחוזים שווה ל100 \n ${error.message}`, hasErrors: true});
-	// 	}
-	// 	this.toggleModal();
-	// }
 
 	return (
 		<div>
@@ -62,8 +62,7 @@ function ChangeAdjustmentPercentages(props) {
 		<br/><h1>Choose your organization's adjustment percentages</h1>
 		
 		<br/><label>Date Rank
-		<input value={dateRank} type='number'
-		//  min='0' max='100' pattern="[0-9]*"
+		<input value={dateRank} type='number' min='0' max='100' pattern="[0-9]*"
 		onChange={e => setDateRank(e.target.value)} />
 		</label>
 
@@ -83,6 +82,13 @@ function ChangeAdjustmentPercentages(props) {
 		</label>
 		<br/><br/>
 		<button className="sb-btn" onClick={changeAdjustmentPercentages}>עדכון אחוזי התאמה מחדש</button>
+		{state.modalisOpen ?
+				<Modal
+					{...state}
+					closeModal={toggleModal}
+				/>
+				: null
+			}
 		</div>
 	  );
 }

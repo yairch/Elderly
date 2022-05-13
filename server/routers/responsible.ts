@@ -386,15 +386,10 @@ router.put('/change-adjustment-percentages/:username', async (req, res, next) =>
 		const languageRank = req.body.languageRank as number;
 		const interestRank = req.body.interestRank as number;
 		const genderRank = req.body.genderRank as number;
-		// const username = Cookies.get(userFields.username);
 		const organizationName = await userDB.getOrganizationNameByUsername(username);
-		// console.log(organizationName);
-		// res.send(organizationName);
 		if(organizationName){
 			//update new organization's percentages
 			await adjustmentPercentageDB.changePercent(organizationName.organizationName, dateRank, languageRank, interestRank, genderRank);
-			console.log(adjustmentPercentageDB);
-			// res.send(adjustmentPercentageDB);
 		}
 		res.status(200).send({message: 'update succeeded', success: true});
 	}	
