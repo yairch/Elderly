@@ -20,6 +20,7 @@ import AfterVideoCallPage from './components/pages/AfterVideoCallPage';
 import FullDetailsPage from './components/pages/FullDetailsPage';
 import ForgotPasswordPage from './components/pages/ForgotPasswordPage';
 import ChangePassword from './components/CangePassword';
+import ChangeAdjustmentPercentages from './components/pages/ChangeAdjustmentPercentages';
 
 function Routes() {
 	return (
@@ -53,6 +54,7 @@ function Routes() {
 				<Route exact path="/volunteer/meetings/feedback" component={AfterVideoCallPage}/>
 				<Route exact path="/elderly" component={ElderlyPage}/>
 				<Route exact path="/elderly/meetings/videoCall" component={VideoCallPage}/>
+				<Route exact path="/responsible/change-adjustment-percentages" component={ChangeAdjustmentPercentages}/>
 			</Switch>
 		</div>
 	);

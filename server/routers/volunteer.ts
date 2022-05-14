@@ -20,8 +20,6 @@ router.get('/meetings/:username', async (req, res, next) => {
 	try {
 		let {username} = req.params;
 		console.log(username);
-		// username = username.substring(0, username.length - 1);
-		// console.log(username);
 		let meetings = await meetingDB.getFullVolunteerMeetings(username);
 		console.log(meetings);
 		res.send(meetings);

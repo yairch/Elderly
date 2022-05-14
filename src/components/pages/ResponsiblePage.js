@@ -7,7 +7,8 @@ import {
 	fetchOrganizationsNames,
 	fetchVolunteerOrganizationMeetings,
 	fetchVolunteers,
-	getResponsible
+	getResponsible,
+	fetchAdjustmentPercentages
 } from '../../services/server';
 import Modal from '../modal/Modal';
 import Sidebar from '../sidebar/Sidebar';
@@ -31,15 +32,18 @@ const responsibleTemplate = {
 	isManageElderlyMeetingsClicked: false,
 	isSearchVolunteersClicked: false,
 	isSearchElderlyClicked: false,
+	isChangeAdjustmentPercentages: false,
 	modalisOpen: false,
 	elderlyOrganizationMeetings: [],
-	volunteerOrganizationMeetings: []
+	volunteerOrganizationMeetings: [],
+	adjustmentPercentages: []
 }
 
 function ResponsiblePage(props) {
 	const [responsibleState, setResponsibleState] = useState({...responsibleTemplate});
 	const [responsibleDetails, setResponsibleDetails] = useState({});
 	const organizationName = Cookies.get(usersFields.organization);
+	const username = Cookies.get(usersFields.username);
 
 	useEffect(() => {
 		const fetchResponsible = async () => {
@@ -139,6 +143,17 @@ function ResponsiblePage(props) {
 		}
 	}
 
+	async function changeAdjustmentPercentages() {
+		try {
+			console.log(username);
+			const response = await fetchAdjustmentPercentages(username);
+			// console.log(response);
+			return await response;
+		}
+		catch (error) {
+		}
+	}
+
 	async function onClick(event) {
 		let organizations = await getOrganizationsNames();
 		organizations = organizations.map((dic) => (
@@ -203,6 +218,16 @@ function ResponsiblePage(props) {
 		});
 	}
 
+	async function onClickChangeAdjustmentPercentages(event){
+		// let responsibleUsername = Cookies.get(usersFields.username);
+		let adjustmentPercentages = await changeAdjustmentPercentages(username);
+		// console.log(adjustmentPercentages);
+		setResponsibleState({
+			adjustmentPercentages: adjustmentPercentages,
+			[event.target.name]: true
+		});
+	}
+
 	useEffect(() => {
 		if (responsibleState.isVolunteerClicked) {
 			console.log(responsibleState.organizations);
@@ -244,7 +269,14 @@ function ResponsiblePage(props) {
 				usersType: 'קשישים'
 			});
 		}
-	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers]);
+		else if (responsibleState.isChangeAdjustmentPercentages) {
+			// console.log('responsibleState.adjustmentPercentages');
+			// console.log(responsibleState.adjustmentPercentages);
+			props.history.push('/responsible/change-adjustment-percentages', {
+				adjustmentPercentages: responsibleState.adjustmentPercentages
+			});
+		}
+	},[organizationName, props.history, responsibleState.elderlyOrganizationMeetings, responsibleState.elderlyUsers, responsibleState.isElderlyClicked, responsibleState.isManageElderlyMeetingsClicked, responsibleState.isManageVolunteersClicked, responsibleState.isManageVolunteersMeetingsClicked, responsibleState.isSearchElderlyClicked, responsibleState.isSearchVolunteersClicked, responsibleState.isVolunteerClicked, responsibleState.organizations, responsibleState.users, responsibleState.volunteerOrganizationMeetings, responsibleState.volunteersUsers, responsibleState.isChangeAdjustmentPercentages, responsibleState.adjustmentPercentages, responsibleState.isChangePercentagesClicked]);
 
 	const toggleModal = useCallback(
 		() => {
@@ -256,6 +288,14 @@ function ResponsiblePage(props) {
 
 	const content = (
 		<>
+					<button
+						className="sb-btn"
+						name="isChangeAdjustmentPercentages"
+						type="button"
+						onClick={(e) => onClickChangeAdjustmentPercentages(e)}
+					>
+						שנה אחוזי התאמה
+					</button>
 			{responsibleState.isVolunteerResponsible ?
 				<div className="buttons-section">
 					<button
