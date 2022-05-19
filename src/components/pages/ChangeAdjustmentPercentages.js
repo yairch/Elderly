@@ -4,6 +4,7 @@ import Navbar from '../navbar/Navbar';
 import Modal from '../modal/Modal';
 import { usersFields } from '../../constants/collections';
 import { updateAdjustmentPercentages } from '../../services/server';
+import './ChangeAdjustmentPercentages.css'
 
 function ChangeAdjustmentPercentages(props) {
 
@@ -57,31 +58,31 @@ function ChangeAdjustmentPercentages(props) {
 	}
 
 	return (
-		<div>
+		<div className='container'>
 		<Navbar history={props.history}/>
-		<br/><h1>Choose your organization's adjustment percentages</h1>
-		
-		<br/><label>Date Rank
+		<br/><h1>אנא בחר את אחוזי ההתאמה לפרמטרים השונים בין המתנדבים לקשישים עבור הארגון</h1>
+		<div className='rank'>
+		<br/><label>תאריכים מועדפים
 		<input value={dateRank} type='number' min='0' max='100' pattern="[0-9]*"
 		onChange={e => setDateRank(e.target.value)} />
 		</label>
 
-		<br/><label>Language Rank
+		<br/><label>שפות מועדפות 
 		<input value={languageRank} type='number' min='0' max='100' pattern="[0-9]*"
 		onChange={e => setLanguageRank(e.target.value)} />
 		</label>
 
-		<br/><label>InterestRank
+		<br/><label>תחומי עניין
 		<input value={interestRank} type='number' min='0' max='100' pattern="[0-9]*"
 		onChange={e => setInterestRank(e.target.value)} />
 		</label>
 
-		<br/><label>Gender Rank
+		<br/><label>מגדר מועדף
 		<input value={genderRank} type='number' min='0' max='100' pattern="[0-9]*"
 		onChange={e => setGenderRank(e.target.value)} />
 		</label>
-		<br/><br/>
-		<button className="sb-btn" onClick={changeAdjustmentPercentages}>עדכון אחוזי התאמה מחדש</button>
+		</div>
+		<button className="cng-btn" onClick={changeAdjustmentPercentages}>עדכון אחוזי התאמה מחדש</button>
 		{state.modalisOpen ?
 				<Modal
 					{...state}
@@ -93,3 +94,4 @@ function ChangeAdjustmentPercentages(props) {
 	  );
 }
 export default ChangeAdjustmentPercentages;
+
