@@ -3,14 +3,29 @@ import Sidebar from '../sidebar/Sidebar';
 import InComingCallModal from '../modal/InComingCallModal';
 import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
-import CountdownTimer from '../countDownTimer/CountdownTimer';
+// import CountdownTimer from '../countDownTimer/CountdownTimer';
 import dateFormat from 'dateformat';
 
 function ElderlyPage(props) {
-	// FIXME: temporary. remove when decide about elderly functionality
-	const showEldrelyOptions = false;
+	
+	// const videoOptions = {
+	// 	'appId': AGORA_APP_ID,
+	// 	'channel': props.history.location.state.channelName,
+	// 	// channel.volunteer[0].username+props.history.location.state.channel.elderlyUsername+props.history.location.state.channel.date,
+	// 	'baseMode': 'avc',
+	// 	'transcode': 'interop',
+	// 	'attendeeMode': 'video',
+	// 	'videoProfile': '480p_4'
+	// };
+	// console.log(props.history.location.state.channelName)
+	// console.log(videoOptions)
 
+	// FIXME: temporary. remove when decide about elderly functionality
+	const showEldrelyOptions = true;
 	const nearestMeeting = props.history.location.state;
+	console.log(nearestMeeting)
+	const volunteer = props.history.location.state.volunteer[0];
+	console.log(volunteer)
 	const formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
 	const [state, setState] = useState({
 		modalisOpen: false
@@ -27,26 +42,27 @@ function ElderlyPage(props) {
 	});
 
 	const setIncomingModal = (data) => {
+		console.log(data)
 		openModal(data);
 		setAnswerCall({
 			answerCall: () => {
-				console.log('channel' + data.channel);
-				console.log('data' + data);
+				console.log('channel' + data.channelName);
+				console.log('data' + JSON.stringify(data));
 				const videoOptions = {
 					'appId': AGORA_APP_ID,
-					'channel': data.channel,
+					'channel': data.channelName,
 					'baseMode': 'avc',
 					'transcode': 'interop',
 					'attendeeMode': 'video',
 					'videoProfile': '480p_4'
 				};
-
-				props.history.push('/elderly/meetings/videoCall', {videoOptions: videoOptions, isElderly: true});
+				props.history.push('/elderly/meetings/videoCall', {videoOptions: videoOptions, volunteer: volunteer, isElderly: true});
 			}
 		});
 	};
 
 	const openModal = (data) => {
+		console.log("open modal",data)
 		setState({modalisOpen: true, ...data});
 	};
 
@@ -55,7 +71,6 @@ function ElderlyPage(props) {
 	});
 
 	async function onClick() {
-
 	}
 
 	const content = ( showEldrelyOptions && 
@@ -64,7 +79,7 @@ function ElderlyPage(props) {
 				className="sb-btn"
 				type="button"
 				onClick={onClick}>
-				לחץ לבקשת שיחה
+				לא בשימוש
 			</button>
 		</div>
 	);
@@ -76,11 +91,11 @@ function ElderlyPage(props) {
 				{nearestMeeting
 					? <span className="multiline-span">
 							<div className="opening-screen-title">
-							השיחה הקרובה שלך תהיה בנושא {nearestMeeting.meetingSubject}
+							השיחה הקרובה שלך תהיה בנושא {nearestMeeting.subject}
 								{'\n'}
-								עם {nearestMeeting.firstName + ' ' + nearestMeeting.lastName} {formattedDate}
+								עם {nearestMeeting.volunteer[0].firstName + ' ' + nearestMeeting.volunteer[0].lastName} {formattedDate}
 							</div>
-							<CountdownTimer dateToCountDownTo={nearestMeeting.date} />
+							{/* <CountdownTimer dateToCountDownTo={nearestMeeting.date} /> */}
 						</span>
 
 					: <div className="opening-screen-title">
@@ -91,7 +106,7 @@ function ElderlyPage(props) {
 			</div>
 			{state.modalisOpen ?
 				<InComingCallModal
-					{...state}
+					{...state} 
 					answerCall={answerCallState.answerCall}
 				/>
 				: null

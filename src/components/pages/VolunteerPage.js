@@ -24,6 +24,7 @@ function VolunteerPage(props) {
 	async function onClick() {
 		// let meetings = await getMeetings();
 		let volunteerUsername = Cookies.get(usersFields.username);
+		console.log(volunteerUsername);
 		let meetingFullElderlyDetails = await getElderlyDetails(volunteerUsername);
 		meetingFullElderlyDetails = meetingFullElderlyDetails.map((meeting) => (
 				{

@@ -4,7 +4,7 @@ import { closeWebSocket } from '../../services/notifacationService';
 import './navbar.css';
 import { usersFields } from '../../constants/collections';
 
-function Navbar({history}) {
+function Navbar({history, goBackAmount}) {
 	const onClick = () => {
 		closeWebSocket();
 		Cookies.remove(usersFields.username);
@@ -13,9 +13,12 @@ function Navbar({history}) {
 		history.push('/login');
 	};
 
+	const goBack = () => {
+		goBackAmount ? history.go(-1 * goBackAmount) : history.goBack()
+	}
 	return (
 		<div className="navbar">
-			<button className="nav-buttons" onClick={history.goBack}>חזור</button>
+			<button className="nav-buttons" onClick={goBack}>חזור</button>
 			<button className="nav-buttons" onClick={onClick}>התנתק</button>
 		</div>
 	);

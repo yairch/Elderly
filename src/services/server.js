@@ -125,6 +125,16 @@ export const getResponsible = async (username) => {
 	return response.json();
 };
 
+export const getVolunteer = async (username) => {
+	const response = await fetch(serverURL + `/volunteer/${username}`, {
+		method: 'GET',
+	});
+
+	handleError(response);
+	return response.json();
+};
+
+
 const registerVolunteer = async (state) => {
 	const response = await fetch(serverURL + `/responsible/registerVolunteer`, {
 		method: 'post',
@@ -286,7 +296,7 @@ const deleteMeetingFromDB = async (channelName) => {
 	handleError(response);
 	return response;
 };
-
+ 
 const notifyElderly = async (elderlyId, volunteerId, channel, meetingSubject) => {
 	const response = await fetch(serverURL + '/volunteer/notify-elderly', {
 		method: 'post',
