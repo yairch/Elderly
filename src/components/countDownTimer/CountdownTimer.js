@@ -26,10 +26,10 @@ const getTimeHours = (time) => ((time % daySeconds) / hourSeconds) | 0;
 const getTimeDays = (time) => (time / daySeconds) | 0;
 
 const CountdownTimer = ({dateToCountDownTo}) => {
-	console.log(dateToCountDownTo.getTime());
-	console.log(Date.now());
+	// console.log(dateToCountDownTo.getTime());
+	// console.log(Date.now());
 	const startTime = Date.now() / 1000; // use UNIX timestamp in seconds
-	const endTime = dateToCountDownTo / 1000; // use UNIX timestamp in seconds
+	const endTime = dateToCountDownTo / 1000 || startTime; // use UNIX timestamp in seconds
 
 	const remainingTime = endTime - startTime;
 	const days = Math.ceil(remainingTime / daySeconds);

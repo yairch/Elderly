@@ -1,6 +1,8 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
+import LoginForm1 from './components/LoginForm1';
+import Identify from './components/Identify';
 import RegistrationFormOrganization from './components/registrationForms/RegistrationFormOrganization';
 import RegistrationFormElderly from './components/registrationForms/RegistrationFormElderly';
 import RegistrationFormVolunteer from './components/registrationForms/RegistrationFormVolunteer';
@@ -27,9 +29,10 @@ function Routes() {
 		<div>
 			<Switch>
 				<Route exact path="/">
-					<Redirect to="/login"/>
+					<Redirect to="/Identify"/>
 				</Route>
-				<Route exact path="/login" component={LoginForm}/>
+				<Route exact path="/login" component={LoginForm1}/>
+				<Route exact path="/loginElse" component={LoginForm}/>
 				<Route exact path="/user/activate/:username/:password" component={ChangePasswordPage}/>
 				<Route exact path="/user/forgot-password" component={ForgotPasswordPage}/>
 				<Route exact path="/user/forgot-password/change-password/:username" component={ChangePassword}/>

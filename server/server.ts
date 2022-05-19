@@ -11,6 +11,7 @@ import responsible from './routers/responsible'
 import admin from './routers/admin'
 import volunteer from './routers/volunteer'
 import elderly from './routers/elderly'
+import researcher from './routers/researcher'
 
 
 const app = express();
@@ -37,6 +38,8 @@ app.use("/admin", admin);
 app.use("/volunteer", volunteer);
 
 app.use("/elderly", elderly);
+
+app.use("/researcher", researcher);
 
 
 const server = app.listen(PORT, () => {
