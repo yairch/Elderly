@@ -8,8 +8,7 @@ const InComingCallModal = (props) => (
 				<div className="modal-title">שיחה נכנסת</div>
 				<div className="modal-body">
 					<span>
-					{/* eslint-disable-next-line no-useless-concat */}
-					{'שיחה נכנסת מ' + props.volunteerName + '\n' + 'בנושא ' + props.meetingSubject}
+					{'שיחה נכנסת מ' + props.volunteerFirstName +" "+ props.volunteerLastName+ '\n' + 'בנושא ' + props.subject}
 					</span>
 				</div>
 				<div className="modal-buttons">
