@@ -3,7 +3,6 @@ import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 import { Gender } from '../types/gender';
-import {volunteerFields} from '../constants/collections'
 
 export const getVolunteerName = async (username:string) => {
 	const client = new MongoClient(config.database.url);
