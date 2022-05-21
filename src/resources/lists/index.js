@@ -8,6 +8,8 @@ import organizationTypes from './organizationTypes';
 import preferredDaysAndHoursList from './preferredDaysAndHoursList';
 import preferredGenderList from './preferredGenders';
 import responsibleTypes from './responsibleTypes';
+// import initFormOptions,responsibleTypes from './initFormOptions'
+
 
 export {
 	areasOfInterestList,
@@ -19,5 +21,5 @@ export {
 	organizationTypes,
 	preferredDaysAndHoursList,
 	preferredGenderList,
-	responsibleTypes
+	responsibleTypes,
 };
