@@ -4,5 +4,6 @@ export const collectionIds = {
     volunteerUsers: 'Volunteers',
     elderlyUsers: 'Elderlies',
     responsibleUsers: 'ResponsibleUsers',
-    organizations: "Organizations"
+    organizations: "Organizations",
+    elderlyDailyForms: "DailyForms"
 }

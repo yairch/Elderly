@@ -5,11 +5,17 @@ import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
 import CountdownTimer from '../countDownTimer/CountdownTimer';
 import dateFormat from 'dateformat';
+import * as Cookies from 'js-cookie';
+import {usersFields} from '../../constants/collections';
+import {fetchGetInitForm} from '../../services/server';
+
+
 
 function ElderlyPage(props) {
 	// FIXME: temporary. remove when decide about elderly functionality
 	const showEldrelyOptions = false;
-
+	let fillDaily = true;
+	let fillInit = true;
 	const nearestMeeting = props.history.location.state;
 	const formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
 	const [state, setState] = useState({
@@ -58,15 +64,34 @@ function ElderlyPage(props) {
 
 	}
 
-	const content = ( showEldrelyOptions && 
+	const content = (
 		<div className="buttons-section">
+			{showEldrelyOptions &&
 			<button
 				className="sb-btn"
 				type="button"
 				onClick={onClick}>
 				לחץ לבקשת שיחה
 			</button>
+			}
+			{ fillInit &&
+				<button
+					className="sb-btn"
+					type="button"
+					onClick={() => props.history.push('/elderly/init-form')}>
+					מלא שאלון ראשוני
+				</button>
+			}
+			{fillDaily &&
+			<button
+			className="sb-btn"
+			type="button"
+			onClick={() => props.history.push('/elderly/daily-form')}
+			>
+				אנא מלא שאלון יומי
+			</button>}
 		</div>
+	
 	);
 
 	return (

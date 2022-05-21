@@ -267,6 +267,17 @@ const notifyElderly = async (elderlyId, volunteerId, channel, meetingSubject) =>
 	handleError(response);
 	return response;
 };
+
+const fetchPostDailyForm = async (formAnswer,userId,date)=> {
+	const response = await fetch(serverURL + '/elderly/daily-form', {
+		method: 'post',
+		headers:{'Content-Type': 'application/json'},
+		body: JSON.stringify({formAnswer,userId,date})
+	});
+	handleError(response);
+	return response;
+}
+
  
 export {
 	registerNotifications,
@@ -290,5 +301,6 @@ export {
 	fetchElderlyOrganizationMeetings,
 	getElderlyMeeting,
 	deleteMeetingFromDB,
-	notifyElderly
+	notifyElderly,
+	fetchPostDailyForm
 };

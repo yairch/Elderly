@@ -20,6 +20,8 @@ import AfterVideoCallPage from './components/pages/AfterVideoCallPage';
 import FullDetailsPage from './components/pages/FullDetailsPage';
 import ForgotPasswordPage from './components/pages/ForgotPasswordPage';
 import ChangePassword from './components/CangePassword';
+import ElderlyDailyForm from './components/registrationForms/ElderlyDailyForm'
+import ElderlyInitForm from './components/registrationForms/ElderlyInitForm'
 
 function Routes() {
 	return (
@@ -52,6 +54,8 @@ function Routes() {
 				<Route exact path="/volunteer/meetings/videoCall" component={VideoCallPage}/>
 				<Route exact path="/volunteer/meetings/feedback" component={AfterVideoCallPage}/>
 				<Route exact path="/elderly" component={ElderlyPage}/>
+				<Route exact path="/elderly/init-form" component={ElderlyInitForm}/>
+				<Route exact path="/elderly/daily-form" component={ElderlyDailyForm}/>
 				<Route exact path="/elderly/meetings/videoCall" component={VideoCallPage}/>
 			</Switch>
 		</div>
