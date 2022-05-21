@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import Modal from '../modal/Modal.js';
 import { registerVolunteer } from '../../services/server';
+// eslint-disable-next-line
 import { generatePassword, regexes } from '../../ClientUtils';
 import {
 	areasOfInterestList,
@@ -77,7 +78,7 @@ class RegistrationFormVolunteer extends Component {
 
 	handleChange = (e, name) => {
 		if (name === 'username' && this.state.password === '') {
-			this.setState({password: generatePassword()});
+			// this.setState({password: generatePassword()});
 		}
 		this.setState({[e.target.name]: e.target.value}, () => {
 			this.checkData(this.rexExpMap[name], this.state[name], this.state.valid[name], name);
@@ -129,7 +130,9 @@ class RegistrationFormVolunteer extends Component {
 		const formHasErrors = !formFilled || formInvalid;
 
 		if (!formHasErrors) {
-			this.handleSubmit();
+			this.setState((prevState) => {
+				return {password: prevState.username}
+			}, this.handleSubmit);
 		}
 		else {
 			this.setState({message: `אחד או יותר מהשדות לא תקינים`, hasErrors: true});

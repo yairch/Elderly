@@ -3,7 +3,6 @@ import { MongoClient } from "mongodb";
 import { config } from "./config";
 import {collectionIds} from '../constants/collectionsIds'
 import { Gender } from '../types/gender';
-import {volunteerFields} from '../constants/collections'
 
 export const getVolunteerName = async (username:string) => {
 	const client = new MongoClient(config.database.url);
@@ -26,24 +25,15 @@ export const getVolunteerName = async (username:string) => {
 	}
 }
 
-export const getVolunteerDetails = async (username:string) =>{
+export const getVolunteerDetails = async (username:string) => {
 	const client = new MongoClient(config.database.url);
 	try{
 		await client.connect()
 		const db = client.db(config.database.name);
 		const volUsers = db.collection<Volunteer>(collectionIds.volunteerUsers);
-		const res = await volUsers.findOne({volunteerUsername:username});
-		return res;
-		// return{ 
-		// 	firstName: res?.firstName,
-		// 	lastName: res?.lastName,
-		// 	email: res?.email,
-		// 	gender: res?.gender,
-		// 	areasOfInterest: res?.areasOfInterest,
-		// 	languages: res?.languages,
-		// 	services: res?.services,
-		// 	preferredDaysAndHours: res?.preferredDaysAndHours
-		// }
+		return await volUsers.findOne({username});
+		// const res = await volUsers.findOne({volunteerUsername:username});
+		// return res;
 	}
     catch (error){
 		console.error(error);

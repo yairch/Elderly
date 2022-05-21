@@ -4,7 +4,7 @@ import Navbar from '../navbar/Navbar';
 
 const AfterVideoCallPage = (props) =>
 	<div className="no-sidebar-page">
-		<Navbar history={props.history} />
+		<Navbar history={props.history} goBackAmount={2} />
 		<div className="manage-wrapper">
 			<h2 className="header">משוב</h2>
 			אנא מלא/י משוב על השיחה

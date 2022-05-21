@@ -22,6 +22,7 @@ import ForgotPasswordPage from './components/pages/ForgotPasswordPage';
 import ChangePassword from './components/CangePassword';
 import ElderlyDailyForm from './components/registrationForms/ElderlyDailyForm'
 import ElderlyInitForm from './components/registrationForms/ElderlyInitForm'
+import ChangeAdjustmentPercentages from './components/pages/ChangeAdjustmentPercentages';
 
 function Routes() {
 	return (
@@ -57,6 +58,7 @@ function Routes() {
 				<Route exact path="/elderly/init-form" component={ElderlyInitForm}/>
 				<Route exact path="/elderly/daily-form" component={ElderlyDailyForm}/>
 				<Route exact path="/elderly/meetings/videoCall" component={VideoCallPage}/>
+				<Route exact path="/responsible/change-adjustment-percentages" component={ChangeAdjustmentPercentages}/>
 			</Switch>
 		</div>
 	);

@@ -5,5 +5,6 @@ export const collectionIds = {
     elderlyUsers: 'Elderlies',
     responsibleUsers: 'ResponsibleUsers',
     organizations: "Organizations",
-    elderlyDailyForms: "DailyForms"
+    elderlyDailyForms: "DailyForms",
+    adjustmentPercentages: "adjustmentPercentages"
 }

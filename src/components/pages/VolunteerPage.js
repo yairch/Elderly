@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Cookies from 'js-cookie';
 import Sidebar from '../sidebar/Sidebar';
 import OpeningScreen from '../openingScreen';
-import { filterMeetings } from '../../ClientUtils';
+// import { filterMeetings } from '../../ClientUtils';
 import { getElderlyMeeting, getMeetingsVolunteer } from '../../services/server';
 import {usersFields} from '../../constants/collections'
 
@@ -24,6 +24,7 @@ function VolunteerPage(props) {
 	async function onClick() {
 		// let meetings = await getMeetings();
 		let volunteerUsername = Cookies.get(usersFields.username);
+		console.log(volunteerUsername);
 		let meetingFullElderlyDetails = await getElderlyDetails(volunteerUsername);
 		meetingFullElderlyDetails = meetingFullElderlyDetails.map((meeting) => (
 				{
