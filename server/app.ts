@@ -5,12 +5,13 @@ import bodyParser from 'body-parser';
 import cors, { CorsOptions } from 'cors';
 import logger from 'morgan';
 import path from 'path';
+import * as notifications from './notifications';
+import * as serverConfig from './constants/serverConfig';
 import user from './routers/user';
 import responsible from './routers/responsible';
 import admin from './routers/admin';
 import volunteer from './routers/volunteer';
 import elderly from './routers/elderly';
-
 
 export const app = express();
 
@@ -20,7 +21,6 @@ app.use(express.json());
 
 const corsOptions: CorsOptions = {
     origin: '*', //Ziv
-    //origin: 'http://192.168.242.1:3000', //Nadav
     credentials: true
 }
 app.use(cors(corsOptions))
@@ -40,7 +40,18 @@ app.use("/volunteer", volunteer);
 app.use("/elderly", elderly);
 
 app.get("*", (req, res) => {
+
+    console.log('Sending production client...');
     res.sendFile(
       path.join(__dirname, "../build/index.html")
     );
   });
+
+
+if(serverConfig.DEV) {
+  const server = app.listen(serverConfig.devPort, () => {
+    console.log(`listening DEV server at http://localhost:${serverConfig.devPort}`);
+  });
+  
+  notifications.initWebSocketServer(server);
+}

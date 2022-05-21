@@ -3,8 +3,7 @@ import fs from 'fs';
 import https from 'https';
 import {app} from './app';
 import * as notifications from './notifications';
-
-const PORT = 443;
+import * as serverConfig from './constants/serverConfig';
 
 const httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, 'privkey.pem')),
@@ -12,8 +11,8 @@ const httpsOptions = {
 }
 
 const server = https.createServer(httpsOptions, app);
-server.listen(PORT, () => {
-    console.log(`listening at http://localhost:${PORT}`)
+server.listen(serverConfig.productionPort, () => {
+    console.log(`listening production server at http://localhost:${serverConfig.productionPort}`)
 });
 
 notifications.initWebSocketServer(server);
