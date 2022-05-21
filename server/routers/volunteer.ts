@@ -1,5 +1,3 @@
-import { getVolunteerDetails } from './../DButils/volunteer';
-import { getElderlyDetails } from './../DButils/elderly';
 import express from 'express';
 import * as volunteerDB from '../DButils/volunteer';
 import * as meetingDB from '../DButils/meeting';
