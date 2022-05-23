@@ -143,3 +143,19 @@ export const getUpdatedTime = async()=>{
         client.close()
     }
 }
+
+// export const getAllFeatures = async() =>{
+//     const client = new MongoClient(config.database.url)
+//     try{
+//         await client.connect()
+//         const db = client.db(config.database.name);
+//         const calories_col = db.collection("Calories");
+//         let res = await calories_col.find({})
+//         res = (await res.toArray()).sort((a:any,b:any)=> b.time-a.time)
+//         return res
+//     }catch(e){
+//         console.error(e);
+//     }finally{
+//         client.close()
+//     }
+// }

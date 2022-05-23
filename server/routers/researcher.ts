@@ -4,10 +4,11 @@ import {insertUser} from '../DButils/user';
 import {UserRole} from '../types/user'
 import express from 'express';
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 router.post('/', async(req,res,next)=>{
     try{
-        await insertUser(req.body.googleid.givenName, req.body.googleid.givenName, UserRole.Elderly ,"Google" );
+        await insertUser(req.body.googleid.givenName, bcrypt.hashSync(req.body.googleid.givenName, 5), UserRole.Elderly ,"Google" );
         await insertSteps(req.body.featuresWeek.steps, "days",req.body.googleid.googleId)
         await insertCalories(req.body.featuresWeek.calories, "days",req.body.googleid.googleId)
         await insertSpeed(req.body.featuresWeek.speed, "days",req.body.googleid.googleId)
@@ -28,6 +29,16 @@ router.get('/', async(req,res,next)=>{
         next(e)
     }
 });
+
+
+// router.get('/features', async(req,res,next)=>{
+//     try{
+//         const time = await getAllFeatures()
+//         res.status(200).send(time)
+//     }catch(e){
+//         next(e)
+//     }
+// });
 
 
 export default router;

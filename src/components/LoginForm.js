@@ -41,11 +41,14 @@ class LoginForm extends React.Component {
 			else if (user[usersFields.role] === 'elderly') {
 				Cookies.set(usersFields.username, user[usersFields.username]);
 				getCurrentWebSocket();
-				const nearestMeeting = await this.getElderlyNearestMeeting(user.username);
-				this.props.history.push('/elderly', nearestMeeting);
+				// const nearestMeeting = await this.getElderlyNearestMeeting(user.username);
+				this.props.history.push('/googleLogin');
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				this.props.history.push(`/${UserRole.Responsible}`);
+			}
+			else if (user[usersFields.role] === 'researcher'){
+				this.props.history.push('/researcher');
 			}
 			else {
 				this.props.history.push('/' + user[usersFields.role], user[usersFields.organization]);
