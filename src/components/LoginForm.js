@@ -33,6 +33,7 @@ class LoginForm extends React.Component {
 
 	async checkOnSubmit() {
 		try {
+			console.log('DEV')
 			const user = await loginCheck(this.usernameRef.current.value, this.passwordRef.current.value);
 
 			if (user[usersFields.role] === 'volunteer') {
