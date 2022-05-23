@@ -34,7 +34,7 @@ function researcherPage(props){
             className="sb-btn"
             onClick={() => showSteps()}>
             צעדים
-        </button><br />
+        </button>
         <button
             className="sb-btn"
             onClick={() => showHR()}>
