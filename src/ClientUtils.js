@@ -1,9 +1,10 @@
 import generator from 'generate-password';
+import * as clientConfig from './constants/clientConfig';
 // HTTPS=true;SSL_CRT_FILE=certificate.crt;SSL_KEY_FILE=privateKey.key
 // exports.serverURL = 'http://132.72.23.153:8114';
 
-const serverURL = 'http://localhost:3001';
-const wssURL = 'ws://localhost:3001';
+const serverURL = clientConfig.serverURL;
+const wssURL = clientConfig.webSocketURL;
 const feedbackURL = 'https://forms.gle/mCABoh5EteuNEceH8';
 
 const regexes = {
