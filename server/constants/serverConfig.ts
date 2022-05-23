@@ -1,8 +1,17 @@
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config({path: path.join(__dirname, '/.env')})
+enum ENVIRONMENT_MODES {
+    DEV='development',
+    PROD='production'
+};
 
-export const devPort = process.env.DEV_PORT || 80;
-export const productionPort = process.env.HTTPS_PORT || 443;
-export const DEV = process.env.DEV || false;
+export const DEV = process.env.NODE_ENV === ENVIRONMENT_MODES.DEV;
+
+if(DEV) {
+    dotenv.config({path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`)});
+} else {
+    dotenv.config();
+}
+
+export const port = process.env.PORT || (DEV ? 80 : 443);

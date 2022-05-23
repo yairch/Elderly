@@ -11,8 +11,8 @@ const httpsOptions = {
 }
 
 const server = https.createServer(httpsOptions, app);
-server.listen(serverConfig.productionPort, () => {
-    console.log(`listening production server at http://localhost:${serverConfig.productionPort}`)
+server.listen(serverConfig.port, () => {
+    console.log(`listening production server at http://localhost:${serverConfig.port}`)
 });
 
 notifications.initWebSocketServer(server);

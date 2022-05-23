@@ -41,16 +41,16 @@ app.use("/elderly", elderly);
 
 app.get("*", (req, res) => {
 
-    console.log('Sending production client...');
-    res.sendFile(
-      path.join(__dirname, "../build/index.html")
-    );
-  });
+  console.log('Sending production client...');
+  res.sendFile(
+    path.join(__dirname, "../build/index.html")
+  );
+});
 
 
 if(serverConfig.DEV) {
-  const server = app.listen(serverConfig.devPort, () => {
-    console.log(`listening DEV server at http://localhost:${serverConfig.devPort}`);
+  const server = app.listen(serverConfig.port, () => {
+    console.log(`listening DEV server at http://localhost:${serverConfig.port}`);
   });
   
   notifications.initWebSocketServer(server);
