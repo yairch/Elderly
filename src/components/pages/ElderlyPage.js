@@ -5,23 +5,17 @@ import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
 // import CountdownTimer from '../countDownTimer/CountdownTimer';
 import dateFormat from 'dateformat';
+import * as Cookies from 'js-cookie';
+import {usersFields} from '../../constants/collections';
+import {fetchGetInitForm} from '../../services/server';
+
+
 
 function ElderlyPage(props) {
-	
-	// const videoOptions = {
-	// 	'appId': AGORA_APP_ID,
-	// 	'channel': props.history.location.state.channelName,
-	// 	// channel.volunteer[0].username+props.history.location.state.channel.elderlyUsername+props.history.location.state.channel.date,
-	// 	'baseMode': 'avc',
-	// 	'transcode': 'interop',
-	// 	'attendeeMode': 'video',
-	// 	'videoProfile': '480p_4'
-	// };
-	// console.log(props.history.location.state.channelName)
-	// console.log(videoOptions)
-
 	// FIXME: temporary. remove when decide about elderly functionality
-	const showEldrelyOptions = true;
+	const showEldrelyOptions = false;
+	let fillDaily = true;
+	let fillInit = true;
 	const nearestMeeting = props.history.location.state;
 	console.log(nearestMeeting)
 	const volunteer = props.history.location.state.volunteer[0];
@@ -73,15 +67,34 @@ function ElderlyPage(props) {
 	async function onClick() {
 	}
 
-	const content = ( showEldrelyOptions && 
+	const content = (
 		<div className="buttons-section">
+			{showEldrelyOptions &&
 			<button
 				className="sb-btn"
 				type="button"
 				onClick={onClick}>
 				לא בשימוש
 			</button>
+			}
+			{ fillInit &&
+				<button
+					className="sb-btn"
+					type="button"
+					onClick={() => props.history.push('/elderly/init-form')}>
+					מלא שאלון ראשוני
+				</button>
+			}
+			{fillDaily &&
+			<button
+			className="sb-btn"
+			type="button"
+			onClick={() => props.history.push('/elderly/daily-form')}
+			>
+				אנא מלא שאלון יומי
+			</button>}
 		</div>
+	
 	);
 
 	return (

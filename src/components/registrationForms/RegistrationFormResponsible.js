@@ -109,7 +109,6 @@ class RegistrationFormResponsible extends Component {
 
 		if (!formHasErrors) {
 			this.setState((prevState) => {
-				console.log('username is', prevState.username)
 				return {password: prevState.username}
 			}, this.handleSubmit);
 		}
