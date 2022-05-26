@@ -15,9 +15,15 @@ function ElderlyPage(props) {
 	let fillInit = true;
 	const nearestMeeting = props.history.location.state;
 	console.log(nearestMeeting)
-	const volunteer = props.history.location.state.volunteer[0];
-	console.log(volunteer)
-	const formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
+	
+	let formattedDate;
+	let volunteer;
+	if (nearestMeeting) {
+		volunteer = nearestMeeting.volunteer[0];
+		console.log(volunteer)
+		formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
+	}
+	
 	const [state, setState] = useState({
 		modalisOpen: false
 	});
