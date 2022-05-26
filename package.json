@@ -32,7 +32,7 @@
     "websocket": "^1.0.34"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env REACT_APP_DEV_ENV=production react-scripts start",
     "start-dev": "cross-env REACT_APP_DEV_ENV=development react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
