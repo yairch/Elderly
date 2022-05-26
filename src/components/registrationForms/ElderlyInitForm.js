@@ -9,7 +9,7 @@ import Select from 'react-select';
 
 const ElderlyDailyForm = (props) => {
 	const statusOptions = [
-		{value: 'רווק\ה', label: 'רווק\ה'},
+		{value: 'רווק/ה', label: 'רווק/ה'},
 		{value: 'נשוי/אה', label: 'נשוי/אה'},
 		{value: 'גרוש/ה', label: 'גרוש/ה'},
 		{value: 'פרוד/ה', label: 'פרוד/ה'},
@@ -33,6 +33,7 @@ const ElderlyDailyForm = (props) => {
     
       const [modalisOpen, setModal] = useState(false);
 
+      // eslint-disable-next-line no-unused-vars
       const toggleModal = () => {
 		setModal(prevState => ({
 			modalisOpen: !prevState.modalisOpen

@@ -22,7 +22,6 @@
     "react-countdown-circle-timer": "^2.5.3",
     "react-datepicker": "^4.1.1",
     "react-dom": "^17.0.1",
-    "react-rangeslider": "^2.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
     "react-select": "^3.1.1",
@@ -33,8 +32,8 @@
     "websocket": "^1.0.34"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production react-scripts start",
-    "start-dev": "cross-env NODE_ENV=development react-scripts start",
+    "start": "cross-env REACT_APP_DEV_ENV=production react-scripts start",
+    "start-dev": "cross-env REACT_APP_DEV_ENV=development react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

@@ -6,7 +6,7 @@ enum ENVIRONMENT_MODES {
     PROD='production'
 };
 
-export const DEV = process.env.NODE_ENV === ENVIRONMENT_MODES.DEV;
+export const DEV = process.env.REACT_APP_DEV_ENV === ENVIRONMENT_MODES.DEV;
 
 if(DEV) {
     dotenv.config({path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`)});
