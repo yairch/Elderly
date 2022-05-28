@@ -1,16 +1,19 @@
 export const collectionIds = {
-    volunteerUsername: 'volunteerUsername',
-    elderlyUsername: 'elderlyUsername',
-    date: 'date',
-    meetingSubject: 'meetingSubject',
-    channelName: 'channelName',
+    users: 'Users',
+    meetings: 'Meetings',
+    volunteerUsers: 'Volunteers',
+    elderlyUsers: 'Elderlies',
+    responsibleUsers: 'ResponsibleUsers',
+    organizations: "Organizations",
+    elderlyDailyForms: "DailyForms",
+    adjustmentPercentages: "adjustmentPercentages"
 }
 
 export const meetingFields = {
     volunteerUsername: 'volunteerUsername',
     elderlyUsername: 'elderlyUsername',
     date: 'date',
-    meetingSubject: 'meetingSubject',
+    meetingSubject: 'subject',
     channelName: 'channelName',
 }
 
