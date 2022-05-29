@@ -10,7 +10,7 @@ const config = {
 
 
 
-export const insertSteps = async(steps:Array<number>, bucketType: string, googleid: string)=>{
+export const insertSteps = async(steps:Array<number>, googleid: string)=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -30,7 +30,7 @@ export const insertSteps = async(steps:Array<number>, bucketType: string, google
     }
 }
 
-export const insertCalories = async(calories:Array<number>, bucketType: string, googleid: string )=>{
+export const insertCalories = async(calories:Array<number>, googleid: string )=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -50,7 +50,7 @@ export const insertCalories = async(calories:Array<number>, bucketType: string, 
     }
 }
 
-export const insertSpeed = async(speed:Array<number>, bucketType: string, googleid: string )=>{
+export const insertSpeed = async(speed:Array<number>, googleid: string )=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -70,7 +70,7 @@ export const insertSpeed = async(speed:Array<number>, bucketType: string, google
     }
 }
 
-export const insertActive = async(active_min:Array<number>, bucketType: string, googleid: string )=>{
+export const insertActive = async(active_min:Array<number>, googleid: string )=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -89,7 +89,7 @@ export const insertActive = async(active_min:Array<number>, bucketType: string, 
         client.close()
     }
 }
-export const insertDistance = async(distance:Array<number>, bucketType: string, googleid: string )=>{
+export const insertDistance = async(distance:Array<number>, googleid: string )=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -109,7 +109,7 @@ export const insertDistance = async(distance:Array<number>, bucketType: string, 
     }
 }
 
-export const insertHR = async(hr:Array<number>, bucketType: string, googleid: string )=>{
+export const insertHR = async(hr:Array<number>, googleid: string )=>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
@@ -143,6 +143,26 @@ export const getUpdatedTime = async()=>{
         client.close()
     }
 }
+export const insertSleeping = async(Sleeping:Array<any>, googleid:string)=>{
+    const client = new MongoClient(config.database.url)
+    try{
+        await client.connect()
+        const db = client.db(config.database.name);
+        const Sleeping_col = db.collection("Sleeping");
+        let time = new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+        const result = {
+            "days": Sleeping,
+            "time":time,
+            "googleid": googleid
+        }
+        await Sleeping_col.insertOne(result)
+    }catch(e){
+        console.error(e);
+    }finally{
+        client.close()
+    }
+}
+
 
 // export const getAllFeatures = async() =>{
 //     const client = new MongoClient(config.database.url)

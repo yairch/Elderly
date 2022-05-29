@@ -10,7 +10,7 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
 		await client.connect()
 		const db = client.db(config.database.name);
 		const users = db.collection<User>(collectionIds.users);
-		const user = await users.findOne({"username":username});
+		const user = await users.findOne({username});
 		return user;
 	}
 	catch(error) {

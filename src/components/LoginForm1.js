@@ -3,7 +3,7 @@ import * as Cookies from 'js-cookie';
 import Modal from './modal/Modal';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
-import images from "../resources/images.jpg"
+// import images from "../resources/images.jpg"
 import './registrationForms/RegistrationForm.css';
 import { fetchMeetingsFullDetails, loginCheck } from '../services/server';
 import { getCurrentWebSocket } from '../services/notifacationService';
@@ -11,7 +11,7 @@ import { getCurrentWebSocket } from '../services/notifacationService';
 import { meetingFields, usersFields } from "../constants/collections";
 import { userTypes } from '../constants/userTypes';
 import { UserRole } from '../types/user'
-import { pullFromApi, SetCookie, DeleteCookie, hasCookie } from './CookieManager.js';
+import {pullSleep, pullFromApi, SetCookie, DeleteCookie, hasCookie } from './CookieManager.js';
 const CLIENT_ID = "454610489364-66snjbuq568fgvrluepjrusgjv8u1juv.apps.googleusercontent.com";//process.env.REACT_APP_CLIENT_ID;
 
 function LoginForm(props) {
@@ -19,30 +19,13 @@ function LoginForm(props) {
 	const [modal, setModal] = useState(false);
 	const [mess, setMess] = useState('');
 	const [isElderly, setElderly] = useState(false);
-	// const [password, setPass] = useState('')
-	// const [message, setMessage] = useState('')
-	// const [modalisOpen, setModalisOpen] = useState(false)
+	
 
 	const today = new Date().getTime()
 	// console.log(today)
 	const bucketDay = 86400000
 	// const bucketMonth= 30*bucketDay
 	const bucketWeek = 7 * bucketDay
-	// constructor(props) {
-	// 	super(props);
-	// 	this.state = {
-	// 		username: '',
-	// 		password: '',
-	// 		message: '',
-	// 		modalisOpen: false,
-	// 	};
-
-	// 	this.usernameRef = React.createRef();
-	// 	this.passwordRef = React.createRef();
-	// 	this.checkOnSubmit = this.checkOnSubmit.bind(this);
-	// 	this.toggleModal = this.toggleModal.bind(this);
-	// 	this.forgotPassword = this.forgotPassword.bind(this);
-	// }
 	useEffect(() => {
 		const cookieObject = hasCookie();
 		if (cookieObject.haslogin) {
@@ -63,21 +46,26 @@ function LoginForm(props) {
 			let res = await axios.get("http://localhost:3001/researcher")
 			// console.log(res)
 			let data = res.data
-
-			let featuresWeek = null
+			let sleepFeature = null;
+			let activityFeatures = null
 			if (data.length > 0) {
 				let time = new Date(data[0].time).getTime()
-				console.log(time)
 				if (today - time >= bucketDay) {
-					featuresWeek = await pullFromApi(response, "day", bucketDay, today - time, today)
+					activityFeatures = await pullFromApi(response, "day", bucketDay, today - time, today);
+					sleepFeature = await pullSleep(response, today - time,today);
 				}
 			} else {
 				let start = today - bucketWeek
-				featuresWeek = await pullFromApi(response, "day", bucketDay, start, today)
-				console.log(featuresWeek)
+				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
+				sleepFeature = await pullSleep(response, start ,today);
+				console.log(activityFeatures);
 			}
-			if (featuresWeek) {
-				await axios.post("http://localhost:3001/researcher", { "featuresWeek": featuresWeek, "googleid": response.profileObj });
+			if(sleepFeature){
+				await axios.post("http://localhost:3001/researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });
+			}
+
+			if (activityFeatures) {
+				await axios.post("http://localhost:3001/researcher", { "activityFeatures": activityFeatures, "googleid": response.profileObj });
 			}
 			const nearestMeeting = await getElderlyNearestMeeting(response.profileObj.givenName);
 			props.history.push('/elderly', nearestMeeting);
@@ -88,7 +76,7 @@ function LoginForm(props) {
 			});
 		} else {
 			setMess('לא ניתן להתחבר עם גוגל. תתחבר עם שם משתמש וסיסמא');
-			// setModal(true);
+			// toggleModal()
 		}
 
 
@@ -130,6 +118,7 @@ function LoginForm(props) {
 
 			if (user[usersFields.role] === 'volunteer') {
 				props.history.push('/volunteer', user[usersFields.username]);
+				setElderly(false);
 			}
 			else if (user[usersFields.role] === 'elderly') {
 				Cookies.set(usersFields.username, user[usersFields.username]);
@@ -140,72 +129,81 @@ function LoginForm(props) {
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				props.history.push(`/${UserRole.Responsible}`);
+				setElderly(false);
 			}
-			else if (user[usersFields.role] === 'researcher') {
+			else if (user[usersFields.role] === UserRole.Researcher) {
 				props.history.push('/researcher');
+				setElderly(false);
 			}
-			else {
+			else if (user[usersFields.role] === UserRole.Admin){
 				props.history.push('/' + user[usersFields.role], user[usersFields.organization]);
+				setElderly(false);
+			}else{
+				setMess("שם משתמש או סיסמא שגואים");
+				toggleModal();
+				setElderly(false);
 			}
-
 			Cookies.set(usersFields.username, user[usersFields.username]);
 			Cookies.set(usersFields.organization, user[usersFields.organization]);
 		}
 		catch (error) {
-			setMess({ message: error.message });
-			toggleModal();
+			setMess(error.message);
+			toggleModal()
+			setElderly(false)
 		}
 	}
 
 	return (
 		<div className="HomePage">
-			<img style={{width:"50%"}} src={images} alt=""/>
+			{/* <img style={{width:"50%"}} src={images} alt=""/> */}
 			<div className="login-wrapper">
-			<div className="shadow-box">
-				<div className="form-group">
-					<h2>התחברות</h2>
-					<label>שם משתמש</label>
-					<input type="text" id="username" />
-					<label>סיסמה</label>
-					<input type="password" id="password" />
-					<div className="align-right">
-						{/* FIXME: */}
-						{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-						<a className="forgot-password" href="" onClick={forgotPassword}>שכחתי סיסמה</a>
-					</div>
-					<button className="sb-btn" type="button" onClick={checkOnSubmit}>כניסה</button><br />
-						{isElderly &&
-						<div >
-							<br /><label style={{ position: "relative", right: "30%" }}>אנא אשר באמצעות גוגל</label><br />
-							{user.haslogin ?
-								<GoogleLogout
-									clientId={CLIENT_ID}
-									buttonText='Logout'
-									onLogoutSuccess={logout}
-									onFailure={handleLogoutFailure}
-								>
-								</GoogleLogout> : <GoogleLogin
-									clientId={CLIENT_ID}
-									buttonText='Login'
-									onSuccess={login}
-									onFailure={handleLoginFailure}
-									cookiePolicy={'single_host_origin'}
-									responseType='code,token'
-									scope={'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.location.read'}
-								/>}
-							{modal ?
-								<Modal
-									{...modal}
-									closeModal={toggleModal}
-								/>
-								: null
-							}
+				<div className="shadow-box">
+					<div className="form-group">
+						<h2>התחברות</h2>
+						<label>שם משתמש</label>
+						<input type="text" id="username" />
+						<label>סיסמה</label>
+						<input type="password" id="password" />
+						<div className="align-right">
+							{/* FIXME: */}
+							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+							<a className="forgot-password" href="" onClick={forgotPassword}>שכחתי סיסמה</a>
 						</div>
-					}
+						<button className="sb-btn" type="button" onClick={checkOnSubmit}>כניסה</button><br />
+						{isElderly &&
+							<div >
+								<br /><label style={{ position: "relative", right: "30%" }}>אנא אשר באמצעות גוגל</label><br />
+								{user.haslogin ?
+									<GoogleLogout
+										clientId={CLIENT_ID}
+										buttonText='Logout'
+										onLogoutSuccess={logout}
+										onFailure={handleLogoutFailure}
+									>
+									</GoogleLogout> : <GoogleLogin
+										clientId={CLIENT_ID}
+										buttonText='Login'
+										onSuccess={login}
+										onFailure={handleLoginFailure}
+										cookiePolicy={'single_host_origin'}
+										responseType='code,token'
+										scope={'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.location.read'}
+									/>
+								}
+								
+							</div>
+						}
+						{modal ?
+							<Modal
+								message={mess}
+								closeModal={toggleModal}
+							/>
+							: null
+						}
+					</div>
 				</div>
 			</div>
-		</div>
-		
+
 		</div>
 	);
 }
