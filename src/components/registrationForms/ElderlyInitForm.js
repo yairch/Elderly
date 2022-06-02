@@ -74,22 +74,26 @@ const ElderlyDailyForm = (props) => {
                                                 min={0} max={120} step={1} data-orientation="vertical"
                                                 onChange={handleChange}
                                             />
+                                        </div>    
+                                        <div className='field'>    
+                                        <label>מה הוא מינך?</label>                
+                                            <div className='radio-con'>
+                                                <input type={'radio'} name='gender' id='גבר' value={"גבר"} 
+                                                onChange={handleChange}/>
+                                                <label for='גבר'>גבר</label>
+                                                
+                                                <input type={'radio'} name='gender' id='אישה' value={"אישה"}
+                                                onChange={handleChange}/>
+                                                <label for='אישה'>אישה</label>
+
+                                                <input type={'radio'} name='gender' id='אחר' value={"אחר"}
+                                                onChange={handleChange}/>
+                                                <label for='אחר'>אחר</label>
+
+                                            </div>
+                                           
                                         </div>
-                                    
-									<div className="wraper-container">
-                                        <label>מהו מינך?</label>
-                                       		
-											<input type="radio" id="male" name="gender" value="" 
-											   onChange={handleChange}
-                                            />
-                                            <div className='value'>{'זכר'}</div>
-												<input type="radio" id="female" name="gender" value=""
-                                                onChange={handleChange}/>
-                                            <div className='value'>{'נקבה'}</div>
-											<input type="radio" id="female" name="gender" value=""
-                                                onChange={handleChange}/>
-                                            <div className='value'>{'אחר'}</div>
-                                    </div>
+
 
 									<div className="field">
                                             <label>מהו מצבך המשפחתי (בחר בתשובה אחת בלבד)? </label>
@@ -104,7 +108,58 @@ const ElderlyDailyForm = (props) => {
 										/>
 										<div className='value'>{values['status']}</div>
                                     </div>
-                                    
+                                    <div className="field">
+                                            <label>מהו מצבך המשפחתי (בחר בתשובה אחת בלבד)? </label>
+											<Select
+											isRtl
+											placeholder="בחר/י..."
+											name="status"
+											className="status"
+											value={values.status}
+											options={statusOptions}
+											onChange={handleChange}
+										/>
+										<div className='value'>{values['status']}</div>
+                                    </div>
+                                    <div className="field">
+                                            <label>מהו מצבך המשפחתי (בחר בתשובה אחת בלבד)? </label>
+											<Select
+											isRtl
+											placeholder="בחר/י..."
+											name="status"
+											className="status"
+											value={values.status}
+											options={statusOptions}
+											onChange={handleChange}
+										/>
+										<div className='value'>{values['status']}</div>
+                                    </div>
+                                    <div className="field">
+                                            <label>מהו מצבך המשפחתי (בחר בתשובה אחת בלבד)? </label>
+											<Select
+											isRtl
+											placeholder="בחר/י..."
+											name="status"
+											className="status"
+											value={values.status}
+											options={statusOptions}
+											onChange={handleChange}
+										/>
+										<div className='value'>{values['status']}</div>
+                                    </div>
+                                    <div className="field">
+                                            <label>מהו מצבך המשפחתי (בחר בתשובה אחת בלבד)? </label>
+											<Select
+											isRtl
+											placeholder="בחר/י..."
+											name="status"
+											className="status"
+											value={values.status}
+											options={statusOptions}
+											onChange={handleChange}
+										/>
+										<div className='value'>{values['status']}</div>
+                                    </div>
                                     <div className='field'>
                                             <label>4.	האם את/ה סובל/ת מכאב או אי נוחות פיזית עכשיו? [0-100%: כלל לא – מאוד]</label>
                                             <input

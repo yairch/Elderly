@@ -72,15 +72,16 @@ class LoginForm extends React.Component {
 
 	render() {
 		return (
+			<div>
+				<label className='header-logo'>E	l	d	e	r	l	y</label>
 			<div className="login-wrapper">
 				<div className="shadow-box">
 					<div className="form-group">
-						<h2>התחברות</h2>
+						<h2>כניסה</h2>
 						<br/>
-						<label>שם משתמש</label>
-						<input ref={this.usernameRef} type="text" id="username"/>
-						<label>סיסמה</label>
-						<input ref={this.passwordRef} type="password" id="password"/>
+						
+						<input ref={this.usernameRef} type="text" id="username" placeholder='שם משתמש'/>
+						<input ref={this.passwordRef} type="password" id="password"placeholder='סיסמה'/>
 						<div className="align-right">
 							{/* FIXME: */}
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -96,6 +97,7 @@ class LoginForm extends React.Component {
 						}
 					</div>
 				</div>
+			</div>
 			</div>
 		);
 	}

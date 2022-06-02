@@ -1,5 +1,5 @@
 .sidebar {
-    background: #1d3557;
+    background: #fff;
     width: 280px;
     height: 95vh;
     display: flex;
@@ -33,19 +33,6 @@
     width: 90%;
     padding-left: 5%;
     padding-bottom: 10%;
-}
-
-.nav-buttons {
-    width: 60px;
-    height: 20px;
-    padding-top: 5px;
-    opacity: 1;
-    font-size: 15px;
-    color: #a8dadc;
-}
-
-.nav-buttons:hover {
-    color: #457b9d;
 }
 
 .hr {
