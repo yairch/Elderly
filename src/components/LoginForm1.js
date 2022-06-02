@@ -155,15 +155,17 @@ function LoginForm(props) {
 
 	return (
 		<div className="HomePage">
-			{/* <img style={{width:"50%"}} src={images} alt=""/> */}
+			<label className='header-logo'>E	l	d	e	r	l	y</label>
+
 			<div className="login-wrapper">
 				<div className="shadow-box">
 					<div className="form-group">
-						<h2>התחברות</h2>
-						<label>שם משתמש</label>
-						<input type="text" id="username" />
-						<label>סיסמה</label>
-						<input type="password" id="password" />
+						<h2>כניסה</h2>
+						{/* <input type="text" id="username" /> */}
+						<input  type="text" id="username" placeholder='שם משתמש'/>
+						<input  type="password" id="password"placeholder='סיסמה'/>
+
+						{/* <input type="password" id="password" /> */}
 						<div className="align-right">
 							{/* FIXME: */}
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -172,7 +174,7 @@ function LoginForm(props) {
 						<button className="sb-btn" type="button" onClick={checkOnSubmit}>כניסה</button><br />
 						{isElderly &&
 							<div >
-								<br /><label style={{ position: "relative", right: "30%" }}>אנא אשר באמצעות גוגל</label><br />
+								<br /><label style={{ position: "relative",textAlign:"center"}}>אנא אשר באמצעות גוגל</label><br />
 								{user.haslogin ?
 									<GoogleLogout
 										clientId={CLIENT_ID}
