@@ -76,7 +76,6 @@ class LoginForm extends React.Component {
 	render() {
 		return (
 			<div>
-				<label className='header-logo'>E	l	d	e	r	l	y</label>
 			<div className="login-wrapper">
 				<div className="shadow-box">
 					<div className="form-group">

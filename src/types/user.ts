@@ -4,6 +4,7 @@ export const enum UserRole {
     Elderly = 'elderly',
     Responsible = 'responsible',
     Volunteer = 'volunteer',
+    Researcher='researcher'
 }
 
 export interface User {
