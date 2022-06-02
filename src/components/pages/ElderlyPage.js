@@ -23,8 +23,6 @@ function ElderlyPage(props) {
 		volunteer = props.history.location.state.volunteer[0];
 		formattedDate = dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
 	}
-	
-	
 	const [state, setState] = useState({
 		modalisOpen: false
 	});

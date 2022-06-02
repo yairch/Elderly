@@ -19,8 +19,10 @@
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7",
     "popper.js": "^1.16.1",
+    "react-google-login": "^5.2.2",
     "tedious": "^9.2.3",
     "ts-node": "^10.7.0",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^0.2.4",
     "websocket": "^1.0.34"
   },
