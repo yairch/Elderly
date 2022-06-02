@@ -26,6 +26,7 @@ const ElderlyDailyForm = (props) => {
     
       const [modalisOpen, setModal] = useState(false);
 
+      // eslint-disable-next-line no-unused-vars
       const toggleModal = () => {
 		setModal(prevState => ({
 			modalisOpen: !prevState.modalisOpen

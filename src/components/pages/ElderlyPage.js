@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '../sidebar/Sidebar';
 import InComingCallModal from '../modal/InComingCallModal';
 import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
 // import CountdownTimer from '../countDownTimer/CountdownTimer';
 import dateFormat from 'dateformat';
-import * as Cookies from 'js-cookie';
-import {usersFields} from '../../constants/collections';
-import {fetchGetInitForm} from '../../services/server';
 
 
 
@@ -17,12 +14,16 @@ function ElderlyPage(props) {
 	let fillDaily = true;
 	let fillInit = true;
 	const nearestMeeting = props.history.location.state;
-	let volunteer;
+	console.log(nearestMeeting)
+	
 	let formattedDate;
-	if (nearestMeeting){
-		volunteer = props.history.location.state.volunteer[0];
-		formattedDate = dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
+	let volunteer;
+	if (nearestMeeting) {
+		volunteer = nearestMeeting.volunteer[0];
+		console.log(volunteer)
+		formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
 	}
+	
 	const [state, setState] = useState({
 		modalisOpen: false
 	});

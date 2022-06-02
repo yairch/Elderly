@@ -12,6 +12,8 @@
     "bcrypt": "^5.0.0",
     "bootstrap": "^4.5.3",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
     "http": "^0.0.1-security",
     "jquery": "^3.6.0",
     "mongodb": "^4.2.2",
@@ -27,7 +29,8 @@
     "websocket": "^1.0.34"
   },
   "scripts": {
-    "start-server": "npx nodemon server.ts",
+    "start-server": "cross-env NODE_ENV=production npx nodemon server.ts",
+    "start-dev-server": "cross-env NODE_ENV=development npx nodemon app.ts",
     "npmre": "rm package-lock.json; mv node_modules node_modules.old; npm i && rm -rf node_modules.old"
   },
   "eslintConfig": {

@@ -5,7 +5,7 @@ import './App.css';
 
 function Main() {
 	return (
-		<BrowserRouter basename="/Tele-vol/">
+		<BrowserRouter>
 			<Routes/>
 		</BrowserRouter>
 	);

@@ -6,9 +6,11 @@ import { ConfirmationEmailDetails, MeetingEmailDetails } from './types/emailDeta
 // what is this for if it sends only to ziv? Should this sensitive info be here exposed?
 // if domain is localhost would it work when launching the client as "production" from other computers:
 // => going to chrome and inserting the web andress of televol (elderly) site
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const USER = 'televol.noreply@gmail.com';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PASSWORD = 'ZivNadav1!';
-const DOMAIN = 'http://localhost:3000/Tele-vol';
+const DOMAIN = 'http://localhost:3000/';
 
 
 // FIXME: mail sending doesn't throw errors anymore but still doesn't work. Mail has not been recieved
