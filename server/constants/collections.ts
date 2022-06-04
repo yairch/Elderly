@@ -2,7 +2,7 @@ export const meetingFields = {
     volunteerUsername: 'volunteerUsername',
     elderlyUsername: 'elderlyUsername',
     date: 'date',
-    meetingSubject: 'meetingSubject',
+    meetingSubject: 'subject',
     channelName: 'channelName',
 }
 

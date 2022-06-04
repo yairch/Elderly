@@ -192,7 +192,7 @@ export const insertMeeting = async (volunteerUsername: string, elderlyUsername: 
             subject,
 			channelName,
 		}
-		meetings.insertOne(meeting);
+		await meetings.insertOne(meeting);
 	}
 	catch(error){
 		throw(error);
