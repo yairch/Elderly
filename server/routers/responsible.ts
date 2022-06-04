@@ -143,15 +143,9 @@ router.post('/registerElderly', async (req, res, next) => {
 
 router.post('/assign', async (req, res, next) => {
 	try {
-		// req.body takes only username of volunteer type and is beign renamed (alias) as volunteerUsername
-		// const {username: volunteerUsername} = req.body as Pick<Volunteer, 'username'>;
-		// const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
 		const volunteerDetails = req.body.user as Volunteer;
-		// console.log(volunteerDetails);
 		const elderlyDetails = await elderlyDB.getElderlyUsers();
-		// console.log(elderlyDetails);
 		let elderlyWithSameServicesAsVolunteer: Elderly[] = [];
-		//elderly wanted
 		let wantedServices, wantedDates;
 		//services
 		let serviceElderly, serviceVolunteer, offerServices, serElderly, serVolunteer;
@@ -162,15 +156,13 @@ router.post('/assign', async (req, res, next) => {
 		//take only the elderly with the same wanted service as the volunteer service
 		if (elderlyDetails){
 			
-			//------------------------- get volunteer ---------------------------
+			//------------------------- get volunteer details ---------------------------
 			//get volunteer services
 			let volunteerServiceArr = []
 			offerServices = Object.values(volunteerDetails.services)
 			for (let offerService in offerServices){
-				// console.log('offer',offerServices) //object
 				serviceVolunteer = offerServices[offerService];
 				serVolunteer = Object.values(serviceVolunteer)[0];
-				// console.log(serVolunteer); //one service !!!
 				volunteerServiceArr.push(serVolunteer) 
 			}
 
@@ -178,16 +170,13 @@ router.post('/assign', async (req, res, next) => {
 			let volunteerPreferredDatesArr = []
 			offerPreferredDates = Object.values(volunteerDetails.preferredDaysAndHours)
 			for (let offerDates in offerPreferredDates){
-				// console.log('offer',offerPreferredDates) //object
 				datesVolunteer = offerPreferredDates[offerDates];
 				dateVolunteer = Object.values(datesVolunteer)[0];
-				// console.log(dateVolunteer); //one service !!!
 				volunteerPreferredDatesArr.push(dateVolunteer) 
 			}
 
 			let matches: Match[] = [];
 			for (let elderly of elderlyDetails) {
-				//common
 				let commonServices = [], commonDates = [];
 				let rankForPreferredDays = 0;
 				let rankForLanguage = 0;
@@ -207,12 +196,10 @@ router.post('/assign', async (req, res, next) => {
 						commonServices.push(serElderly)
 					}
 				}
-				// console.log('volunteerService',volunteerServiceArr)
-				// console.log('elderlyServices',elderlyServicesArr)
 				if(commonServices){
 					elderlyWithSameServicesAsVolunteer.push(elderly)
 				}
-				// console.log('commonServices', commonServices)
+
 				//------------------------------ dates ---------------------------------
 				let elderlyDatesArr = []
 				wantedDates = Object.values(elderly.preferredDaysAndHours)
@@ -225,12 +212,9 @@ router.post('/assign', async (req, res, next) => {
 						commonDates.push(dateElderly)
 					}
 				}
-				// console.log('commonDates',commonDates)
 				if(commonDates){
 					rankForPreferredDays = commonDates.length
 				}
-				// console.log('elderlyDatesArr',elderlyDatesArr)
-				// console.log('volunteerPreferredDatesArr',volunteerPreferredDatesArr)
 
 				//------------------------------ languages ---------------------------------
 				//NULL
@@ -246,15 +230,20 @@ router.post('/assign', async (req, res, next) => {
 				if(preferredGender){
 					rankForGender = 25
 				}
-				// console.log('elderlyDatesArr',elderlyDatesArr)
-				// console.log('volunteerPreferredDatesArr',volunteerPreferredDatesArr)
 
 				//------------------------------ areas of interest ---------------------------------
 				//NULL
 				rankForInterest = 0
 
+				//final rank
+				let organizationName = Object.values(elderly.organizationName)[1];
+				let percentages = await adjustmentPercentageDB.getPercent(organizationName);
+				console.log(percentages);
 				console.log('rankForPreferredDays', rankForPreferredDays, 'rankForLanguage', rankForLanguage, 'rankForInterest', rankForInterest, 'rankForGender', rankForGender )
-				finalRank = 1 * rankForPreferredDays + 1 * rankForLanguage + 1 * rankForInterest + 1 * rankForGender;
+				if (percentages){
+					finalRank = percentages.dateRank * rankForPreferredDays + percentages.languageRank * rankForLanguage + percentages.interestRank * rankForInterest + percentages.genderRank * rankForGender;
+					console.log(finalRank)
+				} 
 
 
 				let commonAreaOfInterest = ['gg','ge']
@@ -263,7 +252,6 @@ router.post('/assign', async (req, res, next) => {
 				matches.push({
 					elderly: elderly,
 					volunteerUsername: volunteerDetails.username,
-					// preferredDates: commonDates,
 					finalRank: finalRank.toFixed(2),
 					commonAreaOfInterest: commonAreaOfInterest,
 					commonLanguages: commonLanguages,
@@ -271,7 +259,6 @@ router.post('/assign', async (req, res, next) => {
 					commonServices: commonServices,
 					preferredGender: preferredGender
 				});
-				// console.log(matches)
 			}
 			res.send(matches)
 		}

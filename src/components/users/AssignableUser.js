@@ -33,7 +33,7 @@ function AssignableUser({user, setUser, toggleModal}) {
 
 	return (
 		<div>
-			<li className="list-group-item" key={user.userName}>
+			<li className="list-group-item" key={user.username}>
 				<div className="content">
 					<div>
 						<label className="volunteer-name">
