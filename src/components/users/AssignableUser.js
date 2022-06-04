@@ -18,7 +18,7 @@ function AssignableUser({user, setUser, toggleModal}) {
 
 	async function onClick() {
 		let elderlyMatch = await getElderlyMatch();
-
+		console.log(elderlyMatch);
 		if (userState.isHidden) {
 			setUserState({
 				matches: elderlyMatch,
@@ -33,7 +33,7 @@ function AssignableUser({user, setUser, toggleModal}) {
 
 	return (
 		<div>
-			<li className="list-group-item" key={user.userName}>
+			<li className="list-group-item" key={user.username}>
 				<div className="content">
 					<div>
 						<label className="volunteer-name">
@@ -44,7 +44,7 @@ function AssignableUser({user, setUser, toggleModal}) {
 				<div className="actions">
 					<button
 						className="sb-btn"
-						name={user.userName}
+						name={user.username}
 						onClick={() => onClick()}>
 						{userState.buttonText}
 					</button>

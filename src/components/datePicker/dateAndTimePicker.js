@@ -11,7 +11,7 @@ registerLocale('he', he);
 
 const DateTimePickerWrapper = ({user, closeModal, setModalState}) => {
 	const [state, setState] = useState({date: new Date(), wantedService: ''});
-
+	console.log(user)
 	const requiredStyle = (name) => {
 		const show = state[name] === '';
 		return {display: show ? 'block' : 'none'};
@@ -24,10 +24,10 @@ const DateTimePickerWrapper = ({user, closeModal, setModalState}) => {
 	}
 
 	const onClick = async () => {
+		
 		if (state.wantedService !== '') {
 			user.actualDate = dateFormat(state.date, 'dd.mm.yyyy,HH:MM');
 			user.meetingSubject = state.wantedService.label;
-			console.log(user);
 
 			try {
 				await addMeetingDB({user});
@@ -51,7 +51,7 @@ const DateTimePickerWrapper = ({user, closeModal, setModalState}) => {
 			<div className="date-modal-body">
 				<div className="modal-preferred-days">
 					<h4>ימים ושעות מועדפים משותפים:</h4>
-					{user.commonPreferredDays.length > 0 ? user.commonPreferredDays.toString() : 'אין ימים ושעות מועדפים משותפים'}
+					{user.commonPreferredDays.length > 0 ? user.commonPreferredDays : 'אין ימים ושעות מועדפים משותפים'}
 				</div>
 				<br/>
 				<div className="field">
@@ -90,4 +90,4 @@ const DateTimePickerWrapper = ({user, closeModal, setModalState}) => {
 	);
 };
 
-export { DateTimePickerWrapper };
+export { DateTimePickerWrapper};

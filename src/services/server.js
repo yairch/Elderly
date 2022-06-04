@@ -74,11 +74,9 @@ const fetchElderlyMatches = async (user) => {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
-				volunteerUsername: user.userName,
-				volunteerServices: user.services
+				user
 			})
 		});
-
 	handleError(response);
 	return response;
 };
@@ -212,7 +210,7 @@ const getElderlyMeeting = async (volunteerUsername) => {
 			method: 'get'
 		});
 	const result = await response.json();
-	// console.log(result); 
+	console.log(result); 
 	handleError(response);
 	return result;
 };

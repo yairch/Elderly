@@ -126,7 +126,7 @@ function LoginForm(props) {
 				getCurrentWebSocket();
 				//complete with cookie
 				setElderly(true);
-				//props.history.push('/elderly');
+				props.history.push('/elderly');
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				props.history.push(`/${UserRole.Responsible}`);

@@ -32,7 +32,7 @@ function ChangeAdjustmentPercentages(props) {
 				const username = Cookies.get(usersFields.username);
 				console.log(username);
 				console.log(dateRank+" "+languageRank+" "+interestRank+" "+genderRank);
-				await updateAdjustmentPercentages(username, dateRank, languageRank, interestRank, genderRank);
+				await updateAdjustmentPercentages(username, parseFloat(dateRank), parseFloat(languageRank), parseFloat(interestRank), parseFloat(genderRank));
 				
 				setState({
 					modalisOpen: true,
