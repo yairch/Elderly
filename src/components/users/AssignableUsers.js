@@ -6,7 +6,7 @@ const AssignableUsers = ({users, toggleModal, setUser}) =>
 	<div>
 		<ul className="list-group">
 			{users.map((user) => (
-				<AssignableUser key={user.userName} user={user} toggleModal={toggleModal} setUser={setUser}/>
+				<AssignableUser key={user.username} user={user} toggleModal={toggleModal} setUser={setUser}/>
 			))}
 		</ul>
 	</div>;

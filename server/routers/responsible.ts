@@ -13,6 +13,7 @@ import { Volunteer } from '../types/volunteer';
 import { Elderly } from '../types/elderly';
 import { Match } from '../types/match';
 import { GenderToMeet } from '../types/genderToMeet';
+import { match } from 'assert';
 
 const router = express.Router();
 
@@ -143,87 +144,138 @@ router.post('/registerElderly', async (req, res, next) => {
 router.post('/assign', async (req, res, next) => {
 	try {
 		// req.body takes only username of volunteer type and is beign renamed (alias) as volunteerUsername
-		const {username: volunteerUsername} = req.body as Pick<Volunteer, 'username'>;
-		const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
+		// const {username: volunteerUsername} = req.body as Pick<Volunteer, 'username'>;
+		// const volunteerDetails = await volunteerDB.getVolunteerDetails(volunteerUsername);
+		const volunteerDetails = req.body.user as Volunteer;
+		// console.log(volunteerDetails);
 		const elderlyDetails = await elderlyDB.getElderlyUsers();
-		const elderlyWithSameServicesAsVolunteer: Elderly[] = [];
+		// console.log(elderlyDetails);
+		let elderlyWithSameServicesAsVolunteer: Elderly[] = [];
+		//elderly wanted
+		let wantedServices, wantedDates;
+		//services
+		let serviceElderly, serviceVolunteer, offerServices, serElderly, serVolunteer;
+		//dates
+		let offerPreferredDates, dateVolunteer, datesVolunteer, datesElderly, dateElderly;
+		
 
 		//take only the elderly with the same wanted service as the volunteer service
 		if (elderlyDetails){
-			for (let elderly of elderlyDetails) {
-				const hasCommonServices = elderly.wantedServices.some(service => volunteerDetails?.services.includes(service))
-				if (hasCommonServices) {
-					elderlyWithSameServicesAsVolunteer.push(elderly);
-				}
+			
+			//------------------------- get volunteer ---------------------------
+			//get volunteer services
+			let volunteerServiceArr = []
+			offerServices = Object.values(volunteerDetails.services)
+			for (let offerService in offerServices){
+				// console.log('offer',offerServices) //object
+				serviceVolunteer = offerServices[offerService];
+				serVolunteer = Object.values(serviceVolunteer)[0];
+				// console.log(serVolunteer); //one service !!!
+				volunteerServiceArr.push(serVolunteer) 
 			}
-		}
 
-		console.log('elderlyWithSameServicesAsVolunteer');
-		console.log(elderlyWithSameServicesAsVolunteer);
+			//get volunteer preferred dates
+			let volunteerPreferredDatesArr = []
+			offerPreferredDates = Object.values(volunteerDetails.preferredDaysAndHours)
+			for (let offerDates in offerPreferredDates){
+				// console.log('offer',offerPreferredDates) //object
+				datesVolunteer = offerPreferredDates[offerDates];
+				dateVolunteer = Object.values(datesVolunteer)[0];
+				// console.log(dateVolunteer); //one service !!!
+				volunteerPreferredDatesArr.push(dateVolunteer) 
+			}
 
-		const matches: Match[] = [];
-
-		if (elderlyWithSameServicesAsVolunteer.length > 0) {
-			for (let elderly of elderlyWithSameServicesAsVolunteer) {
-				// let rankForServices = 0;
+			let matches: Match[] = [];
+			for (let elderly of elderlyDetails) {
+				//common
+				let commonServices = [], commonDates = [];
 				let rankForPreferredDays = 0;
 				let rankForLanguage = 0;
 				let rankForGender = 0;
 				let rankForInterest = 0;
 				let finalRank = 0;
 				
-				//services
-				const commonServices = elderly.wantedServices.filter(service => volunteerDetails?.services.includes(service));
+				//------------------------------ service ---------------------------------
+				let elderlyServicesArr = []
+				wantedServices = Object.values(elderly.wantedServices)
 				
-				//preferred days and hours
-				const commonPreferredDays = elderly.preferredDaysAndHours.filter(day => volunteerDetails?.preferredDaysAndHours.includes(day));
-				if (commonPreferredDays.length > 0) {
-					rankForPreferredDays = 1;
+				for (let wantedService in wantedServices){
+					serviceElderly = wantedServices[wantedService];
+					serElderly = Object.values(serviceElderly)[0];
+					elderlyServicesArr.push(serElderly)
+					if (volunteerServiceArr.includes(serElderly)){
+						commonServices.push(serElderly)
+					}
 				}
+				// console.log('volunteerService',volunteerServiceArr)
+				// console.log('elderlyServices',elderlyServicesArr)
+				if(commonServices){
+					elderlyWithSameServicesAsVolunteer.push(elderly)
+				}
+				// console.log('commonServices', commonServices)
+				//------------------------------ dates ---------------------------------
+				let elderlyDatesArr = []
+				wantedDates = Object.values(elderly.preferredDaysAndHours)
 				
-				//languages
-				const commonLanguages = elderly.languages.filter(lan => volunteerDetails?.languages.includes(lan));
-				if (commonLanguages.length > 0) {
-					rankForLanguage = 1;
+				for (let wantedDate in wantedDates){
+					datesElderly = wantedDates[wantedDate];
+					dateElderly = Object.values(datesElderly)[0];
+					elderlyDatesArr.push(dateElderly)
+					if (volunteerPreferredDatesArr.includes(dateElderly)){
+						commonDates.push(dateElderly)
+					}
 				}
-				
-				//gender
-				let preferredGender: GenderToMeet | undefined = undefined;
-				if (volunteerDetails?.gender.valueOf() === elderly.genderToMeetWith.valueOf() || elderly.genderToMeetWith === GenderToMeet.IDC) {
-					preferredGender = elderly.genderToMeetWith;
+				// console.log('commonDates',commonDates)
+				if(commonDates){
+					rankForPreferredDays = commonDates.length
 				}
-				if (preferredGender) {
-					rankForGender = 1;
-				}
+				// console.log('elderlyDatesArr',elderlyDatesArr)
+				// console.log('volunteerPreferredDatesArr',volunteerPreferredDatesArr)
 
-				//areaOfInterest
-				const commonAreaOfInterest = elderly.areasOfInterest.filter(area => volunteerDetails?.areasOfInterest.includes(area));
-				if (commonAreaOfInterest.length > 0) {
-					rankForInterest = 1;
-				}
+				//------------------------------ languages ---------------------------------
+				//NULL
+				rankForLanguage = 0
 
-				finalRank = 0.35 * rankForPreferredDays + 0.35 * rankForLanguage + 0.2 * rankForInterest + 0.1 * rankForGender;
+				//------------------------------ gender ---------------------------------
+				let preferredGender
+				let genderToMeet = Object.values(elderly.genderToMeetWith)[0]
+				if (volunteerDetails.gender.valueOf() === genderToMeet.valueOf() || genderToMeet.valueOf() === 'אין העדפה'){
+					preferredGender = genderToMeet;
+				}
+				
+				if(preferredGender){
+					rankForGender = 25
+				}
+				// console.log('elderlyDatesArr',elderlyDatesArr)
+				// console.log('volunteerPreferredDatesArr',volunteerPreferredDatesArr)
+
+				//------------------------------ areas of interest ---------------------------------
+				//NULL
+				rankForInterest = 0
+
+				console.log('rankForPreferredDays', rankForPreferredDays, 'rankForLanguage', rankForLanguage, 'rankForInterest', rankForInterest, 'rankForGender', rankForGender )
+				finalRank = 1 * rankForPreferredDays + 1 * rankForLanguage + 1 * rankForInterest + 1 * rankForGender;
+
+
+				let commonAreaOfInterest = ['gg','ge']
+				let commonLanguages = ['gg','ge']
 
 				matches.push({
 					elderly: elderly,
-					volunteerUsername: volunteerUsername,
-					preferredDay: elderly.preferredDaysAndHours,
+					volunteerUsername: volunteerDetails.username,
+					// preferredDates: commonDates,
 					finalRank: finalRank.toFixed(2),
 					commonAreaOfInterest: commonAreaOfInterest,
 					commonLanguages: commonLanguages,
-					commonPreferredDays: commonPreferredDays,
+					commonPreferredDays: commonDates,
 					commonServices: commonServices,
-					preferredGender: elderly.genderToMeetWith
+					preferredGender: preferredGender
 				});
+				// console.log(matches)
 			}
-
-			matches.sort(function (a, b) {
-				return parseFloat(b.finalRank) - parseFloat(a.finalRank);
-			});
-			res.send(matches);
+			res.send(matches)
 		}
-
-		res.send();
+		
 	}
 	catch (error) {
 		next(error);
@@ -234,36 +286,30 @@ router.post('/addMeeting', async (req, res, next) => {
 	try {
 		// FIXME: better to understand what type is user and change types
 		const user = req.body.user;
-		const meetingDayAndHour = req.body.user.actualDate as Date;
-		const volunteerUsername = req.body.user.volunteerUsername as string;
-		const elderlyUsername = req.body.user.elderly.userName as string;
-		const meetingSubject = req.body.user.meetingSubject as string;
-		const channelName = volunteerUsername + elderlyUsername + meetingDayAndHour;
-		console.log(meetingDayAndHour);
-		console.log(volunteerUsername);
-		console.log(elderlyUsername);
-		console.log(channelName);
-		console.log(meetingSubject);
+		const meetingDate = user.actualDate as Date;
+		const volunteerUsername = user.volunteerUsername as string;
+		const elderlyUsername = user.elderly.username as string;
+		const meetingSubject = user.meetingSubject as string;
+		const channelName = volunteerUsername + elderlyUsername + meetingDate;
 
-		
 		const volunteer = await volunteerDB.getVolunteerDetails(volunteerUsername);
-		
+		console.log(volunteer)
 		// FIXME: what to do if volunteer null?
 		if (volunteer){
 			
 			// FIXME: fix types
-			await sendMeetingEmail({
-				email: volunteer.email,
-				firstName: volunteer.firstName,
-				lastName: volunteer.lastName,
-				meeting: {
-					date: user.actualDate,
-					elderlyName: user.elderly.firstName + ' ' +user.elderly.lastName,
-					subject: user.meetingSubject
-				}
-			});
+			// await sendMeetingEmail({
+			// 	email: volunteer.email,
+			// 	firstName: volunteer.firstName,
+			// 	lastName: volunteer.lastName,
+			// 	meeting: {
+			// 		date: user.actualDate,
+			// 		elderlyName: user.elderly.firstName + ' ' +user.elderly.lastName,
+			// 		subject: user.meetingSubject
+			// 	}
+			// });
 
-			await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDayAndHour, meetingSubject , channelName);
+			await meetingDB.insertMeeting(volunteerUsername, elderlyUsername, meetingDate, meetingSubject , channelName);
 			res.status(200).send({message: 'added meeting', success: true});
 		} else{
 			throw Object.assign(
