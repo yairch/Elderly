@@ -29,3 +29,12 @@ yarn-error.log*
 .vscode/
 .eslintcache
 
+# certificate
+/server/fullchain.pem
+/server/privkey.pem
+
+# environment
+.env
+.env.development
+/server/.env
+/server/.env.development

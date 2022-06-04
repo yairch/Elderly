@@ -56,6 +56,27 @@ export const insertElderly = async (username:string, firstName:string, lastName:
             client.close();  
         }
 }
+
+export const postDailyForm = async(dailyform:object,userId:number,date:string)=>{
+    const client = new MongoClient(config.database.url);
+    try{
+        await client.connect()
+        const db = client.db(config.database.name);
+        const formCollection = db.collection(collectionIds.elderlyDailyForms);
+        await formCollection.insertOne({
+            "answers": dailyform,
+            "Uid": userId,
+            "Date":date
+        });
+    }
+    catch(error){
+        console.error(error);
+    }
+    finally {
+        client.close();  
+    }
+}
+
     
 export const getElderlyUsers = async() => {
     const client = new MongoClient(config.database.url);

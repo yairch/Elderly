@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
+import LoginForm1 from './components/LoginForm1';
+// import Identify from './components/Identify';
 import RegistrationFormOrganization from './components/registrationForms/RegistrationFormOrganization';
 import RegistrationFormElderly from './components/registrationForms/RegistrationFormElderly';
 import RegistrationFormVolunteer from './components/registrationForms/RegistrationFormVolunteer';
@@ -20,7 +21,10 @@ import AfterVideoCallPage from './components/pages/AfterVideoCallPage';
 import FullDetailsPage from './components/pages/FullDetailsPage';
 import ForgotPasswordPage from './components/pages/ForgotPasswordPage';
 import ChangePassword from './components/CangePassword';
+import ElderlyDailyForm from './components/registrationForms/ElderlyDailyForm'
+import ElderlyInitForm from './components/registrationForms/ElderlyInitForm'
 import ChangeAdjustmentPercentages from './components/pages/ChangeAdjustmentPercentages';
+import researcherPage from './components/pages/ResearcherPage';
 
 function Routes() {
 	return (
@@ -29,7 +33,9 @@ function Routes() {
 				<Route exact path="/">
 					<Redirect to="/login"/>
 				</Route>
-				<Route exact path="/login" component={LoginForm}/>
+				<Route exact path="/login" component={LoginForm1}/>
+				{/* <Route exact path="/Identify" component={Identify}/> */}
+				{/* <Route exact path="/login" component={LoginForm}/> */}
 				<Route exact path="/user/activate/:username/:password" component={ChangePasswordPage}/>
 				<Route exact path="/user/forgot-password" component={ForgotPasswordPage}/>
 				<Route exact path="/user/forgot-password/change-password/:username" component={ChangePassword}/>
@@ -53,7 +59,10 @@ function Routes() {
 				<Route exact path="/volunteer/meetings/videoCall" component={VideoCallPage}/>
 				<Route exact path="/volunteer/meetings/feedback" component={AfterVideoCallPage}/>
 				<Route exact path="/elderly" component={ElderlyPage}/>
+				<Route exact path="/elderly/init-form" component={ElderlyInitForm}/>
+				<Route exact path="/elderly/daily-form" component={ElderlyDailyForm}/>
 				<Route exact path="/elderly/meetings/videoCall" component={VideoCallPage}/>
+				<Route exact path="/researcher" component={researcherPage}/>
 				<Route exact path="/responsible/change-adjustment-percentages" component={ChangeAdjustmentPercentages}/>
 			</Switch>
 		</div>

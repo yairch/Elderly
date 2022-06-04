@@ -1,7 +1,5 @@
-import { userFields } from './../constants/collections';
 import bcrypt from 'bcrypt';
 import express from 'express';
-import * as Cookies from 'js-cookie';
 import * as userDB from '../DButils/user';
 import * as volunteerDB from '../DButils/volunteer';
 import * as elderlyDB from '../DButils/elderly';
