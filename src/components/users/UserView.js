@@ -14,30 +14,30 @@ function UserView({toggleModal, user, setUser}) {
 	return (
 		<React.Fragment>
 			<td className="col-1">{user.elderly.firstName + " " +user.elderly.lastName}</td>
-			<td className="col-2">{JSON.stringify(user.commonServices)}</td>
+			<td className="col-2">{(user.commonServices.length > 0 ? user.commonServices.toString() : 'אין')}</td>
 			<td className="col-3">
 				<p data-tip={user.elderly.username} data-for={`tooltip-${user.elderly.username}`}>
-					{(user.finalRank*1).toFixed() + '%'}
+					{(user.finalRank/10).toFixed() + '%'}
 				</p>
 				<ReactTooltip id={`tooltip-${user.username}`} getContent={() => {
-					// return (
-					// 	<div className="tooltip">
-					// 		{/* {'סוגי שירות משותפים:  ' + (user.commonServices.length > 0 ? user.commonServices.toString() : 'אין')} */}
-					// 		{'סוגי שירות משותפים:  ' + (JSON.stringify(user.commonServices))}
-					// 		{/* {'סוגי שירות משותפים:  ' + ('אין')} */}
-					// 		<br />
-					// 		{/* {'תחומי עניין משותפים:  ' + (user.commonAreaOfInterest.length > 0 ? user.commonAreaOfInterest.toString() : 'אין')} */}
-					// 		{'תחומי עניין משותפים:  ' + ('אין')}
-					// 		<br/>
-					// 		{/* {'שפות משותפות:  ' + (user.commonLanguages.length > 0 ? user.commonLanguages.toString() : 'אין')} */}
-					// 		{'שפות משותפות:  ' + ('אין')}
-					// 		<br/>
-					// 		{/* {'ימים ושעות מועדפים משותפים:  ' + (user.commonPreferredDays?.length > 0 ? user.commonPreferredDays?.toString() : 'אין')} */}
-					// 		{'ימים ושעות מועדפים משותפים:  ' + ('אין')}
-					// 		<br/>
-					// 		{'מגדר מועדף על הקשיש:  ' + user.preferredGender.value}
-					// 	</div>
-					// );
+					return (
+						<div className="tooltip">
+							{/* {'סוגי שירות משותפים:  ' + (user.commonServices.length > 0 ? user.commonServices.toString() : 'אין')} */}
+							{/* {'סוגי שירות משותפים:  ' + (JSON.stringify(user.commonServices))} */}
+							{/* {'סוגי שירות משותפים:  ' + ('אין')} */}
+							<br />
+							{/* {'תחומי עניין משותפים:  ' + (user.commonAreaOfInterest.length > 0 ? user.commonAreaOfInterest.toString() : 'אין')} */}
+							{/* {'תחומי עניין משותפים:  ' + ('אין')} */}
+							<br/>
+							{/* {'שפות משותפות:  ' + (user.commonLanguages.length > 0 ? user.commonLanguages.toString() : 'אין')} */}
+							{/* {'שפות משותפות:  ' + ('אין')} */}
+							<br/>
+							{/* {'ימים ושעות מועדפים משותפים:  ' + (user.commonPreferredDays.length > 0 ? user.commonPreferredDays?.toString() : 'אין')} */}
+							{/* {'ימים ושעות מועדפים משותפים:  ' + ('אין')} */}
+							<br/>
+							{/* {'מגדר מועדף על הקשיש:  ' + user.preferredGender} */}
+						</div>
+					);
 				}}/>
 			</td>
 			<td className="col-4">
