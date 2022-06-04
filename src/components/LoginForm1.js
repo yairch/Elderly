@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Cookies from 'js-cookie';
 import Modal from './modal/Modal';
+import {serverURL} from '../ClientUtils'
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
 // import images from "../resources/images.jpg"
@@ -43,29 +44,29 @@ function LoginForm(props) {
 				haslogin: true,
 				accessToken: response.accessToken
 			})
-			let res = await axios.get("http://localhost:3001/researcher")
+			let res = await axios.get(serverURL+"/researcher")
 			// console.log(res)
 			let data = res.data
-			let sleepFeature = null;
+			// let sleepFeature = null;
 			let activityFeatures = null
 			if (data.length > 0) {
 				let time = new Date(data[0].time).getTime()
 				if (today - time >= bucketDay) {
 					activityFeatures = await pullFromApi(response, "day", bucketDay, today - time, today);
-					sleepFeature = await pullSleep(response, today - time,today);
+					// sleepFeature = await pullSleep(response, today - time,today);
 				}
 			} else {
 				let start = today - bucketWeek
 				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
-				sleepFeature = await pullSleep(response, start ,today);
+				// sleepFeature = await pullSleep(response, start ,today);
 				console.log(activityFeatures);
 			}
-			if(sleepFeature){
-				await axios.post("http://localhost:3001/researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });
-			}
+			// if(sleepFeature){
+			// 	await axios.post(serverURL+"researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });
+			// }
 
 			if (activityFeatures) {
-				await axios.post("http://localhost:3001/researcher", { "activityFeatures": activityFeatures, "googleid": response.profileObj });
+				await axios.post(serverURL+"/researcher", { "activityFeatures": activityFeatures, "googleid": response.profileObj });
 			}
 			const nearestMeeting = await getElderlyNearestMeeting(response.profileObj.givenName);
 			props.history.push('/elderly', nearestMeeting);
