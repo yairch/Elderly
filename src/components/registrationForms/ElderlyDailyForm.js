@@ -38,8 +38,8 @@ const ElderlyDailyForm = (props) => {
       const handleSubmit = async () => {
         console.log("handle Submit");
         try {
-
-			const response = await fetchPostDailyForm(values,123,date);
+            let uid = 123;
+			const response = await fetchPostDailyForm(values,uid,date);
 			(await response).json();
             console.log("success");
             props.history.push('/elderly');

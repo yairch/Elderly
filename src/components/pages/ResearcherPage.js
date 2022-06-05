@@ -12,16 +12,20 @@ function ResearcherPage(props) {
     // const [showLine, setShowLine] = useState(false);
     const [data, setData] = useState([]);
     const [label, setLabel] = useState('');
+    const [labels, setLabels] = useState(['1','2','3','4','5','6','7']);
+
+
+    const [start, setStart] = useState();
+    const [end, setEnd] = useState();
 
     let state = {
-        labels: ['day 1', 'day 2', 'day 3',
-            'day 4', 'day 5', 'day 6', 'day 7'],
+        labels: labels,
         datasets: [
             {
                 label: label,
                 fill: true,
-                backgroundColor: 'rgba(75,192,192,1)',
-                borderColor: 'rgba(0,0,0,1)',
+                backgroundColor: ['rgba(75,192,192,0.3)','rgba(192,75,192,0.3)','rgba(192,192,75,0.3)'],
+                borderColor: 'rgba(0,0,0,0.9)',
                 borderWidth: 2,
                 data: data
             }
@@ -36,7 +40,8 @@ function ResearcherPage(props) {
         return await axios.get(`${serverURL}/researcher/features`);
     }
 
-    const showSteps = async () => {
+    const showSteps = async (e) => {
+        
         let response = [10, 20, 45, 30, 55, 70, 60]//await getFeatures();
         // let response = await getFeatures();
         setLabel('Steps')
@@ -104,9 +109,11 @@ function ResearcherPage(props) {
     return (
         <div className="page">
             <Sidebar history={props.history} content={content} />
+            
+            
             <div style={{width:'30%'}}>
-                <input  type='date' className='from' value='from'/>
-                <input type='date' className='to' value='to' />
+                <input  type='date' className='start' value={start} onChange={e=>setStart(e.target.value)}/>
+                <input type='date' className='end' value={end} onChange={e=>setEnd(e.target.value)} />
             </div>
             {showBar &&
                 <div style={{ position: "absolute", top: '100px', left: '25%', height: '50%', width: '40%', backgroundColor: 'white' }}>
