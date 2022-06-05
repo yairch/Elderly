@@ -165,14 +165,20 @@ export const insertSleeping = async(Sleeping:Array<any>, googleid:string)=>{
 }
 
 
-export const getAllFeatures = async() =>{
+export const getAllFeatures = async(start:Date, end:Date) =>{
     const client = new MongoClient(config.database.url)
     try{
         await client.connect()
         const db = client.db(config.database.name);
         for (const key in features) {
             const feature = db.collection(key);
-            let res = feature.find({}).sort({'time':-1}).limit(7);
+            // let res = feature.find({}).sort({'time':-1}).limit(7);
+            let res = feature.find({
+                'time':{
+                    $gte: start.getTime(),
+                    $lte: end.getTime()
+                }
+            });
             features[key] = await res.toArray();
 
         }

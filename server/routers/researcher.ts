@@ -32,9 +32,10 @@ router.get('/', async(req,res,next)=>{
 });
 
 
-router.get('/features', async(req,res,next)=>{
+router.get('/features/:start/:end', async(req,res,next)=>{
     try{
-        const features = await getAllFeatures();
+        const {start, end} = req.params;
+        const features = await getAllFeatures(new Date(start), new Date(end));
         res.status(200).send(features);
     }catch(e){
         next(e)

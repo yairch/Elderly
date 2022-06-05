@@ -12,11 +12,11 @@ function ResearcherPage(props) {
     // const [showLine, setShowLine] = useState(false);
     const [data, setData] = useState([]);
     const [label, setLabel] = useState('');
-    const [labels, setLabels] = useState(['1','2','3','4','5','6','7']);
+    const [labels, setLabels] = useState([]);
 
 
-    const [start, setStart] = useState();
-    const [end, setEnd] = useState();
+    const [start, setStart] = useState(Date);
+    const [end, setEnd] = useState(Date);
 
     let state = {
         labels: labels,
@@ -24,7 +24,7 @@ function ResearcherPage(props) {
             {
                 label: label,
                 fill: true,
-                backgroundColor: ['rgba(75,192,192,0.3)','rgba(192,75,192,0.3)','rgba(192,192,75,0.3)'],
+                backgroundColor: ['rgba(75,192,192,0.3)', 'rgba(192,75,192,0.3)', 'rgba(192,192,75,0.3)'],
                 borderColor: 'rgba(0,0,0,0.9)',
                 borderWidth: 2,
                 data: data
@@ -36,41 +36,53 @@ function ResearcherPage(props) {
     //     if ()
     // });
 
+    const setLabelsValue = (array) => {
+        let arr = []
+        for (let index = 0; index < array.length; index++) {
+            arr.push(`day ${index}`);
+        }
+        setLabels(arr)
+    }
     const getFeatures = async () => {
-        return await axios.get(`${serverURL}/researcher/features`);
+        return await axios.get(`${serverURL}/researcher/features/${start}/${end}`);
     }
 
     const showSteps = async (e) => {
-        
+
         let response = [10, 20, 45, 30, 55, 70, 60]//await getFeatures();
         // let response = await getFeatures();
-        setLabel('Steps')
+        setLabel('Steps');
         setData(response);
+        setLabelsValue(response);
         (showBar) ? setShowBar(false) : setShowBar(true);
     }
     const showHR = async () => {
         let response = await getFeatures();
         setData(response.data.HR);
+        setLabelsValue(response.data.HR);
         setLabel('HR');
         (showBar) ? setShowBar(false) : setShowBar(true);
     }
     const showDistance = async () => {
         let response = await getFeatures();
         setData(response.data.Distance);
-        setLabel('Distance')
-            (showBar) ? setShowBar(false) : setShowBar(true);
+        setLabelsValue(response.data.Distance);
+        setLabel('Distance');
+        (showBar) ? setShowBar(false) : setShowBar(true);
     }
     const showAM = async () => {
         let response = await getFeatures();
         setData(response.data.Active_min);
-        setLabel('Active Minutes')
-            (showBar) ? setShowBar(false) : setShowBar(true);
+        setLabelsValue(response.data.Active_min);
+        setLabel('Active Minutes');
+        (showBar) ? setShowBar(false) : setShowBar(true);
     }
     const showSleep = async () => {
         let response = await getFeatures();
         setData(response.data.Sleep);
-        setLabel('Hour of Sleeps')
-            (showBar) ? setShowBar(false) : setShowBar(true);
+        setLabelsValue(response.data.Sleep);
+        setLabel('Hour of Sleeps');
+        (showBar) ? setShowBar(false) : setShowBar(true);
 
     }
 
@@ -107,13 +119,15 @@ function ResearcherPage(props) {
     );
 
     return (
-        <div className="page">
-            <Sidebar history={props.history} content={content} />
-            
-            
-            <div style={{width:'30%'}}>
-                <input  type='date' className='start' value={start} onChange={e=>setStart(e.target.value)}/>
-                <input type='date' className='end' value={end} onChange={e=>setEnd(e.target.value)} />
+        <div>
+            <div >
+                <Sidebar history={props.history} content={content} />
+            </div>
+
+            <div style={{ position: 'absolute', top: 20, left: '40%', width: '200px', backgroundColor: 'lightcyan' }}>
+                <input type='date' className='start' value={start} onChange={e => setStart(e.target.value)} />
+                <input type='date' className='end' value={end} onChange={e => setEnd(e.target.value)} />
+
             </div>
             {showBar &&
                 <div style={{ position: "absolute", top: '100px', left: '25%', height: '50%', width: '40%', backgroundColor: 'white' }}>
