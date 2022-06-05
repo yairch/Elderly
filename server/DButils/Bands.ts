@@ -8,6 +8,7 @@ const config = {
 	},
 };
 
+let features:any = {'Calories':[],'Steps':[],'Speed':[],'Active_min':[],'Distance':[],'HR':[]}
 
 
 export const insertSteps = async(steps:Array<number>, googleid: string)=>{
@@ -164,18 +165,21 @@ export const insertSleeping = async(Sleeping:Array<any>, googleid:string)=>{
 }
 
 
-// export const getAllFeatures = async() =>{
-//     const client = new MongoClient(config.database.url)
-//     try{
-//         await client.connect()
-//         const db = client.db(config.database.name);
-//         const calories_col = db.collection("Calories");
-//         let res = await calories_col.find({})
-//         res = (await res.toArray()).sort((a:any,b:any)=> b.time-a.time)
-//         return res
-//     }catch(e){
-//         console.error(e);
-//     }finally{
-//         client.close()
-//     }
-// }
+export const getAllFeatures = async() =>{
+    const client = new MongoClient(config.database.url)
+    try{
+        await client.connect()
+        const db = client.db(config.database.name);
+        for (const key in features) {
+            const feature = db.collection(key);
+            let res = feature.find({}).sort({'time':-1}).limit(7);
+            features[key] = await res.toArray();
+
+        }
+        return features
+    }catch(e){
+        console.error(e);
+    }finally{
+        client.close()
+    }
+}

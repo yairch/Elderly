@@ -1,5 +1,5 @@
 
-import {insertSleeping, insertSteps, insertCalories, insertSpeed, insertDistance, insertHR, insertActive, getUpdatedTime} from '../DButils/Bands';
+import {insertSleeping, insertSteps, insertCalories, insertSpeed, insertDistance, insertHR, insertActive, getUpdatedTime, getAllFeatures} from '../DButils/Bands';
 import {insertUser} from '../DButils/user';
 import {UserRole} from '../types/user'
 import express from 'express';
@@ -32,14 +32,14 @@ router.get('/', async(req,res,next)=>{
 });
 
 
-// router.get('/features', async(req,res,next)=>{
-//     try{
-//         const time = await getAllFeatures()
-//         res.status(200).send(time)
-//     }catch(e){
-//         next(e)
-//     }
-// });
+router.get('/features', async(req,res,next)=>{
+    try{
+        const features = await getAllFeatures();
+        res.status(200).send(features);
+    }catch(e){
+        next(e)
+    }
+});
 
 
 export default router;
