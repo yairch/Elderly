@@ -531,9 +531,7 @@ class VideoComponent extends React.Component {
 				<div className="ag-btn-group">
 					{
 						this.props.isElderly
-							? <>{exitBtn}
-							{videoControlBtn}
-							{audioControlBtn}</>//null 
+							? null
 							: <>
 								{exitBtn}
 								{videoControlBtn}
