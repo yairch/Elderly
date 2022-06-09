@@ -313,7 +313,16 @@ router.post('/addMeeting', async (req, res, next) => {
 router.get('/meetings-volunteers/:organizationName', async (req, res, next) => {
 	try {
 		let {organizationName} = req.params;
-		let volunteerMeetingsInOrganizations = await meetingDB.getMeetingsByOrganization(organizationName);
+		const volunteers = await volunteerDB.getVolunteersByOrganization(organizationName);
+		let volunteerMeetingsInOrganizations = []
+		for(let volunteer in volunteers){
+			let usernameVol = volunteers[parseInt(volunteer)].username;
+			let meetings = await meetingDB.getFullVolunteerMeetings(usernameVol)
+			for(let meeting in meetings){
+				volunteerMeetingsInOrganizations.push(meetings[meeting]);
+			}
+		} 
+		
 		console.log(volunteerMeetingsInOrganizations);
 		res.send(JSON.parse(JSON.stringify(volunteerMeetingsInOrganizations)));
 	}
@@ -381,8 +390,8 @@ router.delete('/deleteMeeting/:channelName',async (req, res, next) => {
 		console.log('deleteMeeting');
 		let {channelName} = req.params;
 		channelName = channelName.substring(0, channelName.length - 1);
-		let check = await meetingDB.checkMeetingExistsByChannel(channelName);
-		if(check){
+		let meeting = await meetingDB.checkMeetingExistsByChannel(channelName);
+		if(meeting){
 			await meetingDB.deleteMeetingsByChannel(channelName);
 			res.status(200).send({message: 'delete succeeded', success: true});
 		}
