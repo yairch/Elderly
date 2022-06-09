@@ -533,7 +533,7 @@ class VideoComponent extends React.Component {
 						this.props.isElderly
 							? <>{exitBtn}
 							{videoControlBtn}
-							{audioControlBtn}</>//null
+							{audioControlBtn}</>//null 
 							: <>
 								{exitBtn}
 								{videoControlBtn}
