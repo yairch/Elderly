@@ -26,7 +26,7 @@ function LoginForm(props) {
 	// console.log(today)
 	const bucketDay = 86400000
 	// const bucketMonth= 30*bucketDay
-	const bucketWeek = 7 * bucketDay
+	const bucketMonth = 30 * bucketDay*3
 	useEffect(() => {
 		const cookieObject = hasCookie();
 		if (cookieObject.haslogin) {
@@ -37,7 +37,7 @@ function LoginForm(props) {
 	}, []);
 
 	async function login(response) {
-		console.log(response.profileObj)
+		// console.log(response.profileObj)
 		if (response.accessToken) {
 			setUser({
 				...response.profileObj,
@@ -52,11 +52,12 @@ function LoginForm(props) {
 			if (data.length > 0) {
 				let time = new Date(data[0].time).getTime()
 				if (today - time >= bucketDay) {
+					console.log(today-time);
 					activityFeatures = await pullFromApi(response, "day", bucketDay, today - time, today);
 					// sleepFeature = await pullSleep(response, today - time,today);
 				}
 			} else {
-				let start = today - bucketWeek
+				let start = today - bucketMonth
 				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
 				// sleepFeature = await pullSleep(response, start ,today);
 				console.log(activityFeatures);
@@ -114,7 +115,11 @@ function LoginForm(props) {
 
 	const checkOnSubmit = async () => {
 		try {
-
+			if(hasCookie().haslogin){
+				let cookieObject=hasCookie();
+				const nearestMeeting = await getElderlyNearestMeeting(cookieObject.givenName);
+				props.history.push('/elderly', nearestMeeting);
+			}
 			const user = await loginCheck(document.getElementById('username').value, document.getElementById('password').value);
 
 			if (user[usersFields.role] === 'volunteer') {
@@ -126,7 +131,8 @@ function LoginForm(props) {
 				getCurrentWebSocket();
 				//complete with cookie
 				setElderly(true);
-				props.history.push('/elderly');
+				
+				// props.history.push('/elderly');
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				props.history.push(`/${UserRole.Responsible}`);

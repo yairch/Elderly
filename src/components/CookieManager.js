@@ -87,6 +87,8 @@ export const pullFromApi = async (response, type, bucketByTime, start, end) => {
             }
         });
         stepArray = result.data.bucket
+        let s=stepArray[0].startTimeMillis;
+        let e=stepArray[stepArray.length-1].endTimeMillis;
         //console.log(stepArray)
         let i = 1
         let all_types = []
@@ -135,7 +137,7 @@ export const pullFromApi = async (response, type, bucketByTime, start, end) => {
         // console.log(active_min)
         // console.log(distance)
         // console.log(hr)
-        return { "calories": calories, "steps": steps, "speed": speed, "active_min": active_min, "distance": distance, "hr": hr }
+        return { "calories": calories, "steps": steps, "speed": speed, "active_min": active_min, "distance": distance, "hr": hr, 'start':s, 'end':e }
     } catch (error) {
         console.log(error);
     }
