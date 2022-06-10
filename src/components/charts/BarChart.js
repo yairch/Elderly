@@ -6,7 +6,8 @@ import Sidebar from "../sidebar/Sidebar";
 
 const BarChart = (props) => {
     const backgroundColors =[]
-    function getRandomColor() {
+    
+    const getRandomColor = () => {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
         for (var i = 0; i < 6; i++ ) {
@@ -49,8 +50,8 @@ const BarChart = (props) => {
                             scales: {
                                 y:
                                 {
-                                    min: 0,
-                                    max: 100,
+                                    min: props.min,
+                                    max: props.max,
                                     stepSize: 1,
                                 },
                             }
@@ -70,8 +71,8 @@ const BarChart = (props) => {
                             scales: {
                                 y:
                                 {
-                                    min: 0,
-                                    max: 100,
+                                    min: props.min,
+                                    max: props.max,
                                     stepSize: 1,
                                 },
                             }
