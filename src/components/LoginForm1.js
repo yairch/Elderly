@@ -14,6 +14,8 @@ import { userTypes } from '../constants/userTypes';
 import { UserRole } from '../types/user'
 // eslint-disable-next-line no-unused-vars
 import {pullSleep, pullFromApi, SetCookie, DeleteCookie, hasCookie } from './CookieManager.js';
+import { strings } from '../constants/strings';
+import './loginForm.css'
 const CLIENT_ID = "454610489364-66snjbuq568fgvrluepjrusgjv8u1juv.apps.googleusercontent.com";//process.env.REACT_APP_CLIENT_ID;
 
 function LoginForm(props) {
@@ -156,24 +158,25 @@ function LoginForm(props) {
 	}
 
 	return (
-		<div className="HomePage">
-			<label className='header-logo'>E	l	d	e	r	l	y</label>
+		<div className="HomePage login_container">
+			<img className='logo' src='assets/images/mainLogo.png' alt='mainLogo'/>
+			<label className='login_header'>{strings.loginForm.header}</label>
 
-			<div className="login-wrapper">
-				<div className="shadow-box">
-					<div className="form-group">
-						<h2>כניסה</h2>
-						{/* <input type="text" id="username" /> */}
-						<input  type="text" id="username" placeholder='שם משתמש'/>
-						<input  type="password" id="password"placeholder='סיסמה'/>
+			<div className="login_details_wrapper">
+				<div>
+					<div className="login_form">
+						<label htmlFor='username'>{strings.loginForm.username}</label>
+						<input  type="text" id="username"/>
+						<label htmlFor='password'>{strings.loginForm.password}</label>
+						<input  type="password" id="password"/>
 
 						{/* <input type="password" id="password" /> */}
-						<div className="align-right">
+						<div className="forgot-password-wrapper">
 							{/* FIXME: */}
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-							<a className="forgot-password" href="" onClick={forgotPassword}>שכחתי סיסמה</a>
+							<a className="forgot-password" href="" onClick={forgotPassword}>{strings.loginForm.forgotPassword}</a>
 						</div>
-						<button className="sb-btn" type="button" onClick={checkOnSubmit}>כניסה</button><br />
+						<button className="login-submit" type="button" onClick={checkOnSubmit}>{strings.loginForm.enter}</button><br />
 						{isElderly &&
 							<div >
 								<br /><label style={{ position: "relative",textAlign:"center"}}>אנא אשר באמצעות גוגל</label><br />
@@ -207,7 +210,7 @@ function LoginForm(props) {
 					</div>
 				</div>
 			</div>
-
+			<img className='login-image' src='assets/images/loginImage.png' alt='videoChatImage'/>
 		</div>
 	);
 }

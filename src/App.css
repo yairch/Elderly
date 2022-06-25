@@ -174,11 +174,6 @@ input:-webkit-autofill {
     width: 95%;
 }
 
-.forgot-password {
-    color: #167bff;
-    text-decoration: underline;
-}
-
 .form-group label {
     width: 95%;
     text-align: right;

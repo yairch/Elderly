@@ -1,0 +1,84 @@
+.login_container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #D3D7ED;
+    height: 100%;
+    
+}
+
+.logo {
+    width: 200px;
+    margin-top: 60px;
+}
+
+.login_header {
+    color: #24356B;
+    font-size: 70px;
+    font-weight: bold;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 20px 0;
+}
+
+.login_details_wrapper {
+    text-align: center;
+    width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: hidden;
+    overflow-y: paged-y-controls;
+    color: #24356B;
+}
+
+.login_form label {
+    text-align: right;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 9px;
+    transform: translateX(-110px);
+}
+
+.forgot-password-wrapper {
+    text-align: right;
+    font-size: 15px;
+    transform: translateX(-110px);
+}
+
+.forgot-password {
+    color: #24356B;
+    text-decoration: underline;
+}
+
+.login_form input {
+    width: 60%;
+    height: 35px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin: 0 0 20px 0;
+    background: #ffffff;
+    border-block-color:rgb(156, 154, 154);
+}
+
+.login-submit {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 25px;
+    padding: 10px 70px;
+    color: #24356B;
+    background-color: #ffffff;
+
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.login-submit:hover {
+    color: #ffffff;
+    background-color: #24356B
+}
+
+.login-image {
+    position: absolute;
+    left: 100px;
+    bottom: 100px;
+}
