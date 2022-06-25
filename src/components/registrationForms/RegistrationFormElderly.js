@@ -31,6 +31,8 @@ class RegistrationFormElderly extends Component {
 			city: '',
 			gender: '',
 			phoneNumber: '',
+			areasOfInterest: [],
+			languages: [],
 			selectedAreasOfInterest: [],
 			selectedLanguages: [],
 			wantedServices: [],
@@ -88,6 +90,7 @@ class RegistrationFormElderly extends Component {
 		this.toggleModal = this.toggleModal.bind(this);
 		this.checkOnSubmit = this.checkOnSubmit.bind(this);
 		this.closeModal = this.closeModal.bind(this);
+		this.registerElderly = this.registerElderly.bind(this);
 	}
 
 	handleChange = (e, name) => {
@@ -170,7 +173,7 @@ class RegistrationFormElderly extends Component {
 		});
 	}
 
-	async handleSubmit() {
+	async registerElderly() {
 		try {
 			const response = await registerElderly(this.state);
 			await response.json();
@@ -182,6 +185,23 @@ class RegistrationFormElderly extends Component {
 		}
 
 		this.toggleModal();
+	}
+
+	async handleSubmit() {
+		this.setState((prevState) => {
+			const languages = prevState.selectedLanguages.map(languageInput => {
+				return languageInput.value;
+			});
+
+			const areasOfInterest = prevState.selectedAreasOfInterest.map(areasOfInterestInput => {
+				return areasOfInterestInput.value;
+			});
+
+			return {
+				areasOfInterest,
+				languages,
+			};
+		}, this.registerElderly);
 	}
 
 	toggleModal() {

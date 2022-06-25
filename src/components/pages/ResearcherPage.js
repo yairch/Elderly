@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../sidebar/Sidebar';
+// eslint-disable-next-line no-unused-vars
 import axios from 'axios';
 
 function researcherPage(props){
