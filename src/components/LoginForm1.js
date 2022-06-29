@@ -102,9 +102,14 @@ function LoginForm(props) {
 		let meetings = await fetchMeetingsFullDetails(userName, userTypes.elderly);
 		// meetings = filterMeetings(meetings);
 		if (meetings.length > 0) {
-			meetings = meetings.reduce((prev, curr) => (prev[meetingFields.meetingDayAndHour] < curr[meetingFields.meetingDayAndHour] ? prev : curr));
+			meetings = meetings.reduce((prev, curr) => (prev[meetingFields.date] < curr[meetingFields.date] ? prev : curr));
 		}
-		return meetings[0]
+		else{
+			return null;
+		}
+		console.log(meetings)
+		return meetings
+		// return meetings[0]
 	}
 
 	const forgotPassword = () => {
@@ -126,10 +131,12 @@ function LoginForm(props) {
 			}
 			else if (user[usersFields.role] === 'elderly') {
 				Cookies.set(usersFields.username, user[usersFields.username]);
+				const nearestMeeting = await getElderlyNearestMeeting(user[usersFields.username]);
+				console.log(nearestMeeting)
 				getCurrentWebSocket();
 				//complete with cookie
 				setElderly(true);
-				// props.history.push('/elderly');
+				// props.history.push('/elderly', nearestMeeting);
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				props.history.push(`/${UserRole.Responsible}`);
