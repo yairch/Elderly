@@ -316,6 +316,16 @@ const fetchPostDailyForm = async (formAnswer,userId,date)=> {
 	return response;
 }
 
+const fetchInitForm = async (numericformAnswer,categoricalformAnswer,userId,date)=> {
+	const response = await fetch(serverURL + '/elderly/daily-form', {
+		method: 'post',
+		headers:{'Content-Type': 'application/json'},
+		body: JSON.stringify({numericformAnswer,categoricalformAnswer,userId,date})
+	});
+	handleError(response);
+	return response;
+}
+
  
 export {
 	registerNotifications,
@@ -342,5 +352,6 @@ export {
 	updateAdjustmentPercentages,
 	deleteMeetingFromDB,
 	notifyElderly,
-	fetchPostDailyForm
+	fetchPostDailyForm,
+	fetchInitForm
 };

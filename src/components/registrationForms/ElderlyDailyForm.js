@@ -36,7 +36,6 @@ const ElderlyDailyForm = (props) => {
 
 	
       const handleSubmit = async () => {
-        console.log("handle Submit");
         try {
             let uid = 123;
 			const response = await fetchPostDailyForm(values,uid,date);

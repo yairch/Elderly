@@ -77,7 +77,31 @@ export const postDailyForm = async(dailyform:object,userId:number,date:string)=>
     }
 }
 
-    
+ 
+export const postInitForm = async(numInitForm:object,catInitForm:object,userId:number,date:string)=>{
+    const client = new MongoClient(config.database.url);
+    try{
+        await client.connect()
+        const db = client.db(config.database.name);
+        const formCollection = db.collection(collectionIds.elderlyDailyForms);
+        await formCollection.insertOne({
+            "numeric_answers": numInitForm,
+            "categorical_answers":catInitForm,
+            "Uid": userId,
+            "Date":date
+        });
+    }
+    catch(error){
+        console.error(error);
+    }
+    finally {
+        client.close();  
+    }
+}
+
+
+
+
 export const getElderlyUsers = async() => {
     const client = new MongoClient(config.database.url);
     try{

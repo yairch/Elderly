@@ -60,7 +60,6 @@ function LoginForm(props) {
 				let start = today - bucketMonth
 				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
 				// sleepFeature = await pullSleep(response, start ,today);
-				console.log(activityFeatures);
 			}
 			// if(sleepFeature){
 			// 	await axios.post(serverURL+"researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });

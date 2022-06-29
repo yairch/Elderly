@@ -44,6 +44,21 @@ router.post('/daily-form', async (req, res, next) => {
 }
 );
 
+router.post('/init-form', async (req, res, next) => {
+	try {
+		const {numericformAnswer,categoricalformAnswer,userId,date} = req.body;
+		let elderlyName = await elderlyDB.postInitForm(numericformAnswer,categoricalformAnswer,userId,date);
+		// volunteerName = volunteerName?.firstName + ' ' + volunteerName?.lastName;
+		console.log(elderlyName);
+		res.status(200).send({message: 'register to notifications succeeded', success: true});
+	}
+	catch (error) {
+		next(error)
+		res.status(500).send({message: "notify elderly didnt succeed", success: false});
+	}
+}
+);
+
 // router.get('/init-form',async(req,res,next)=>{
 // 	try{
 // 		const form = await initFormDB.GetDailyForm()
