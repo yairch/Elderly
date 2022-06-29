@@ -27,7 +27,7 @@ export const deleteMeetingsByChannel = async (channelName: string) => {
 		await client.connect()
 		const db = client.db(config.database.name);
 		const meetings = db.collection<Meeting>(collectionIds.meetings);
-		meetings.deleteMany({channelName});
+		await meetings.deleteOne({channelName});
 	}
 	catch(error){
 		throw(error);
@@ -124,7 +124,16 @@ export const getFullVolunteerMeetings = async (username: string): Promise<Meetin
 				  foreignField: elderlyFields.username,
 				  as: 'elderly'
 				}
-			}
+			},
+			{ $lookup:
+				{
+				  from: collectionIds.volunteerUsers,
+				  localField: meetingFields.volunteerUsername,
+				  foreignField: volunteerFields.username,
+				  as: 'volunteer'
+				}
+			},
+
 		]);
 
 		return await aggregationCursor.toArray();
@@ -144,6 +153,8 @@ export const getMeetingsByOrganization = async (organizationName: string): Promi
 
 		const db = client.db(config.database.name);
 		const meetings = db.collection<Meeting>(collectionIds.meetings);
+		// console.log('meetingssss:',meetings)
+		// console.log('ef', Object.values(elderlyFields.organizationName))
 		const cursor = meetings.aggregate<Meeting>([
 			{ $lookup:
 				{
@@ -166,6 +177,7 @@ export const getMeetingsByOrganization = async (organizationName: string): Promi
             }
 		]);
 		const toArr = await cursor.toArray();
+		console.log('meetings',toArr)
         return toArr
 	}
 	catch(error){

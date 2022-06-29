@@ -3,8 +3,7 @@ import Sidebar from '../sidebar/Sidebar';
 import InComingCallModal from '../modal/InComingCallModal';
 import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
-// import CountdownTimer from '../countDownTimer/CountdownTimer';
-import dateFormat from 'dateformat';
+
 
 
 
@@ -18,8 +17,11 @@ function ElderlyPage(props) {
 	let formattedDate;
 	let volunteer;
 	if (nearestMeeting) {
+
 		volunteer = nearestMeeting.volunteer[0];
-		formattedDate = nearestMeeting && dateFormat(nearestMeeting.date, 'בתאריך dd.mm.yyyy, בשעה HH:MM')
+
+		formattedDate = ( `בתאריך ${(nearestMeeting.date).slice(0,10)}, בשעה ${(nearestMeeting.date).slice(-5)}`)
+
 	}
 	
 	const [state, setState] = useState({

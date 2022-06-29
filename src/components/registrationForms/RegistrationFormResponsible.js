@@ -172,14 +172,14 @@ class RegistrationFormResponsible extends Component {
 		};
 
 		return (
-			<div>
+			<div className="no-sidebar-page">
 				<Navbar history={this.props.history}/>
 				<h2 className="header">
 					טופס רישום אחראי
 				</h2>
 				<div className="register-wrapper">
 					<div className="shadow-box">
-						<div className="container">
+						<div className="container"> 
 							<div className="register-form">
 								<div className="form">
 									<div className="field">
