@@ -77,6 +77,13 @@
     background-color: #24356B
 }
 
+.login_form .confirm-google {
+    text-align: center;
+    margin: 9px 0;
+    width: 60%;
+    transform: translateX(-120px);
+}
+
 .login-image {
     position: absolute;
     left: 100px;

@@ -129,7 +129,7 @@ function LoginForm(props) {
 				getCurrentWebSocket();
 				//complete with cookie
 				setElderly(true);
-				props.history.push('/elderly');
+				// props.history.push('/elderly');
 			}
 			else if (user[usersFields.role] === UserRole.Responsible) {
 				props.history.push(`/${UserRole.Responsible}`);
@@ -179,7 +179,7 @@ function LoginForm(props) {
 						<button className="login-submit" type="button" onClick={checkOnSubmit}>{strings.loginForm.enter}</button><br />
 						{isElderly &&
 							<div >
-								<br /><label style={{ position: "relative",textAlign:"center"}}>אנא אשר באמצעות גוגל</label><br />
+								<label className='confirm-google'>{strings.loginForm.confirmationGoogle}</label>
 								{user.haslogin ?
 									<GoogleLogout
 										clientId={CLIENT_ID}
@@ -189,12 +189,13 @@ function LoginForm(props) {
 									>
 									</GoogleLogout> : <GoogleLogin
 										clientId={CLIENT_ID}
-										buttonText='Login'
+										buttonText={strings.loginForm.googleLogin}
 										onSuccess={login}
 										onFailure={handleLoginFailure}
 										cookiePolicy={'single_host_origin'}
 										responseType='code,token'
 										scope={'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.location.read'}
+										className
 									/>
 								}
 								
@@ -216,3 +217,4 @@ function LoginForm(props) {
 }
 
 export default LoginForm;
+
