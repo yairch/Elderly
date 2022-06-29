@@ -24,7 +24,7 @@ function LoginForm(props) {
 
 	const today = new Date().getTime()
 	// console.log(today)
-	const bucketDay = 86400000
+	const bucketDay = 86400000;
 	// const bucketMonth= 30*bucketDay
 	const bucketMonth = 30 * bucketDay*3
 	useEffect(() => {
@@ -47,23 +47,23 @@ function LoginForm(props) {
 			let res = await axios.get(serverURL+"/researcher")
 			// console.log(res)
 			let data = res.data
-			// let sleepFeature = null;
+			let sleepFeature = null;
 			let activityFeatures = null
 			if (data.length > 0) {
 				let time = new Date(data[0].time).getTime()
 				if (today - time >= bucketDay) {
 					console.log(today-time);
 					activityFeatures = await pullFromApi(response, "day", bucketDay, today - time, today);
-					// sleepFeature = await pullSleep(response, today - time,today);
 				}
 			} else {
 				let start = today - bucketMonth
 				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
 				// sleepFeature = await pullSleep(response, start ,today);
 			}
-			// if(sleepFeature){
-			// 	await axios.post(serverURL+"researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });
-			// }
+			sleepFeature = await pullSleep(response, today - bucketDay*6 ,today);
+			if(sleepFeature){
+				await axios.post(serverURL+"researcher", { "sleepFeature":sleepFeature, "googleid": response.profileObj });
+			}
 
 			if (activityFeatures) {
 				await axios.post(serverURL+"/researcher", { "activityFeatures": activityFeatures, "googleid": response.profileObj });

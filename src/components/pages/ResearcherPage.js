@@ -5,6 +5,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import { serverURL } from '../../ClientUtils'
 import BarChart from '../charts/BarChart';
+import {hasCookie} from '../CookieManager';
 
 
 function ResearcherPage(props) {
@@ -38,7 +39,7 @@ function ResearcherPage(props) {
         let s = (start) ? new Date(start) : new Date(st);
         for (let index = 0; index < array.length; index++) {
             s.setDate(s.getDate() + 1);
-            arr.push(`${s.getFullYear()}-${s.getMonth()+1}-${s.getDate()}`);
+            arr.push(`${s.getFullYear()}-${s.getMonth() + 1}-${s.getDate()}`);
         }
         setLabels(arr)
     }
@@ -114,13 +115,18 @@ function ResearcherPage(props) {
     }
 
     const showSleep = async () => {
-        let response = await getFeatures();
-        let arr = [];
-        if (response.data.Sleeping.length > 0) {
-            arr = extract(response.data.Sleeping[0].days, response.data.Sleeping[0].start);
+        let arr ={'days' :[
+            { 'day1': 3 }, { 'day2': 5 }, { 'day3': 4 }, { 'day4': 6 }, { 'day5': 8 }, { 'day6': 7 }, { 'day7': 4 }, { 'day8': 4 }, { 'day9': 7 }, { 'day10': 5 }, { 'day11': 3 }, { 'day12': 4 }, { 'day13': 5 }, { 'day14': 8 }, { 'day15': 7 }, { 'day16': 3 }, { 'day17': 5 }, { 'day18': 9 }, { 'day19': 4 }, { 'day20': 5 }, { 'day21': 7 }, { 'day22': 6 }, { 'day23': 5 }, { 'day24': 7 }, { 'day25': 4 }, { 'day26': 3 }, { 'day27': 6 }, { 'day28': 8 }, { 'day29': 10 }, { 'day30': 6 }
+        ]}
+        // let response = await getFeatures();
+        // let arr = [];
+        // if (response.data.Sleeping.length > 0) {
+        arr = extract(arr, 1647076066984);
 
-        }
+        // }
         setLabel('Hour of Sleeps');
+        setMin(0);
+        setMax(10);
         setForGragh(arr);
     }
 
@@ -151,6 +157,51 @@ function ResearcherPage(props) {
         return [result, startPulled];
     }
 
+    const downloadToCsv = async () => {
+        // setStart(null);
+        // setEnd(null);
+        let features = await axios.get(`${serverURL}/researcher/features/${null}/${null}`);
+        features = features.data;
+        console.log(features);
+        let rows = [];
+        rows.push(['user', 'Steps', 'Calories', 'Speed', 'Distance', 'Active_min'])
+        for (let day = 0; day < features['Steps'][0].days.length; day++) {
+            let step = (day < features['Steps'][0].days.length) ? Object.values(features['Steps'][0].days[day])[0] : 0;
+            let calories = (day < features['Calories'][0].days.length) ? Object.values(features['Calories'][0].days[day])[0] : 0;
+            let speed = (day < features['Speed'][0].days.length) ? Object.values(features['Speed'][0].days[day])[0] : 0;
+            let distance = (day < features['Distance'][0].days.length) ? Object.values(features['Distance'][0].days[day])[0] : 0;
+            let am = (day < features['Active_min'][0].days.length) ? Object.values(features['Active_min'][0].days[day])[0] : 0;
+            let uid = features['Active_min'][0].googleid;
+            rows.push([uid, step + '', calories + '', speed + '', distance + '', am + '']);
+        }
+
+
+        let csvContent = "data:text/csv;charset=utf-8,"
+            + rows.map(e => e.join(",")).join("\n");
+
+
+        let encodedUri = encodeURI(csvContent);
+        window.open(encodedUri);
+
+        // console.log(hasCookie());
+        let forms = await axios.get(`${serverURL}/researcher/allDailyForms`);
+        forms =forms.data;
+        let rowsDaily = [];
+        rowsDaily.push(['user', 'happy', 'lonely', 'pain', 'sad', 'sleep', 'Date']);
+        for (let i = 0; i < forms.length; i++) {
+            rowsDaily.push([forms[i].googleid,forms[i].answers.happy +'',forms[i].answers.lonely +'',forms[i].answers.pain+'',forms[i].answers.sad+'',forms[i].answers.sleep+'', forms[i].Date]);
+        }
+
+        let csvContentDaily = "data:text/csv;charset=utf-8,"
+            + rowsDaily.map(e => e.join(",")).join("\n");
+
+
+        let encodedUriDaily = encodeURI(csvContentDaily);
+        window.open(encodedUriDaily);
+
+
+    }
+
     const content = (
         <div className="buttons-section">
             <button
@@ -178,6 +229,11 @@ function ResearcherPage(props) {
                 onClick={() => showSleep()}>
                 שינה
             </button>
+            <button
+                className="sb-btn"
+                onClick={() => downloadToCsv()}>
+                הורדת קובץ
+            </button>
 
 
         </div>
@@ -186,15 +242,15 @@ function ResearcherPage(props) {
     return (
         <div className="page">
             <Sidebar history={props.history} content={content} />
-            
+
             <div style={{ position: 'absolute', top: 20, left: '65%', width: '200px', backgroundColor: 'lightcyan' }}>
-                 <input type='date' className='start' value={start} onChange={e => handleStart(e.target.value)} />
-                 <input type='date' className='end' value={end} onChange={e => handleEnd(e.target.value)} />
+                <input type='date' className='start' value={start} onChange={e => handleStart(e.target.value)} />
+                <input type='date' className='end' value={end} onChange={e => handleEnd(e.target.value)} />
             </div>
             {showBar &&
                 <div style={{ position: "absolute", top: '100px', left: '25%', height: '50%', width: '40%', backgroundColor: 'white' }}>
-                    
-                    <BarChart data ={data} label={label} labels={labels} min={min} max={max}/>
+
+                    <BarChart data={data} label={label} labels={labels} min={min} max={max} />
                 </div>
             }
 
