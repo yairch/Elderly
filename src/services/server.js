@@ -306,11 +306,21 @@ const notifyElderly = async (elderlyId, volunteerId, channel, meetingSubject) =>
 	return response;
 };
 
-const fetchPostDailyForm = async (formAnswer,userId,date)=> {
+const fetchPostDailyForm = async (formAnswer,userId,date, googleid)=> {
 	const response = await fetch(serverURL + '/elderly/daily-form', {
 		method: 'post',
 		headers:{'Content-Type': 'application/json'},
-		body: JSON.stringify({formAnswer,userId,date})
+		body: JSON.stringify({formAnswer,userId,date,googleid})
+	});
+	handleError(response);
+	return response;
+}
+
+const fetchInitForm = async (numericformAnswer,categoricalformAnswer,userId,date)=> {
+	const response = await fetch(serverURL + '/elderly/daily-form', {
+		method: 'post',
+		headers:{'Content-Type': 'application/json'},
+		body: JSON.stringify({numericformAnswer,categoricalformAnswer,userId,date})
 	});
 	handleError(response);
 	return response;
@@ -342,5 +352,6 @@ export {
 	updateAdjustmentPercentages,
 	deleteMeetingFromDB,
 	notifyElderly,
-	fetchPostDailyForm
+	fetchPostDailyForm,
+	fetchInitForm
 };

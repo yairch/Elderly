@@ -3,8 +3,7 @@ import Sidebar from '../sidebar/Sidebar';
 import InComingCallModal from '../modal/InComingCallModal';
 import { AGORA_APP_ID } from '../../agora.config';
 import { getCurrentWebSocket, setOnMessage } from '../../services/notifacationService';
-// import CountdownTimer from '../countDownTimer/CountdownTimer';
-import dateFormat from 'dateformat';
+
 
 
 
@@ -14,20 +13,15 @@ function ElderlyPage(props) {
 	let fillDaily = true;
 	let fillInit = true;
 	const nearestMeeting = props.history.location.state;
-	console.log(props.history.location)
 	
 	let formattedDate;
 	let volunteer;
 	if (nearestMeeting) {
-		console.log('has meeting');
-		console.log(nearestMeeting)
+
 		volunteer = nearestMeeting.volunteer[0];
-		console.log(volunteer)
-		console.log(nearestMeeting.date)
+
 		formattedDate = ( `בתאריך ${(nearestMeeting.date).slice(0,10)}, בשעה ${(nearestMeeting.date).slice(-5)}`)
-		// formattedDate = nearestMeeting && `date: ${nearestMeeting.date[:10]} time: ${}`
-		// formattedDate = nearestMeeting && new Date(nearestMeeting.date).getDate()+'.'+(new Date(nearestMeeting.date).getMonth()+1)+'.'+new Date(nearestMeeting.date).getFullYear();//dateFormat(nearestMeeting.date, ' dd.mm.yyyy, HH:MM')
-		// console.log(formattedDate)
+
 	}
 	
 	const [state, setState] = useState({

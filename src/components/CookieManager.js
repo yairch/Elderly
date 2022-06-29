@@ -87,6 +87,8 @@ export const pullFromApi = async (response, type, bucketByTime, start, end) => {
             }
         });
         stepArray = result.data.bucket
+        let s = stepArray[0].startTimeMillis;
+        let e = stepArray[stepArray.length - 1].endTimeMillis;
         //console.log(stepArray)
         let i = 1
         let all_types = []
@@ -135,7 +137,7 @@ export const pullFromApi = async (response, type, bucketByTime, start, end) => {
         // console.log(active_min)
         // console.log(distance)
         // console.log(hr)
-        return { "calories": calories, "steps": steps, "speed": speed, "active_min": active_min, "distance": distance, "hr": hr }
+        return { "calories": calories, "steps": steps, "speed": speed, "active_min": active_min, "distance": distance, "hr": hr, 'start': s, 'end': e }
     } catch (error) {
         console.log(error);
     }
@@ -146,19 +148,49 @@ export const pullSleep = async (response, start, end) => {
     try {
         let s = new Date(start);
         let e = new Date(end);
-        let e_day = (e.getDate() < 10) ? '0' + e.getDate() : '' + e.getDate()
-        let s_day = (s.getDate() < 10) ? '0' + s.getDate() : '' + s.getDate()
-        let e_month = (e.getMonth() + 1 < 10) ? '0' + (e.getMonth() + 1) : '' + (e.getMonth() + 1)
-        let s_month = (s.getMonth() + 1 < 10) ? '0' + (s.getMonth() + 1) : '' + (s.getMonth() + 1)
+        let e_day = (e.getDate() < 10) ? '0' + e.getDate() : '' + e.getDate();
+        let s_day = (s.getDate() < 10) ? '0' + s.getDate() : '' + s.getDate();
+        let e_month = (e.getMonth() + 1 < 10) ? '0' + (e.getMonth() + 1) : '' + (e.getMonth() + 1);
+        let s_month = (s.getMonth() + 1 < 10) ? '0' + (s.getMonth() + 1) : '' + (s.getMonth() + 1);
+
+        // let data = {
+        //     aggregateBy: [
+        //         {
+        //             dataTypeName: "com.google.sleep.segment"
+        //         }
+        //     ],
+        //     endTimeMillis: end,
+        //     startTimeMillis: start
+
+        // };
         const result = await axios({
             method: "GET",
             headers: {
                 "authorization": "Bearer " + response.accessToken,
                 "Content-Type": "application/json",
             },
-            url: `https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=${s.getUTCFullYear()}-${s_month}-${s_day}T00:00:00.000Z&endTime=${e.getUTCFullYear()}-${e_month}-${e_day}T23:59:59.999Z&activityType=72&activityType=72`,
+            url: `https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=${s.getUTCFullYear()}-${s_month}-${s_day}T00:00:00.000Z&endTime=${e.getUTCFullYear()}-${e_month}-${e_day}T23:59:59.999Z&activityType=72`,
 
+
+
+            // method: "POST",
+            // headers: {
+            //     authorization: "Bearer " + response.accessToken,
+            //     "Content-Type": "application/json",
+            // },
+            // url: `https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate`,
+            // data: {
+            //     "aggregateBy": [
+            //         {
+            //             "dataTypeName": "com.google.sleep.segment"
+            //         }
+            //     ],
+            //     "endTimeMillis": end,
+            //     "startTimeMillis": start
+            // },
         });
+        console.log(`https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=${s.getUTCFullYear()}-${s_month}-${s_day}T00:00:00.000Z&endTime=${e.getUTCFullYear()}-${e_month}-${e_day}T23:59:59.999Z&activityType=72`);
+
         let sleeping = []
         //need to check it is working
         sleepSessions = result.data.sessions;
@@ -167,7 +199,7 @@ export const pullSleep = async (response, start, end) => {
             let sleepLevel = sleepSessions[i].name.split(' ')[0]
             sleeping.push({ ['session ' + i]: [duration, sleepLevel] });
         }
-
+        debugger;
         return { "sleeping": sleeping }
     } catch (error) {
         console.log(error);

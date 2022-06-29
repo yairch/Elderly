@@ -148,3 +148,9 @@ input[type=range] {
     margin-left: -5px;
     margin-top: -1px;
   }
+.init-container{
+  height: 700px;
+  text-align: center;
+  width: 100%;
+  overflow-y: auto;
+}

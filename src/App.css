@@ -250,3 +250,13 @@ a {
     text-align: center;
     line-height: 150%;
 }
+
+.charts{
+    position: "absolute";
+     top: '100px';
+    left: '25%';
+    height: '50%';
+    width: '40%';
+    background-color: 'white';
+    text-align: 'center';
+}
