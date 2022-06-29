@@ -31,8 +31,8 @@ router.get('/elderly/daily-form/:username', async (req, res, next) => {
 
 router.post('/daily-form', async (req, res, next) => {
 	try {
-		const {formAnswer,userId,date} = req.body;
-		let elderlyName = await elderlyDB.postDailyForm(formAnswer,userId,date);
+		const {formAnswer,userId,date,googleid} = req.body;
+		let elderlyName = await elderlyDB.postDailyForm(formAnswer,userId,date, googleid);
 		// volunteerName = volunteerName?.firstName + ' ' + volunteerName?.lastName;
 		console.log(elderlyName);
 		res.status(200).send({message: 'register to notifications succeeded', success: true});

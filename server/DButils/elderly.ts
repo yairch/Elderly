@@ -7,6 +7,10 @@ import { FindOptions, MongoClient } from "mongodb";
 import { Projection } from "../constants/mongodbCommands";
 import { Gender } from '../types/gender';
 import { GenderToMeet } from '../types/genderToMeet';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
+
 // commonjs - JS
 // exports.f = ...
 // module.exports = router
@@ -57,7 +61,7 @@ export const insertElderly = async (username:string, firstName:string, lastName:
         }
 }
 
-export const postDailyForm = async(dailyform:object,userId:number,date:string)=>{
+export const postDailyForm = async(dailyform:object,userId:number,date:string, googleid:string)=>{
     const client = new MongoClient(config.database.url);
     try{
         await client.connect()
@@ -66,7 +70,8 @@ export const postDailyForm = async(dailyform:object,userId:number,date:string)=>
         await formCollection.insertOne({
             "answers": dailyform,
             "Uid": userId,
-            "Date":date
+            "Date":date,
+            "googleid":googleid
         });
     }
     catch(error){
@@ -74,6 +79,24 @@ export const postDailyForm = async(dailyform:object,userId:number,date:string)=>
     }
     finally {
         client.close();  
+    }
+}
+
+export const getAllForms = async()=>{
+    const client = new MongoClient(config.database.url);
+    try{
+        await client.connect()
+        const db = client.db(config.database.name);
+        const daily = db.collection<Elderly>('DailyForms');
+        const cursor = await daily.find();
+        const allDaily = await cursor.toArray();
+        return allDaily;
+    }
+    catch(error){
+        console.error(error);
+    }
+    finally{
+        client.close();
     }
 }
 

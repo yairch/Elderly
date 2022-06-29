@@ -1,7 +1,8 @@
 
 import {insertSleeping, insertSteps, insertCalories, insertSpeed, insertDistance, insertHR, insertActive, getUpdatedTime, getAllFeatures} from '../DButils/Bands';
 import {insertUser} from '../DButils/user';
-import {UserRole} from '../types/user'
+import {getAllForms} from '../DButils/elderly';
+import {UserRole} from '../types/user';
 import express from 'express';
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -15,11 +16,16 @@ router.post('/', async(req,res,next)=>{
         await insertDistance(req.body.activityFeatures.distance,req.body.googleid.googleId, req.body.activityFeatures.start, req.body.activityFeatures.end)
         await insertHR(req.body.activityFeatures.hr,req.body.googleid.googleId, req.body.activityFeatures.start, req.body.activityFeatures.end)
         await insertActive(req.body.activityFeatures.active_min, req.body.googleid.googleId, req.body.activityFeatures.start, req.body.activityFeatures.end)
-        // await insertSleeping(req.body.featuresWeek.sleeping, req.body.googleid);
+        await insertSleeping(req.body.featuresWeek.sleeping, req.body.googleid, req.body.activityFeatures.start, req.body.activityFeatures.end);
         res.status(200).send("Check your DB")
     }catch(e){
         next(e)
     }
+});
+
+router.get('/allDailyForms', async(req,res,next)=>{
+    const daily = await getAllForms();
+    res.status(200).send(daily);
 });
 
 router.get('/', async(req,res,next)=>{

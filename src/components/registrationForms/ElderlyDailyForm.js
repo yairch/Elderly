@@ -3,6 +3,7 @@ import Navbar from '../navbar/Navbar';
 import { useState } from 'react';
 import Modal from '../modal/Modal.js';
 import {fetchPostDailyForm} from '../../services/server';
+import {hasCookie} from '../CookieManager'
 
 
 const ElderlyDailyForm = (props) => {
@@ -39,7 +40,7 @@ const ElderlyDailyForm = (props) => {
         console.log("handle Submit");
         try {
             let uid = 123;
-			const response = await fetchPostDailyForm(values,uid,date);
+			const response = await fetchPostDailyForm(values,uid,date, hasCookie()['googleId']);
 			(await response).json();
             console.log("success");
             props.history.push('/elderly');
