@@ -58,7 +58,6 @@ function LoginForm(props) {
 			} else {
 				let start = today - bucketMonth
 				activityFeatures = await pullFromApi(response, "day", bucketDay, start, today)
-				// sleepFeature = await pullSleep(response, start ,today);
 			}
 			sleepFeature = await pullSleep(response, today - bucketDay*6 ,today);
 			if(sleepFeature){
